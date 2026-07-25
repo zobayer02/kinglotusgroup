@@ -2,6 +2,10 @@
     @push('styles')
         <style>
             .why-section {
+                position: relative;
+                z-index: 0;
+                overflow: clip;
+                scroll-margin-top: 168px;
                 padding: 20px 28px 28px;
                 background: var(--section-surface);
             }
@@ -10,7 +14,7 @@
                 width: 100%;
                 max-width: 1240px;
                 margin: 0 auto;
-                padding: 22px 24px;
+                padding: 44px 24px 22px;
                 opacity: 0;
                 transform: translateY(22px);
             }
@@ -98,6 +102,7 @@
             .why-media-wrap {
                 display: flex;
                 align-items: center;
+                padding-top: 22px;
                 opacity: 0;
                 transform: translateX(18px);
             }
@@ -189,24 +194,20 @@
             .why-modal {
                 position: fixed;
                 inset: 0;
-                z-index: 90;
+                z-index: 1600;
                 display: grid;
                 place-items: center;
                 padding: 24px;
-                background: rgba(9, 15, 24, 0.56);
-                backdrop-filter: blur(10px);
-                -webkit-backdrop-filter: blur(10px);
+                background: rgba(9, 15, 24, 0.62);
+                backdrop-filter: blur(12px);
+                -webkit-backdrop-filter: blur(12px);
             }
 
             .why-modal-dialog {
                 position: relative;
                 width: min(960px, 100%);
                 border-radius: 28px;
-                overflow: visible;
-                border: 1px solid rgba(255, 255, 255, 0.2);
-                background: transparent;
                 box-shadow: 0 32px 90px rgba(0, 0, 0, 0.32);
-                animation: navDropIn 0.28s ease both;
             }
 
             .why-modal-media {
@@ -264,7 +265,7 @@
                 }
 
                 .why-shell {
-                    padding: 16px 8px;
+                    padding: 20px 8px 16px;
                 }
 
                 .why-grid {
