@@ -16,7 +16,7 @@ Route::get('/', HomeController::class)->name('home');
 Route::get('/gallery', GalleryPageController::class)->name('gallery.index');
 Route::get('/shareholder-reviews', ShareholderReviewPageController::class)->name('reviews.index');
 Route::get('/valued-shareholders', ValuedShareholderPageController::class)->name('shareholders.index');
-Route::get('/valued-shareholders/items', [ValuedShareholderPageController::class, 'items'])->name('shareholders.items');
+Route::get('/valued-shareholders/items', [ValuedShareholderPageController::class, 'items'])->name('shareholders.items')->middleware('throttle:60,1');
 Route::get('/terms-and-conditions', TermsPageController::class)->name('terms.show');
 Route::get('/terms', fn () => redirect()->route('terms.show'))->name('terms');
 Route::middleware('guest:admin')->group(function (): void {

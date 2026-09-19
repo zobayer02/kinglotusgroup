@@ -4560,9 +4560,10 @@
                     const removeImgInput = card.querySelector('[data-shareholder-remove-image-input]');
 
                     if (item.image_url) {
-                        const imgHtml = `<img src="${item.image_url}" alt="${escapeHtml(item.name || 'Shareholder')} preview" loading="lazy" decoding="async">`;
+                        const safeUrl = escapeHtml(item.image_url);
+                        const imgHtml = `<img src="${safeUrl}" alt="${escapeHtml(item.name || 'Shareholder')} preview" loading="lazy" decoding="async">`;
                         if (summaryAvatar) summaryAvatar.innerHTML = imgHtml;
-                        if (editorPreview) editorPreview.innerHTML = `<img src="${item.image_url}" alt="Shareholder photo" loading="lazy" decoding="async">`;
+                        if (editorPreview) editorPreview.innerHTML = `<img src="${safeUrl}" alt="Shareholder photo" loading="lazy" decoding="async">`;
                         if (photoBtnLabel) photoBtnLabel.textContent = 'Change Photo';
                         if (removePhotoBtn) removePhotoBtn.style.display = 'inline-flex';
                     } else {

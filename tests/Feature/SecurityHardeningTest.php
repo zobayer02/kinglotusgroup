@@ -17,6 +17,7 @@ class SecurityHardeningTest extends TestCase
         $response->assertHeader('X-Content-Type-Options', 'nosniff');
         $response->assertHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
         $response->assertHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
+        $response->assertHeader('Content-Security-Policy');
         $this->assertFalse($response->headers->has('X-Powered-By'));
     }
 
@@ -112,5 +113,14 @@ class SecurityHardeningTest extends TestCase
             'email' => $originalEmail,
             'mobile' => '01700000000',
         ]);
+    }
+
+    public function test_custom_404_view_renders_on_missing_route(): void
+    {
+        $response = $this->get('/non-existent-page-url');
+
+        $response->assertStatus(404);
+        $response->assertSee('Page Not Found');
+        $response->assertSee('Return to Homepage');
     }
 }
