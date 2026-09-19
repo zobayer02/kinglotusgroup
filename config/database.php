@@ -64,7 +64,13 @@ return [
             ]) : [],
         ],
 
-        'auth' => [
+        'auth' => env('DB_AUTH_DRIVER') === 'sqlite' ? [
+            'driver' => 'sqlite',
+            'url' => env('DB_URL'),
+            'database' => env('DB_AUTH_DATABASE', database_path('testing_auth.sqlite')),
+            'prefix' => '',
+            'foreign_key_constraints' => env('DB_FOREIGN_KEYS', true),
+        ] : [
             'driver' => 'mysql',
             'url' => env('DB_URL'),
             'host' => env('DB_HOST', '127.0.0.1'),
@@ -84,7 +90,13 @@ return [
             ]) : [],
         ],
 
-        'content' => [
+        'content' => env('DB_CONTENT_DRIVER') === 'sqlite' ? [
+            'driver' => 'sqlite',
+            'url' => env('DB_URL'),
+            'database' => env('DB_CONTENT_DATABASE', database_path('testing_content.sqlite')),
+            'prefix' => '',
+            'foreign_key_constraints' => env('DB_FOREIGN_KEYS', true),
+        ] : [
             'driver' => 'mysql',
             'url' => env('DB_URL'),
             'host' => env('DB_HOST', '127.0.0.1'),

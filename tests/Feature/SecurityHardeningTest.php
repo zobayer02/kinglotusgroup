@@ -105,14 +105,6 @@ class SecurityHardeningTest extends TestCase
         $this->assertSame('Lead Super Admin', $admin->name);
         $this->assertSame('updated.admin@kinglotusgroup.com', $admin->email);
         $this->assertSame('01812345678', $admin->mobile);
-
-        // Revert back
-        $admin->update([
-            'full_name' => 'A S M Zobayer',
-            'name' => 'Super Admin',
-            'email' => $originalEmail,
-            'mobile' => '01700000000',
-        ]);
     }
 
     public function test_custom_404_view_renders_on_missing_route(): void
