@@ -74,6 +74,11 @@ class RichTextSanitizer
         for ($child = $node->firstChild; $child !== null; $child = $nextSibling) {
             $nextSibling = $child->nextSibling;
 
+            if ($child->nodeType === XML_COMMENT_NODE) {
+                $node->removeChild($child);
+                continue;
+            }
+
             if (! $child instanceof DOMElement) {
                 continue;
             }
@@ -82,6 +87,8 @@ class RichTextSanitizer
 
             if (! array_key_exists($tagName, $allowedTags)) {
                 if (in_array($tagName, $unwrapTags, true)) {
+                    self::sanitizeNode($child, $allowedTags);
+
                     while ($child->firstChild) {
                         $node->insertBefore($child->firstChild, $child);
                     }

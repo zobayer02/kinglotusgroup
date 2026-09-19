@@ -297,6 +297,65 @@ class SecurityHardeningTest extends TestCase
         $this->assertStringContainsString('href="/safe-local-path"', $sanitizedLinks);
     }
 
+    public function test_rich_text_sanitizer_blocks_nested_unwrapped_xss_payloads(): void
+    {
+        // 1. Unwrapped div/span with img onerror
+        $payload1 = '<div><img src=x onerror=alert(1)></div>';
+        $sanitized1 = \App\Support\RichTextSanitizer::sanitize($payload1);
+        $this->assertNull($sanitized1);
+
+        // 2. Unwrapped div with javascript link
+        $payload2 = '<div><a href="javascript:alert(1)">click</a></div>';
+        $sanitized2 = \App\Support\RichTextSanitizer::sanitize($payload2);
+        $this->assertSame('<a>click</a>', $sanitized2);
+
+        // 3. Unwrapped div with svg onload
+        $payload3 = '<div><svg onload=alert(1)></svg></div>';
+        $sanitized3 = \App\Support\RichTextSanitizer::sanitize($payload3);
+        $this->assertNull($sanitized3);
+
+        // 4. Unwrapped span with script tag
+        $payload4 = '<span><script>alert(1)</script></span>';
+        $sanitized4 = \App\Support\RichTextSanitizer::sanitize($payload4);
+        $this->assertNull($sanitized4);
+
+        // 5. Deeply nested unwrapped tags with mixed content
+        $payload5 = '<div><section><article><span><img src=x onerror=alert(1)><p>Safe content</p><script>alert(2)</script></span></article></section></div>';
+        $sanitized5 = \App\Support\RichTextSanitizer::sanitize($payload5);
+        $this->assertSame('<p>Safe content</p>', $sanitized5);
+
+        // 6. Comment nodes are stripped
+        $payload6 = '<!-- <script>alert(1)</script> --><p>Clean text</p>';
+        $sanitized6 = \App\Support\RichTextSanitizer::sanitize($payload6);
+        $this->assertSame('<p>Clean text</p>', $sanitized6);
+
+        // 7. Sanitizer is idempotent
+        $html = '<p>Paragraph with <a href="https://example.com" target="_blank">valid link</a> and <strong>bold text</strong>.</p>';
+        $pass1 = \App\Support\RichTextSanitizer::sanitize($html);
+        $pass2 = \App\Support\RichTextSanitizer::sanitize($pass1);
+        $this->assertSame($pass1, $pass2);
+    }
+
+    public function test_terms_page_never_renders_stored_xss_payloads(): void
+    {
+        \Illuminate\Support\Facades\Cache::forget(\App\Support\SiteCache::TERMS_PAGE_DATA_KEY);
+
+        $setting = \App\Models\FooterSetting::query()->firstOrNew();
+        $setting->terms_title = 'Terms of Service';
+        $setting->terms_intro = '<div><img src=x onerror=alert(1)></div><p>Intro</p>';
+        $setting->terms_content = '<div><a href="javascript:alert(1)">Click here</a></div><span><script>alert(2)</script></span>';
+        $setting->save();
+
+        $response = $this->get(route('terms.show'));
+
+        $response->assertStatus(200);
+        $response->assertDontSee('onerror=alert(1)', false);
+        $response->assertDontSee('javascript:alert(1)', false);
+        $response->assertDontSee('<script>alert(2)', false);
+        $response->assertSee('Intro');
+        $response->assertSee('Click here');
+    }
+
     public function test_uploads_directory_has_htaccess_blocking_scripts(): void
     {
         $htaccessPath = public_path('uploads/.htaccess');
