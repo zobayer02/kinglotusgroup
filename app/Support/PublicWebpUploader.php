@@ -20,6 +20,7 @@ class PublicWebpUploader
         $targetDirectory = public_path($directory);
 
         File::ensureDirectoryExists($targetDirectory);
+        $this->ensureUploadProtection();
 
         $dimensions = @getimagesize($file->getRealPath());
 
@@ -72,13 +73,55 @@ class PublicWebpUploader
 
         imagedestroy($image);
 
+        // Delete old file only after the new file has been safely written
         $oldPath = $this->normalizeManagedPath($oldPath, $directory);
 
-        if ($oldPath) {
+        if ($oldPath && File::exists(public_path($oldPath)) && public_path($oldPath) !== $absolutePath) {
             File::delete(public_path($oldPath));
         }
 
         return str_replace('\\', '/', $relativePath);
+    }
+
+    public function ensureUploadProtection(): void
+    {
+        $htaccessPath = public_path('uploads/.htaccess');
+        if (! File::exists($htaccessPath)) {
+            $content = <<<'HTACCESS'
+# Disable script execution and directory browsing in uploads directory
+Options -ExecCGI -Indexes
+
+# Block execution of any PHP, Perl, Python, Shell, or executable files
+<FilesMatch "(?i)\.(php|php[0-9]|phtml|pht|phps|phar|sh|pl|cgi|py|asp|aspx|exe|bin|bat|cmd|dll|jsp)$">
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
+    <IfModule !mod_authz_core.c>
+        Order Allow,Deny
+        Deny from all
+    </IfModule>
+</FilesMatch>
+
+# Disable PHP engine if mod_php is loaded
+<IfModule mod_php.c>
+    php_flag engine off
+</IfModule>
+<IfModule mod_php7.c>
+    php_flag engine off
+</IfModule>
+<IfModule mod_php8.c>
+    php_flag engine off
+</IfModule>
+
+# Remove script handlers
+<IfModule mod_mime.c>
+    RemoveHandler .php .phtml .php3 .php4 .php5 .php7 .php8 .phar .cgi .pl .py .asp .aspx
+    RemoveType .php .phtml .php3 .php4 .php5 .php7 .php8 .phar .cgi .pl .py .asp .aspx
+</IfModule>
+HTACCESS;
+            File::ensureDirectoryExists(dirname($htaccessPath));
+            File::put($htaccessPath, $content);
+        }
     }
 
     public function delete(?string $path, ?string $directory = null): bool

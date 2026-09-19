@@ -296,4 +296,24 @@ class SecurityHardeningTest extends TestCase
         $this->assertStringContainsString('rel="noopener noreferrer"', $sanitizedLinks);
         $this->assertStringContainsString('href="/safe-local-path"', $sanitizedLinks);
     }
+
+    public function test_uploads_directory_has_htaccess_blocking_scripts(): void
+    {
+        $htaccessPath = public_path('uploads/.htaccess');
+        $this->assertFileExists($htaccessPath);
+
+        $content = file_get_contents($htaccessPath);
+        $this->assertStringContainsString('Options -ExecCGI -Indexes', $content);
+        $this->assertStringContainsString('Require all denied', $content);
+        $this->assertStringContainsString('php_flag engine off', $content);
+        $this->assertStringContainsString('RemoveHandler .php', $content);
+    }
+
+    public function test_uploader_ensures_upload_protection(): void
+    {
+        $uploader = new \App\Support\PublicWebpUploader();
+        $uploader->ensureUploadProtection();
+
+        $this->assertFileExists(public_path('uploads/.htaccess'));
+    }
 }
