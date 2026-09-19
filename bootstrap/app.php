@@ -12,6 +12,13 @@ $app = Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        $middleware->trustHosts(at: fn () => array_filter([
+            'localhost',
+            '127.0.0.1',
+            '^(.+\.)?kinglotusgroup\.com$',
+            parse_url(config('app.url'), PHP_URL_HOST) ? '^(.+\.)?'.preg_quote((string) parse_url(config('app.url'), PHP_URL_HOST)).'$' : null,
+        ]), subdomains: true);
+
         $middleware->trustProxies(at: '*');
 
         $middleware->append(\App\Http\Middleware\SecurityHeaders::class);
