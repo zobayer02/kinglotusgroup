@@ -253,4 +253,40 @@ class SecurityHardeningTest extends TestCase
         $this->assertSame($oldVersion + 1, (int) $admin->session_version);
         $this->assertTrue(\Illuminate\Support\Facades\Hash::check($newPassword, $admin->password));
     }
+
+    public function test_rich_text_sanitizer_blocks_xss_and_unsafe_schemes(): void
+    {
+        // 1. Script, style, iframe, svg, math, form, input, and video are completely removed
+        $maliciousHtml = '<p>Normal text</p><script>alert("xss")</script><svg onload="alert(1)"><circle r="10"/></svg><iframe src="https://evil.com"></iframe><form action="/steal"><input type="text"/></form><style>body { display:none; }</style>';
+        $sanitized = \App\Support\RichTextSanitizer::sanitize($maliciousHtml);
+
+        $this->assertStringNotContainsString('<script', $sanitized);
+        $this->assertStringNotContainsString('alert', $sanitized);
+        $this->assertStringNotContainsString('<svg', $sanitized);
+        $this->assertStringNotContainsString('<iframe', $sanitized);
+        $this->assertStringNotContainsString('<form', $sanitized);
+        $this->assertStringNotContainsString('<style', $sanitized);
+        $this->assertStringContainsString('<p>Normal text</p>', $sanitized);
+
+        // 2. Event handlers on allowed tags are removed
+        $eventHandlerHtml = '<p onclick="alert(1)" onmouseover="evil()">Paragraph with events</p><strong onload="bad()">Bold</strong>';
+        $sanitizedEvents = \App\Support\RichTextSanitizer::sanitize($eventHandlerHtml);
+        $this->assertStringNotContainsString('onclick', $sanitizedEvents);
+        $this->assertStringNotContainsString('onmouseover', $sanitizedEvents);
+        $this->assertStringNotContainsString('onload', $sanitizedEvents);
+        $this->assertStringContainsString('<p>Paragraph with events</p>', $sanitizedEvents);
+        $this->assertStringContainsString('<strong>Bold</strong>', $sanitizedEvents);
+
+        // 3. Protocol-relative URLs and dangerous schemes are rejected
+        $linksHtml = '<a href="//evil.com/phish">Protocol relative</a><a href="javascript:alert(1)">JS link</a><a href="data:text/html;base64,PHNjcmlwdD5hbGVydCgxKTwvc2NyaXB0Pg==">Data link</a><a href="vbscript:msgbox(1)">VB link</a><a href="https://example.com/safe" target="_blank">Safe external link</a><a href="/safe-local-path">Safe internal link</a>';
+        $sanitizedLinks = \App\Support\RichTextSanitizer::sanitize($linksHtml);
+
+        $this->assertStringNotContainsString('//evil.com', $sanitizedLinks);
+        $this->assertStringNotContainsString('javascript:', $sanitizedLinks);
+        $this->assertStringNotContainsString('data:', $sanitizedLinks);
+        $this->assertStringNotContainsString('vbscript:', $sanitizedLinks);
+        $this->assertStringContainsString('href="https://example.com/safe"', $sanitizedLinks);
+        $this->assertStringContainsString('rel="noopener noreferrer"', $sanitizedLinks);
+        $this->assertStringContainsString('href="/safe-local-path"', $sanitizedLinks);
+    }
 }

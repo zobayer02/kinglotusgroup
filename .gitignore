@@ -28,3 +28,4 @@ Thumbs.db
 .deploy-tmp/
 .local-storage/
 /database/testing_*.sqlite
+kinglotusgroup_*

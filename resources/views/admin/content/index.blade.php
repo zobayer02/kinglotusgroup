@@ -3,7 +3,7 @@
 @section('title', 'Content Management | King Lotus International')
 
 @push('styles')
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jodit@4.2.47/es2021/jodit.min.css">
+    @vite(['resources/js/admin-editor.js'])
     <style>
         .content-shell {
             display: grid;
@@ -4037,7 +4037,6 @@
 @endsection
 
 @push('scripts')
-    <script src="https://cdn.jsdelivr.net/npm/jodit@4.2.47/es2021/jodit.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const buttons = Array.from(document.querySelectorAll('[data-module-toggle]'));
