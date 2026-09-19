@@ -7,6 +7,8 @@ use App\Models\Admin;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\Password;
 use Illuminate\View\View;
 
 class ProfileController extends Controller
@@ -25,8 +27,21 @@ class ProfileController extends Controller
 
         $validated = $request->validate([
             'full_name' => ['required', 'string', 'max:255'],
+            'name' => ['nullable', 'string', 'max:255'],
+            'email' => [
+                'required',
+                'string',
+                'lowercase',
+                'email',
+                'max:255',
+                Rule::unique(Admin::class, 'email')->ignore($admin->id),
+            ],
             'mobile' => ['nullable', 'string', 'max:30'],
         ]);
+
+        if (empty($validated['name'])) {
+            $validated['name'] = $admin->name ?: 'Super Admin';
+        }
 
         $admin->update($validated);
 
@@ -40,7 +55,16 @@ class ProfileController extends Controller
 
         $validated = $request->validate([
             'current_password' => ['required', 'current_password:admin'],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'password' => [
+                'required',
+                'string',
+                Password::min(8)
+                    ->letters()
+                    ->mixedCase()
+                    ->numbers()
+                    ->symbols(),
+                'confirmed',
+            ],
         ], [
             'current_password.current_password' => 'Your current password is incorrect.',
         ]);

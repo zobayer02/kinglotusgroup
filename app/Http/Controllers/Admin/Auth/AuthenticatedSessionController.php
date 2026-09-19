@@ -7,6 +7,7 @@ use App\Models\Admin;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
@@ -14,6 +15,7 @@ use Illuminate\Validation\ValidationException;
 class AuthenticatedSessionController extends Controller
 {
     private const MAX_LOGIN_ATTEMPTS = 5;
+    private const MAX_ACCOUNT_ATTEMPTS = 15;
     private const LOCKOUT_SECONDS = 900;
 
     public function create(): RedirectResponse
@@ -29,13 +31,19 @@ class AuthenticatedSessionController extends Controller
     {
         $validated = $request->validate([
             'email' => ['required', 'string', 'max:255'],
-            'password' => ['required', 'string'],
+            'password' => ['required', 'string', 'max:100'],
         ]);
 
         $identifier = trim((string) $validated['email']);
         $throttleKey = $this->throttleKey($identifier, $request->ip());
+        $accountThrottleKey = $this->accountThrottleKey($identifier);
 
-        $this->ensureIsNotRateLimited($throttleKey);
+        $this->ensureIsNotRateLimited($throttleKey, self::MAX_LOGIN_ATTEMPTS);
+        $this->ensureIsNotRateLimited(
+            $accountThrottleKey,
+            self::MAX_ACCOUNT_ATTEMPTS,
+            'Too many failed attempts on this account. Please try again later.'
+        );
 
         $loginColumn = filter_var($identifier, FILTER_VALIDATE_EMAIL) ? 'email' : 'mobile';
         $admin = Admin::query()
@@ -47,10 +55,15 @@ class AuthenticatedSessionController extends Controller
             'password' => $validated['password'],
         ];
 
-        $remember = $request->boolean('remember');
-
-        if (! Auth::guard('admin')->attempt($credentials, $remember)) {
+        if (! Auth::guard('admin')->attempt($credentials)) {
             RateLimiter::hit($throttleKey, self::LOCKOUT_SECONDS);
+            RateLimiter::hit($accountThrottleKey, self::LOCKOUT_SECONDS);
+
+            Log::warning('Failed admin login attempt', [
+                'identifier' => $identifier,
+                'ip' => $request->ip(),
+                'user_agent' => $request->userAgent(),
+            ]);
 
             throw ValidationException::withMessages([
                 'email' => 'The provided login credentials do not match our records.',
@@ -58,6 +71,7 @@ class AuthenticatedSessionController extends Controller
         }
 
         RateLimiter::clear($throttleKey);
+        RateLimiter::clear($accountThrottleKey);
         $request->session()->regenerate();
 
         $admin = Auth::guard('admin')->user();
@@ -68,12 +82,21 @@ class AuthenticatedSessionController extends Controller
         $request->session()->put('admin_session_version', (int) $admin->session_version);
         $request->session()->put('admin_last_activity_at', now()->timestamp);
 
+        Log::info('Successful admin login', [
+            'admin_id' => $admin->id,
+            'email' => $admin->email,
+            'ip' => $request->ip(),
+        ]);
+
         return redirect()->intended(route('admin.dashboard'));
     }
 
-    protected function ensureIsNotRateLimited(string $throttleKey): void
-    {
-        if (! RateLimiter::tooManyAttempts($throttleKey, self::MAX_LOGIN_ATTEMPTS)) {
+    protected function ensureIsNotRateLimited(
+        string $throttleKey,
+        int $maxAttempts = self::MAX_LOGIN_ATTEMPTS,
+        ?string $customMessage = null
+    ): void {
+        if (! RateLimiter::tooManyAttempts($throttleKey, $maxAttempts)) {
             return;
         }
 
@@ -81,13 +104,18 @@ class AuthenticatedSessionController extends Controller
         $minutes = (int) ceil($seconds / 60);
 
         throw ValidationException::withMessages([
-            'email' => "Too many login attempts. Please try again in {$minutes} minute(s).",
+            'email' => $customMessage ?? "Too many login attempts. Please try again in {$minutes} minute(s).",
         ]);
     }
 
     protected function throttleKey(string $identifier, ?string $ipAddress): string
     {
         return Str::transliterate(Str::lower($identifier)).'|'.$ipAddress;
+    }
+
+    protected function accountThrottleKey(string $identifier): string
+    {
+        return 'admin_account|'.Str::transliterate(Str::lower($identifier));
     }
 
     public function destroy(Request $request): RedirectResponse

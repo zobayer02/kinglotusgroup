@@ -81,6 +81,29 @@ class PublicWebpUploader
         return str_replace('\\', '/', $relativePath);
     }
 
+    public function delete(?string $path, ?string $directory = null): bool
+    {
+        if (! filled($path)) {
+            return false;
+        }
+
+        $normalized = $directory !== null
+            ? $this->normalizeManagedPath($path, $directory)
+            : ltrim(str_replace('\\', '/', trim((string) $path)), '/');
+
+        if (! filled($normalized) || str_contains($normalized, '..') || preg_match('/^[A-Za-z]:/', $normalized) === 1) {
+            return false;
+        }
+
+        $fullPath = public_path($normalized);
+
+        if (File::exists($fullPath)) {
+            return File::delete($fullPath);
+        }
+
+        return false;
+    }
+
     protected function normalizeManagedPath(?string $path, string $directory): ?string
     {
         if (! filled($path)) {

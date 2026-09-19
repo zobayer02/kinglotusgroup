@@ -108,7 +108,7 @@ class ShareholderReviewSection extends Model
         ];
     }
 
-    protected static function extractYoutubeId(?string $url): ?string
+    public static function extractYoutubeId(?string $url): ?string
     {
         if (! filled($url)) {
             return null;

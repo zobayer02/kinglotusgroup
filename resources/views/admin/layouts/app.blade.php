@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'Admin Portal | King Lotus International')</title>
     <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}">
     <style>
@@ -1221,6 +1222,46 @@
 
                 window.setTimeout(() => closeToast(toast), 3200);
             });
+
+            window.showAdminToast = (message, type = 'success') => {
+                const toast = document.createElement('div');
+                toast.className = `admin-toast is-${type}`;
+                toast.setAttribute('data-admin-toast', '');
+
+                const iconSvg = type === 'success'
+                    ? '<svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M5 12.5L9.2 16.7L19 7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path></svg>'
+                    : '<svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 7V13" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"></path><circle cx="12" cy="17" r="1.2" fill="currentColor"></circle></svg>';
+
+                const title = type === 'success' ? 'Success' : 'Notice';
+
+                toast.innerHTML = `
+                    <span class="admin-toast-icon" aria-hidden="true">${iconSvg}</span>
+                    <div>
+                        <p class="admin-toast-title">${title}</p>
+                        <p class="admin-toast-text"></p>
+                    </div>
+                    <button class="admin-toast-close" type="button" aria-label="Close notification" data-admin-toast-close>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                            <path d="M6 6L18 18" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"></path>
+                            <path d="M18 6L6 18" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"></path>
+                        </svg>
+                    </button>
+                `;
+
+                toast.querySelector('.admin-toast-text').textContent = message;
+                document.body.appendChild(toast);
+
+                requestAnimationFrame(() => {
+                    toast.classList.add('is-visible');
+                });
+
+                const closeButton = toast.querySelector('[data-admin-toast-close]');
+                if (closeButton) {
+                    closeButton.addEventListener('click', () => closeToast(toast));
+                }
+
+                window.setTimeout(() => closeToast(toast), 3200);
+            };
 
             const confirmRoot = document.querySelector('[data-admin-confirm]');
             const confirmTitle = confirmRoot?.querySelector('[data-admin-confirm-title], .admin-confirm-title');

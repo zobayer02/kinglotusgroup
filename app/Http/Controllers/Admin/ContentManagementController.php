@@ -10,6 +10,7 @@ use App\Models\LeadershipSection;
 use App\Models\ProjectSection;
 use App\Models\ShareholderReviewSection;
 use App\Models\SiteNotice;
+use App\Models\ValuedShareholder;
 use App\Models\ValuedShareholderSection;
 use App\Models\WhySection;
 use App\Support\PublicWebpUploader;
@@ -17,6 +18,7 @@ use App\Support\RichTextSanitizer;
 use App\Support\SiteCache;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
@@ -37,6 +39,7 @@ class ContentManagementController extends Controller
             'shareholderReviewSection' => ShareholderReviewSection::query()->first(),
             'leadershipSection' => LeadershipSection::query()->first(),
             'valuedShareholderSection' => ValuedShareholderSection::query()->first(),
+            'valuedShareholdersCount' => ValuedShareholder::query()->count(),
             'footerSetting' => FooterSetting::query()->first(),
         ]);
     }
@@ -618,65 +621,147 @@ class ContentManagementController extends Controller
         return back()->with('success', 'Leadership section updated successfully.');
     }
 
-    public function updateValuedShareholders(Request $request, PublicWebpUploader $uploader): RedirectResponse
+    public function updateValuedShareholders(Request $request): RedirectResponse
     {
         $validated = $request->validate([
             'shareholder_section_title' => ['nullable', 'string', 'max:180'],
             'shareholder_section_visible' => ['nullable'],
-            'shareholders' => ['nullable', 'array'],
-            'shareholders.*.name' => ['nullable', 'string', 'max:180'],
-            'shareholders.*.position' => ['nullable', 'string', 'max:180'],
-            'shareholders.*.image_path' => ['nullable', 'string', 'max:2048'],
-            'shareholder_images' => ['nullable', 'array'],
-            'shareholder_images.*' => ['nullable', 'image', 'max:6144'],
         ]);
 
         $section = ValuedShareholderSection::query()->firstOrNew();
-
-        $shareholders = collect($validated['shareholders'] ?? [])
-            ->map(function ($shareholder, $index) use ($request, $uploader): ?array {
-                $data = is_array($shareholder) ? $shareholder : [];
-                $imagePath = $this->sanitizeManagedUploadPath($data['image_path'] ?? null, 'uploads/valued-shareholders');
-
-                try {
-                    if ($request->hasFile('shareholder_images.'.$index)) {
-                        $imagePath = $uploader->store(
-                            $request->file('shareholder_images.'.$index),
-                            'uploads/valued-shareholders',
-                            $imagePath,
-                        );
-                    }
-                } catch (RuntimeException $exception) {
-                    throw ValidationException::withMessages([
-                        'shareholder_images.'.$index => 'Shareholder image upload failed. Please try another image.',
-                    ]);
-                }
-
-                $normalized = [
-                    'name' => trim((string) ($data['name'] ?? '')),
-                    'position' => trim((string) ($data['position'] ?? '')),
-                    'image_path' => $imagePath,
-                ];
-
-                if (! filled($normalized['name']) && ! filled($normalized['position']) && ! filled($normalized['image_path'])) {
-                    return null;
-                }
-
-                return $normalized;
-            })
-            ->filter()
-            ->values()
-            ->all();
-
         $section->section_title = filled($validated['shareholder_section_title'] ?? null)
             ? trim((string) $validated['shareholder_section_title'])
             : null;
-        $section->shareholders = $shareholders;
         $section->is_visible = $request->boolean('shareholder_section_visible');
         $section->save();
         SiteCache::forgetPublicPages();
 
-        return back()->with('success', 'Valued shareholders section updated successfully.');
+        return back()->with('success', 'Valued shareholders section settings updated successfully.');
+    }
+
+    public function getShareholders(Request $request): JsonResponse
+    {
+        $search = trim((string) $request->input('search', ''));
+        $page = max(1, (int) $request->input('page', 1));
+        $perPage = 20;
+
+        $query = ValuedShareholder::query()
+            ->search($search)
+            ->orderBy('sort_order')
+            ->orderBy('id', 'desc');
+
+        $total = $query->count();
+        $items = $query->forPage($page, $perPage)->get();
+
+        return response()->json([
+            'data' => $items->map->toEditorArray(),
+            'current_page' => $page,
+            'has_more' => ($page * $perPage) < $total,
+            'total' => $total,
+        ]);
+    }
+
+    public function storeShareholder(Request $request, PublicWebpUploader $uploader): JsonResponse
+    {
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:180'],
+            'position' => ['nullable', 'string', 'max:180'],
+            'image' => ['nullable', 'image', 'max:6144'],
+        ]);
+
+        $imagePath = null;
+
+        try {
+            if ($request->hasFile('image')) {
+                $imagePath = $uploader->store(
+                    $request->file('image'),
+                    'uploads/valued-shareholders',
+                );
+            }
+        } catch (RuntimeException $exception) {
+            throw ValidationException::withMessages([
+                'image' => 'Shareholder image upload failed. Please try another image.',
+            ]);
+        }
+
+        $shareholder = ValuedShareholder::create([
+            'name' => trim($validated['name']),
+            'position' => filled($validated['position'] ?? null) ? trim($validated['position']) : null,
+            'image_path' => $imagePath,
+            'sort_order' => 0,
+        ]);
+
+        SiteCache::forgetPublicPages();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Shareholder added successfully.',
+            'item' => $shareholder->toEditorArray(),
+            'total' => ValuedShareholder::count(),
+        ], 201);
+    }
+
+    public function updateShareholder(Request $request, ValuedShareholder $shareholder, PublicWebpUploader $uploader): JsonResponse
+    {
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:180'],
+            'position' => ['nullable', 'string', 'max:180'],
+            'image' => ['nullable', 'image', 'max:6144'],
+            'remove_image' => ['nullable'],
+        ]);
+
+        $imagePath = $shareholder->image_path;
+
+        if ($request->boolean('remove_image')) {
+            if (filled($imagePath)) {
+                $uploader->delete($imagePath);
+            }
+            $imagePath = null;
+        }
+
+        try {
+            if ($request->hasFile('image')) {
+                $imagePath = $uploader->store(
+                    $request->file('image'),
+                    'uploads/valued-shareholders',
+                    $imagePath,
+                );
+            }
+        } catch (RuntimeException $exception) {
+            throw ValidationException::withMessages([
+                'image' => 'Shareholder image upload failed. Please try another image.',
+            ]);
+        }
+
+        $shareholder->update([
+            'name' => trim($validated['name']),
+            'position' => filled($validated['position'] ?? null) ? trim($validated['position']) : null,
+            'image_path' => $imagePath,
+        ]);
+
+        SiteCache::forgetPublicPages();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Shareholder updated successfully.',
+            'item' => $shareholder->toEditorArray(),
+        ]);
+    }
+
+    public function destroyShareholder(ValuedShareholder $shareholder, PublicWebpUploader $uploader): JsonResponse
+    {
+        if (filled($shareholder->image_path)) {
+            $uploader->delete($shareholder->image_path);
+        }
+
+        $shareholder->delete();
+        SiteCache::forgetPublicPages();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Shareholder removed successfully.',
+            'total' => ValuedShareholder::count(),
+        ]);
     }
 
     protected function storeProjectCards(

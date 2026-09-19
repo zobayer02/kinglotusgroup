@@ -130,14 +130,14 @@
                     -webkit-user-drag: none;
                 }
 
-                .leadership-founder-placeholder,
-                .leadership-card-placeholder {
+                .leadership-founder-placeholder {
                     display: flex;
                     align-items: center;
                     justify-content: center;
                     width: 100%;
                     aspect-ratio: 4 / 5;
                     padding: 24px;
+                    border-radius: 28px;
                     font-family: var(--font-secondary);
                     font-size: 1rem;
                     font-weight: 600;
@@ -148,8 +148,65 @@
                         linear-gradient(180deg, rgba(255, 255, 255, 0.32) 0%, rgba(223, 234, 242, 0.72) 100%);
                 }
 
-                .leadership-founder-placeholder {
-                    border-radius: 28px;
+                .leadership-card-placeholder {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    justify-content: center;
+                    gap: 8px;
+                    width: 100%;
+                    aspect-ratio: 4 / 5;
+                    padding: 12px;
+                    border-radius: 15px;
+                    background: linear-gradient(145deg, #1f4765 0%, #102a3f 100%);
+                    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18);
+                    color: rgba(255, 255, 255, 0.7);
+                    user-select: none;
+                }
+
+                .leadership-avatar-icon {
+                    width: 44px;
+                    height: 44px;
+                    border-radius: 50%;
+                    background: rgba(255, 255, 255, 0.1);
+                    border: 1px solid rgba(255, 255, 255, 0.2);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    color: rgba(255, 255, 255, 0.88);
+                }
+
+                .leadership-avatar-icon svg {
+                    width: 24px;
+                    height: 24px;
+                }
+
+                .leadership-placeholder-copy {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    justify-content: center;
+                    gap: 2px;
+                    text-align: center;
+                    line-height: 1.1;
+                }
+
+                .leadership-placeholder-brand {
+                    font-family: var(--font-secondary);
+                    font-size: 0.66rem;
+                    font-weight: 700;
+                    letter-spacing: 0.14em;
+                    text-transform: uppercase;
+                    color: rgba(255, 255, 255, 0.88);
+                }
+
+                .leadership-placeholder-sub {
+                    font-family: var(--font-secondary);
+                    font-size: 0.52rem;
+                    font-weight: 600;
+                    letter-spacing: 0.2em;
+                    text-transform: uppercase;
+                    color: rgba(255, 255, 255, 0.58);
                 }
 
                 @keyframes leadershipAppearUp {
@@ -240,7 +297,7 @@
                 .leadership-track {
                     display: flex;
                     align-items: stretch;
-                    gap: 22px;
+                    gap: 16px;
                     width: max-content;
                     will-change: transform;
                 }
@@ -253,8 +310,8 @@
                     position: relative;
                     display: flex;
                     align-items: stretch;
-                    flex: 0 0 214px;
-                    width: 214px;
+                    flex: 0 0 172px;
+                    width: 172px;
                     opacity: 1;
                     pointer-events: auto;
                     transform: none;
@@ -268,26 +325,36 @@
                     min-height: 100%;
                     color: #101724;
                     position: relative;
-                    padding: 14px 14px 16px;
-                    border-radius: 32px;
-                    border: 1px solid rgba(12, 80, 93, 0.34);
+                    padding: 10px 10px 12px;
+                    border-radius: 20px;
+                    border: 1px solid rgba(12, 80, 93, 0.28);
                     background: #ffffff;
-                    box-shadow: none;
+                    box-shadow: 0 8px 22px rgba(18, 33, 44, 0.05);
+                    transition:
+                        transform 0.24s cubic-bezier(0.16, 1, 0.3, 1),
+                        box-shadow 0.24s ease,
+                        border-color 0.24s ease;
+                }
+
+                .leadership-card:hover {
+                    transform: translateY(-3px);
+                    border-color: rgba(12, 80, 93, 0.54);
+                    box-shadow: 0 14px 30px rgba(12, 80, 93, 0.12);
                 }
 
                 .leadership-card::before {
                     content: "";
                     position: absolute;
-                    inset: 6px;
-                    border: 1.5px dashed rgba(12, 80, 93, 0.54);
-                    border-radius: 28px;
+                    inset: 4px;
+                    border: 1.2px dashed rgba(12, 80, 93, 0.4);
+                    border-radius: 17px;
                     pointer-events: none;
                 }
 
                 .leadership-card-visual {
                     position: relative;
                     overflow: hidden;
-                    border-radius: 28px;
+                    border-radius: 15px;
                     border: 1px solid rgba(255, 255, 255, 0.78);
                     background: linear-gradient(180deg, #3b78a4 0%, #2b6c99 100%);
                     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.22);
@@ -298,67 +365,78 @@
                     width: 100%;
                     aspect-ratio: 4 / 5;
                     object-fit: cover;
-                    transition: transform 0.58s cubic-bezier(0.16, 1, 0.3, 1);
+                    transition: transform 0.44s cubic-bezier(0.16, 1, 0.3, 1);
                     user-select: none;
                     -webkit-user-drag: none;
                 }
 
                 .leadership-card:hover .leadership-card-visual img {
-                    transform: scale(1.04);
-                }
-
-                .leadership-card-visual .leadership-card-placeholder {
-                    background: linear-gradient(180deg, #3b78a4 0%, #2b6c99 100%);
-                    color: rgba(255, 255, 255, 0.82);
+                    transform: scale(1.05);
                 }
 
                 .leadership-card-copy {
-                    padding-top: 16px;
+                    padding-top: 8px;
                     position: relative;
-                    display: grid;
-                    align-content: start;
-                    min-height: 108px;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+                    align-items: center;
+                    height: 66px;
+                    min-height: 66px;
+                    max-height: 66px;
+                    overflow: hidden;
                     text-align: center;
+                    box-sizing: border-box;
                 }
 
                 .leadership-card-name {
                     margin: 0;
+                    width: 100%;
                     font-family: var(--font-primary);
-                    font-size: 1.1rem;
-                    font-weight: 400;
-                    line-height: 1.1;
+                    font-size: 0.92rem;
+                    font-weight: 500;
+                    line-height: 1.15;
                     color: #101214;
-                    min-height: 2.22em;
+                    max-height: 34px;
                     display: -webkit-box;
                     -webkit-box-orient: vertical;
                     -webkit-line-clamp: 2;
                     overflow: hidden;
-                }
-
-                .leadership-card-position {
-                    display: block;
-                    margin-top: 6px;
-                    font-family: var(--font-primary);
-                    font-size: 0.92rem;
-                    line-height: 1.42;
-                    color: rgba(16, 33, 44, 0.68);
-                    min-height: 4.26em;
-                    display: -webkit-box;
-                    -webkit-box-orient: vertical;
-                    -webkit-line-clamp: 3;
-                    overflow: hidden;
-                    overflow-wrap: anywhere;
+                    text-overflow: ellipsis;
+                    word-break: break-word;
+                    overflow-wrap: break-word;
                     hyphens: auto;
                 }
 
-                .leadership-slide.is-position-long .leadership-card-position {
-                    font-size: 0.84rem;
-                    line-height: 1.36;
+                .leadership-card-name.is-name-medium {
+                    font-size: 0.82rem;
+                    line-height: 1.14;
                 }
 
-                .leadership-slide.is-position-xlong .leadership-card-position {
-                    font-size: 0.78rem;
-                    line-height: 1.3;
+                .leadership-card-name.is-name-long {
+                    font-size: 0.74rem;
+                    line-height: 1.12;
+                }
+
+                .leadership-card-name.is-name-xlong {
+                    font-size: 0.66rem;
+                    line-height: 1.1;
+                }
+
+                .leadership-card-position {
+                    display: -webkit-box;
+                    -webkit-box-orient: vertical;
+                    -webkit-line-clamp: 2;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    width: 100%;
+                    margin-top: 2px;
+                    font-family: var(--font-primary);
+                    font-size: 0.74rem;
+                    line-height: 1.22;
+                    max-height: 28px;
+                    color: rgba(16, 33, 44, 0.68);
+                    overflow-wrap: anywhere;
                 }
 
                 @media (max-width: 1080px) {
@@ -381,22 +459,52 @@
                     }
 
                     .leadership-slide {
-                        flex-basis: 194px;
-                        width: 194px;
+                        flex-basis: 160px;
+                        width: 160px;
                     }
 
                     .leadership-card {
-                        padding: 12px 12px 15px;
-                        border-radius: 28px;
+                        padding: 9px 9px 11px;
+                        border-radius: 18px;
                     }
 
                     .leadership-card::before {
-                        inset: 5px;
-                        border-radius: 24px;
+                        inset: 3px;
+                        border-radius: 15px;
                     }
 
-                    .leadership-card-visual {
-                        border-radius: 24px;
+                    .leadership-card-visual,
+                    .leadership-card-placeholder {
+                        border-radius: 14px;
+                    }
+
+                    .leadership-card-copy {
+                        height: 62px;
+                        min-height: 62px;
+                        max-height: 62px;
+                        padding-top: 6px;
+                    }
+
+                    .leadership-card-name {
+                        font-size: 0.86rem;
+                        max-height: 32px;
+                    }
+
+                    .leadership-card-name.is-name-medium {
+                        font-size: 0.78rem;
+                    }
+
+                    .leadership-card-name.is-name-long {
+                        font-size: 0.70rem;
+                    }
+
+                    .leadership-card-name.is-name-xlong {
+                        font-size: 0.62rem;
+                    }
+
+                    .leadership-card-position {
+                        font-size: 0.70rem;
+                        max-height: 26px;
                     }
                 }
 
@@ -428,28 +536,56 @@
                     }
 
                     .leadership-track {
-                        gap: 16px;
+                        gap: 12px;
                     }
 
                     .leadership-slide {
-                        flex-basis: min(72vw, 236px);
-                        width: min(72vw, 236px);
+                        flex-basis: 146px;
+                        width: 146px;
+                    }
+
+                    .leadership-card {
+                        padding: 8px 8px 10px;
+                        border-radius: 16px;
+                    }
+
+                    .leadership-card::before {
+                        inset: 3px;
+                        border-radius: 13px;
+                    }
+
+                    .leadership-card-visual,
+                    .leadership-card-placeholder {
+                        border-radius: 13px;
+                    }
+
+                    .leadership-card-copy {
+                        height: 58px;
+                        min-height: 58px;
+                        max-height: 58px;
+                        padding-top: 5px;
                     }
 
                     .leadership-card-name {
-                        font-size: 1rem;
+                        font-size: 0.82rem;
+                        max-height: 30px;
+                    }
+
+                    .leadership-card-name.is-name-medium {
+                        font-size: 0.74rem;
+                    }
+
+                    .leadership-card-name.is-name-long {
+                        font-size: 0.66rem;
+                    }
+
+                    .leadership-card-name.is-name-xlong {
+                        font-size: 0.58rem;
                     }
 
                     .leadership-card-position {
-                        font-size: 0.84rem;
-                    }
-
-                    .leadership-slide.is-position-long .leadership-card-position {
-                        font-size: 0.79rem;
-                    }
-
-                    .leadership-slide.is-position-xlong .leadership-card-position {
-                        font-size: 0.74rem;
+                        font-size: 0.66rem;
+                        max-height: 24px;
                     }
                 }
             </style>
@@ -492,18 +628,46 @@
                 <div class="leadership-showcase" data-leadership-showcase>
                     <div class="leadership-track" data-leadership-track>
                         @foreach ($boardMembers as $member)
+                            @php
+                                $mName = trim($member['name'] ?? '');
+                                $mNameLen = mb_strlen($mName);
+                                $mNameClass = $mNameLen > 34 ? 'is-name-xlong' : ($mNameLen > 22 ? 'is-name-long' : ($mNameLen > 15 ? 'is-name-medium' : ''));
+                            @endphp
                             <article class="leadership-slide" data-leadership-slide>
                                 <div class="leadership-card">
                                     <div class="leadership-card-visual">
                                         @if (!empty($member['image_url']))
-                                            <img src="{{ $member['image_url'] }}" alt="{{ $member['name'] ?: 'Board member' }}" loading="lazy" decoding="async" draggable="false">
+                                            <img src="{{ $member['image_url'] }}" alt="{{ $mName ?: 'Board member' }}" loading="lazy" decoding="async" draggable="false" onerror="this.style.display='none'; if(this.nextElementSibling) this.nextElementSibling.style.display='flex';">
+                                            <div class="leadership-card-placeholder" aria-label="Board member avatar" style="display: none;">
+                                                <div class="leadership-avatar-icon" aria-hidden="true">
+                                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                                                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                                        <circle cx="12" cy="7" r="4"></circle>
+                                                    </svg>
+                                                </div>
+                                                <div class="leadership-placeholder-copy">
+                                                    <span class="leadership-placeholder-brand">King Lotus</span>
+                                                    <span class="leadership-placeholder-sub">International</span>
+                                                </div>
+                                            </div>
                                         @else
-                                            <div class="leadership-card-placeholder">No Image</div>
+                                            <div class="leadership-card-placeholder" aria-label="Board member avatar">
+                                                <div class="leadership-avatar-icon" aria-hidden="true">
+                                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                                                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                                        <circle cx="12" cy="7" r="4"></circle>
+                                                    </svg>
+                                                </div>
+                                                <div class="leadership-placeholder-copy">
+                                                    <span class="leadership-placeholder-brand">King Lotus</span>
+                                                    <span class="leadership-placeholder-sub">International</span>
+                                                </div>
+                                            </div>
                                         @endif
                                     </div>
                                     <div class="leadership-card-copy">
-                                        @if (!empty($member['name']))
-                                            <h3 class="leadership-card-name">{{ $member['name'] }}</h3>
+                                        @if (!empty($mName))
+                                            <h3 class="leadership-card-name {{ $mNameClass }}">{{ $mName }}</h3>
                                         @endif
                                         @if (!empty($member['position']))
                                             <span class="leadership-card-position">{{ $member['position'] }}</span>
@@ -546,23 +710,21 @@
 
                         const syncCardTypography = (scopeSlides) => {
                             scopeSlides.forEach((slide) => {
-                                slide.classList.remove('is-position-long', 'is-position-xlong');
+                                const nameEl = slide.querySelector('.leadership-card-name');
+                                if (nameEl) {
+                                    nameEl.style.fontSize = '';
+                                    nameEl.style.lineHeight = '';
 
-                                const position = slide.querySelector('.leadership-card-position');
+                                    const copyContainer = nameEl.closest('.leadership-card-copy');
+                                    const maxAllowedHeight = copyContainer ? Math.floor(copyContainer.clientHeight * 0.54) : 34;
+                                    let size = parseFloat(window.getComputedStyle(nameEl).fontSize);
+                                    const minSize = 9.5;
 
-                                if (!position) {
-                                    return;
-                                }
-
-                                const textLength = position.textContent.trim().length;
-
-                                if (textLength >= 54) {
-                                    slide.classList.add('is-position-xlong');
-                                    return;
-                                }
-
-                                if (textLength >= 34) {
-                                    slide.classList.add('is-position-long');
+                                    while (nameEl.scrollHeight > maxAllowedHeight && size > minSize) {
+                                        size -= 0.5;
+                                        nameEl.style.fontSize = `${size}px`;
+                                        nameEl.style.lineHeight = '1.12';
+                                    }
                                 }
                             });
                         };

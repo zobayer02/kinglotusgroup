@@ -10,6 +10,7 @@ class SiteCache
     public const GALLERY_PAGE_DATA_KEY = 'site.gallery-page.data';
     public const REVIEWS_PAGE_DATA_KEY = 'site.reviews-page.data';
     public const TERMS_PAGE_DATA_KEY = 'site.terms-page.data';
+    public const SHAREHOLDERS_PAGE_DATA_KEY = 'site.shareholders-page.data';
 
     public static function ttl(): int
     {
@@ -22,5 +23,6 @@ class SiteCache
         Cache::forget(self::GALLERY_PAGE_DATA_KEY);
         Cache::forget(self::REVIEWS_PAGE_DATA_KEY);
         Cache::forget(self::TERMS_PAGE_DATA_KEY);
+        Cache::forget(self::SHAREHOLDERS_PAGE_DATA_KEY);
     }
 }

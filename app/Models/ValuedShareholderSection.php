@@ -33,6 +33,26 @@ class ValuedShareholderSection extends Model
 
     public function shareholders(): array
     {
+        try {
+            $fromTable = ValuedShareholder::query()
+                ->orderBy('sort_order')
+                ->orderBy('id', 'desc')
+                ->take(24)
+                ->get();
+
+            if ($fromTable->isNotEmpty()) {
+                return $fromTable->map(fn (ValuedShareholder $s): array => [
+                    'id' => $s->id,
+                    'name' => $s->name ?? '',
+                    'position' => $s->position ?? '',
+                    'image_path' => $s->image_path ?? '',
+                    'image_url' => $s->imageUrl(),
+                ])->all();
+            }
+        } catch (\Throwable) {
+            // Fallback to json column if table is not yet migrated
+        }
+
         return collect($this->shareholders ?? [])
             ->map(function ($shareholder): ?array {
                 $data = is_array($shareholder) ? $shareholder : [];

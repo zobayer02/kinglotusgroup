@@ -73,7 +73,7 @@
                 .valued-shareholders-track {
                     display: flex;
                     align-items: stretch;
-                    gap: 22px;
+                    gap: 16px;
                     width: max-content;
                     will-change: transform;
                 }
@@ -120,8 +120,8 @@
                     position: relative;
                     display: flex;
                     align-items: stretch;
-                    flex: 0 0 214px;
-                    width: 214px;
+                    flex: 0 0 172px;
+                    width: 172px;
                     opacity: 1;
                     pointer-events: auto;
                     transform: none;
@@ -131,111 +131,185 @@
                     display: flex;
                     flex-direction: column;
                     width: 100%;
+                    height: 100%;
                     min-height: 100%;
                     color: #101724;
                     position: relative;
-                    padding: 14px 14px 16px;
-                    border-radius: 32px;
-                    border: 1px solid rgba(12, 80, 93, 0.34);
+                    padding: 10px 10px 12px;
+                    border-radius: 20px;
+                    border: 1px solid rgba(12, 80, 93, 0.28);
                     background: #ffffff;
+                    box-shadow: 0 8px 22px rgba(18, 33, 44, 0.05);
+                    box-sizing: border-box;
+                    transition: transform 0.24s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.24s ease, border-color 0.24s ease;
+                }
+
+                .valued-shareholders-card:hover {
+                    transform: translateY(-3px);
+                    border-color: rgba(12, 80, 93, 0.54);
+                    box-shadow: 0 14px 30px rgba(12, 80, 93, 0.12);
                 }
 
                 .valued-shareholders-card::before {
                     content: "";
                     position: absolute;
-                    inset: 6px;
-                    border: 1.5px dashed rgba(12, 80, 93, 0.54);
-                    border-radius: 28px;
+                    inset: 4px;
+                    border: 1.2px dashed rgba(12, 80, 93, 0.4);
+                    border-radius: 17px;
                     pointer-events: none;
                 }
 
                 .valued-shareholders-card-visual {
                     position: relative;
                     overflow: hidden;
-                    border-radius: 28px;
+                    border-radius: 15px;
                     border: 1px solid rgba(255, 255, 255, 0.78);
-                    background: linear-gradient(180deg, #3b78a4 0%, #2b6c99 100%);
+                    background: linear-gradient(145deg, #1f4765 0%, #102a3f 100%);
                     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.22);
+                    width: 100%;
+                    aspect-ratio: 4 / 5;
+                    flex-shrink: 0;
                 }
 
                 .valued-shareholders-card-visual img {
                     display: block;
                     width: 100%;
+                    height: 100%;
                     aspect-ratio: 4 / 5;
                     object-fit: cover;
-                    transition: transform 0.58s cubic-bezier(0.16, 1, 0.3, 1);
+                    transition: transform 0.44s cubic-bezier(0.16, 1, 0.3, 1);
                     user-select: none;
                     -webkit-user-drag: none;
                 }
 
                 .valued-shareholders-card:hover .valued-shareholders-card-visual img {
-                    transform: scale(1.04);
+                    transform: scale(1.05);
                 }
 
                 .valued-shareholders-card-placeholder {
                     display: flex;
+                    flex-direction: column;
                     align-items: center;
                     justify-content: center;
+                    gap: 8px;
                     width: 100%;
                     aspect-ratio: 4 / 5;
-                    padding: 24px;
-                    border-radius: 28px;
+                    padding: 12px;
+                    border-radius: 15px;
+                    background: linear-gradient(145deg, #1f4765 0%, #102a3f 100%);
+                    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18);
+                    color: rgba(255, 255, 255, 0.7);
+                    user-select: none;
+                }
+
+                .valued-shareholders-avatar-icon {
+                    width: 44px;
+                    height: 44px;
+                    border-radius: 50%;
+                    background: rgba(255, 255, 255, 0.1);
+                    border: 1px solid rgba(255, 255, 255, 0.2);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    color: rgba(255, 255, 255, 0.88);
+                }
+
+                .valued-shareholders-avatar-icon svg {
+                    width: 24px;
+                    height: 24px;
+                }
+
+                .valued-shareholders-placeholder-copy {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    justify-content: center;
+                    gap: 2px;
+                    text-align: center;
+                    line-height: 1.1;
+                }
+
+                .valued-shareholders-placeholder-brand {
                     font-family: var(--font-secondary);
-                    font-size: 1rem;
-                    font-weight: 600;
-                    letter-spacing: 0.08em;
+                    font-size: 0.66rem;
+                    font-weight: 700;
+                    letter-spacing: 0.14em;
                     text-transform: uppercase;
-                    color: rgba(255, 255, 255, 0.82);
-                    background: linear-gradient(180deg, #3b78a4 0%, #2b6c99 100%);
+                    color: rgba(255, 255, 255, 0.88);
+                }
+
+                .valued-shareholders-placeholder-sub {
+                    font-family: var(--font-secondary);
+                    font-size: 0.52rem;
+                    font-weight: 600;
+                    letter-spacing: 0.2em;
+                    text-transform: uppercase;
+                    color: rgba(255, 255, 255, 0.58);
                 }
 
                 .valued-shareholders-card-copy {
-                    padding-top: 16px;
+                    padding-top: 8px;
                     position: relative;
-                    display: grid;
-                    align-content: start;
-                    min-height: 108px;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+                    align-items: center;
+                    height: 66px;
+                    min-height: 66px;
+                    max-height: 66px;
+                    overflow: hidden;
                     text-align: center;
+                    box-sizing: border-box;
                 }
 
                 .valued-shareholders-card-name {
                     margin: 0;
+                    width: 100%;
                     font-family: var(--font-primary);
-                    font-size: 1.1rem;
-                    font-weight: 400;
-                    line-height: 1.1;
+                    font-size: 0.92rem;
+                    font-weight: 500;
+                    line-height: 1.15;
                     color: #101214;
-                    min-height: 2.22em;
+                    max-height: 34px;
                     display: -webkit-box;
                     -webkit-box-orient: vertical;
                     -webkit-line-clamp: 2;
                     overflow: hidden;
-                }
-
-                .valued-shareholders-card-position {
-                    display: block;
-                    margin-top: 6px;
-                    font-family: var(--font-primary);
-                    font-size: 0.92rem;
-                    line-height: 1.42;
-                    color: rgba(16, 33, 44, 0.68);
-                    min-height: 4.26em;
-                    display: -webkit-box;
-                    -webkit-box-orient: vertical;
-                    -webkit-line-clamp: 3;
-                    overflow: hidden;
-                    overflow-wrap: anywhere;
+                    text-overflow: ellipsis;
+                    word-break: break-word;
+                    overflow-wrap: break-word;
                     hyphens: auto;
                 }
 
-                .valued-shareholders-slide.is-position-long .valued-shareholders-card-position {
-                    font-size: 0.84rem;
-                    line-height: 1.36;
+                .valued-shareholders-card-name.is-name-medium {
+                    font-size: 0.82rem;
+                    line-height: 1.14;
                 }
 
-                .valued-shareholders-slide.is-position-xlong .valued-shareholders-card-position {
-                    font-size: 0.78rem;
-                    line-height: 1.3;
+                .valued-shareholders-card-name.is-name-long {
+                    font-size: 0.74rem;
+                    line-height: 1.12;
+                }
+
+                .valued-shareholders-card-name.is-name-xlong {
+                    font-size: 0.66rem;
+                    line-height: 1.1;
+                }
+
+                .valued-shareholders-card-position {
+                    display: -webkit-box;
+                    -webkit-box-orient: vertical;
+                    -webkit-line-clamp: 2;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    width: 100%;
+                    margin-top: 2px;
+                    font-family: var(--font-primary);
+                    font-size: 0.74rem;
+                    line-height: 1.22;
+                    max-height: 28px;
+                    color: rgba(16, 33, 44, 0.68);
+                    overflow-wrap: anywhere;
                 }
 
                 @media (max-width: 1080px) {
@@ -244,23 +318,52 @@
                     }
 
                     .valued-shareholders-slide {
-                        flex-basis: 194px;
-                        width: 194px;
+                        flex-basis: 160px;
+                        width: 160px;
                     }
 
                     .valued-shareholders-card {
-                        padding: 12px 12px 15px;
-                        border-radius: 28px;
+                        padding: 9px 9px 11px;
+                        border-radius: 18px;
                     }
 
                     .valued-shareholders-card::before {
-                        inset: 5px;
-                        border-radius: 24px;
+                        inset: 3px;
+                        border-radius: 15px;
                     }
 
                     .valued-shareholders-card-visual,
                     .valued-shareholders-card-placeholder {
-                        border-radius: 24px;
+                        border-radius: 14px;
+                    }
+
+                    .valued-shareholders-card-copy {
+                        height: 62px;
+                        min-height: 62px;
+                        max-height: 62px;
+                        padding-top: 6px;
+                    }
+
+                    .valued-shareholders-card-name {
+                        font-size: 0.86rem;
+                        max-height: 32px;
+                    }
+
+                    .valued-shareholders-card-name.is-name-medium {
+                        font-size: 0.78rem;
+                    }
+
+                    .valued-shareholders-card-name.is-name-long {
+                        font-size: 0.70rem;
+                    }
+
+                    .valued-shareholders-card-name.is-name-xlong {
+                        font-size: 0.62rem;
+                    }
+
+                    .valued-shareholders-card-position {
+                        font-size: 0.70rem;
+                        max-height: 26px;
                     }
                 }
 
@@ -279,29 +382,106 @@
                     }
 
                     .valued-shareholders-track {
-                        gap: 16px;
+                        gap: 12px;
                     }
 
                     .valued-shareholders-slide {
-                        flex-basis: min(72vw, 236px);
-                        width: min(72vw, 236px);
+                        flex-basis: 146px;
+                        width: 146px;
+                    }
+
+                    .valued-shareholders-card {
+                        padding: 8px 8px 10px;
+                        border-radius: 16px;
+                    }
+
+                    .valued-shareholders-card::before {
+                        inset: 3px;
+                        border-radius: 13px;
+                    }
+
+                    .valued-shareholders-card-visual,
+                    .valued-shareholders-card-placeholder {
+                        border-radius: 13px;
+                    }
+
+                    .valued-shareholders-card-copy {
+                        height: 58px;
+                        min-height: 58px;
+                        max-height: 58px;
+                        padding-top: 5px;
                     }
 
                     .valued-shareholders-card-name {
-                        font-size: 1rem;
+                        font-size: 0.80rem;
+                        max-height: 30px;
+                    }
+
+                    .valued-shareholders-card-name.is-name-medium {
+                        font-size: 0.74rem;
+                    }
+
+                    .valued-shareholders-card-name.is-name-long {
+                        font-size: 0.66rem;
+                    }
+
+                    .valued-shareholders-card-name.is-name-xlong {
+                        font-size: 0.60rem;
                     }
 
                     .valued-shareholders-card-position {
-                        font-size: 0.84rem;
+                        font-size: 0.66rem;
+                        max-height: 24px;
                     }
 
-                    .valued-shareholders-slide.is-position-long .valued-shareholders-card-position {
-                        font-size: 0.79rem;
+                    .valued-shareholders-view-all {
+                        width: 100%;
                     }
+                }
 
-                    .valued-shareholders-slide.is-position-xlong .valued-shareholders-card-position {
-                        font-size: 0.74rem;
-                    }
+                .valued-shareholders-actions {
+                    display: flex;
+                    justify-content: center;
+                    margin-top: 14px;
+                }
+
+                .valued-shareholders-view-all {
+                    display: inline-flex;
+                    align-items: center;
+                    justify-content: center;
+                    gap: 10px;
+                    min-height: 50px;
+                    padding: 0 28px;
+                    border-radius: 999px;
+                    border: 1px solid rgba(18, 25, 38, 0.72);
+                    background: rgba(255, 255, 255, 0.9);
+                    color: #121926;
+                    font-family: var(--font-secondary);
+                    font-size: 0.96rem;
+                    font-weight: 600;
+                    box-shadow: 0 12px 24px rgba(16, 33, 44, 0.08);
+                    transition:
+                        transform 0.22s ease,
+                        background-color 0.22s ease,
+                        border-color 0.22s ease,
+                        color 0.22s ease,
+                        box-shadow 0.22s ease;
+                }
+
+                .valued-shareholders-view-all:hover {
+                    transform: translateY(-2px);
+                    border-color: #0c505d;
+                    background: #0c505d;
+                    color: #ffffff;
+                    box-shadow: none;
+                }
+
+                .valued-shareholders-view-all svg {
+                    transition: transform 0.22s ease;
+                }
+
+                .valued-shareholders-view-all:hover svg {
+                    transform: translateX(4px);
                 }
             </style>
         @endpush
@@ -323,14 +503,41 @@
                                 <div class="valued-shareholders-card">
                                     <div class="valued-shareholders-card-visual">
                                         @if (!empty($shareholder['image_url']))
-                                            <img src="{{ $shareholder['image_url'] }}" alt="{{ $shareholder['name'] ?: 'Shareholder' }}" loading="lazy" decoding="async" draggable="false">
+                                            <img src="{{ $shareholder['image_url'] }}" alt="{{ $shareholder['name'] ?: 'Shareholder' }}" loading="lazy" decoding="async" draggable="false" onerror="this.style.display='none'; if(this.nextElementSibling) this.nextElementSibling.style.display='flex';">
+                                            <div class="valued-shareholders-card-placeholder" aria-label="Shareholder avatar" style="display: none;">
+                                                <div class="valued-shareholders-avatar-icon" aria-hidden="true">
+                                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                                                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                                        <circle cx="12" cy="7" r="4"></circle>
+                                                    </svg>
+                                                </div>
+                                                <div class="valued-shareholders-placeholder-copy">
+                                                    <span class="valued-shareholders-placeholder-brand">King Lotus</span>
+                                                    <span class="valued-shareholders-placeholder-sub">International</span>
+                                                </div>
+                                            </div>
                                         @else
-                                            <div class="valued-shareholders-card-placeholder">No Image</div>
+                                            <div class="valued-shareholders-card-placeholder" aria-label="Shareholder avatar">
+                                                <div class="valued-shareholders-avatar-icon" aria-hidden="true">
+                                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                                                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                                        <circle cx="12" cy="7" r="4"></circle>
+                                                    </svg>
+                                                </div>
+                                                <div class="valued-shareholders-placeholder-copy">
+                                                    <span class="valued-shareholders-placeholder-brand">King Lotus</span>
+                                                    <span class="valued-shareholders-placeholder-sub">International</span>
+                                                </div>
+                                            </div>
                                         @endif
                                     </div>
                                     <div class="valued-shareholders-card-copy">
                                         @if (!empty($shareholder['name']))
-                                            <h3 class="valued-shareholders-card-name">{{ $shareholder['name'] }}</h3>
+                                            @php
+                                                $vNameLen = mb_strlen(trim($shareholder['name']));
+                                                $vNameClass = $vNameLen > 34 ? 'is-name-xlong' : ($vNameLen > 22 ? 'is-name-long' : ($vNameLen > 15 ? 'is-name-medium' : ''));
+                                            @endphp
+                                            <h3 class="valued-shareholders-card-name {{ $vNameClass }}">{{ $shareholder['name'] }}</h3>
                                         @endif
                                         @if (!empty($shareholder['position']))
                                             <span class="valued-shareholders-card-position">{{ $shareholder['position'] }}</span>
@@ -340,6 +547,15 @@
                             </article>
                         @endforeach
                     </div>
+                </div>
+
+                <div class="valued-shareholders-actions">
+                    <a class="valued-shareholders-view-all" href="{{ route('shareholders.index') }}">
+                        <span>Explore All Shareholders</span>
+                        <svg viewBox="0 0 20 20" fill="none" aria-hidden="true" width="18" height="18">
+                            <path d="M4.167 10h11.666m-4.166-4.167 4.166 4.167-4.166 4.167" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </a>
                 </div>
             @endif
         </div>
@@ -373,23 +589,21 @@
 
                         const syncCardTypography = (scopeSlides) => {
                             scopeSlides.forEach((slide) => {
-                                slide.classList.remove('is-position-long', 'is-position-xlong');
+                                const nameEl = slide.querySelector('.valued-shareholders-card-name');
+                                if (nameEl) {
+                                    nameEl.style.fontSize = '';
+                                    nameEl.style.lineHeight = '';
 
-                                const position = slide.querySelector('.valued-shareholders-card-position');
+                                    const copyContainer = nameEl.closest('.valued-shareholders-card-copy');
+                                    const maxAllowedHeight = copyContainer ? Math.floor(copyContainer.clientHeight * 0.54) : 34;
+                                    let size = parseFloat(window.getComputedStyle(nameEl).fontSize);
+                                    const minSize = 9.5;
 
-                                if (!position) {
-                                    return;
-                                }
-
-                                const textLength = position.textContent.trim().length;
-
-                                if (textLength >= 54) {
-                                    slide.classList.add('is-position-xlong');
-                                    return;
-                                }
-
-                                if (textLength >= 34) {
-                                    slide.classList.add('is-position-long');
+                                    while (nameEl.scrollHeight > maxAllowedHeight && size > minSize) {
+                                        size -= 0.5;
+                                        nameEl.style.fontSize = `${size}px`;
+                                        nameEl.style.lineHeight = '1.12';
+                                    }
                                 }
                             });
                         };

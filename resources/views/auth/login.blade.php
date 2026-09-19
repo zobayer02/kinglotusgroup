@@ -319,30 +319,14 @@
             display: none;
         }
 
+        .password-toggle[data-state="visible"] {
+            color: #0c505d;
+            background: rgba(12, 80, 93, 0.12);
+        }
+
         .password-toggle:hover {
             background: rgba(12, 80, 93, 0.08);
             color: #0c505d;
-        }
-
-        .login-meta {
-            display: flex;
-            align-items: center;
-            justify-content: flex-start;
-            gap: 16px;
-            font-size: 0.92rem;
-        }
-
-        .remember-me {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            color: var(--panel-soft);
-        }
-
-        .remember-me input {
-            width: 16px;
-            height: 16px;
-            accent-color: #0c505d;
         }
 
         .primary-button {
@@ -569,7 +553,6 @@
                 display: none;
             }
 
-            .login-meta,
             .footer-form {
                 flex-direction: column;
                 align-items: stretch;
@@ -640,11 +623,6 @@
                 border-radius: 14px;
             }
 
-            .remember-me,
-            .login-meta {
-                font-size: 0.84rem;
-            }
-
             .footer-brand-top {
                 font-size: 1.7rem;
             }
@@ -705,13 +683,13 @@
 
                                     <div class="field-group">
                                         <label class="field-label" for="email">Email or mobile number</label>
-                                        <input class="field-input" id="email" type="text" name="email" value="{{ old('email') }}" placeholder="Enter your email or mobile number" autocomplete="username" inputmode="email" required>
+                                        <input class="field-input" id="email" type="text" name="email" value="{{ old('email') }}" placeholder="Enter your email or mobile number" autocomplete="username" inputmode="email" maxlength="255" required>
                                     </div>
 
                                     <div class="field-group">
                                         <label class="field-label" for="password">Password</label>
                                         <div class="field-password">
-                                            <input id="password" type="password" name="password" placeholder="Enter your password" autocomplete="current-password" required>
+                                            <input id="password" type="password" name="password" placeholder="Enter your password" autocomplete="current-password" maxlength="100" required>
                                             <button class="password-toggle" type="button" aria-label="Show password" data-password-toggle data-state="hidden">
                                                 <svg class="icon-eye-open" width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                                                     <path d="M2 12C4.5 7.8 8 5.7 12 5.7C16 5.7 19.5 7.8 22 12C19.5 16.2 16 18.3 12 18.3C8 18.3 4.5 16.2 2 12Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"></path>
@@ -725,13 +703,6 @@
                                                 </svg>
                                             </button>
                                         </div>
-                                    </div>
-
-                                    <div class="login-meta">
-                                        <label class="remember-me" for="remember">
-                                            <input id="remember" type="checkbox" name="remember" value="1">
-                                            <span>Remember me</span>
-                                        </label>
                                     </div>
 
                                     <button class="primary-button" type="submit">Sign In</button>
