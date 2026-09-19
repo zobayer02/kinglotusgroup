@@ -123,4 +123,39 @@ class SecurityHardeningTest extends TestCase
         $response->assertSee('Page Not Found');
         $response->assertSee('Return to Homepage');
     }
+
+    public function test_admin_seeder_throws_in_production(): void
+    {
+        $originalEnv = app()->environment();
+        app()->detectEnvironment(fn () => 'production');
+
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('AdminSeeder is disabled in production.');
+
+        try {
+            (new \Database\Seeders\AdminSeeder())->run();
+        } finally {
+            app()->detectEnvironment(fn () => $originalEnv);
+        }
+    }
+
+    public function test_admin_rotate_password_command_increments_session_version_and_updates_password(): void
+    {
+        $admin = Admin::query()->first();
+        if (! $admin) {
+            $this->markTestSkipped('No admin available.');
+        }
+
+        $oldVersion = (int) $admin->session_version;
+        $newPassword = 'NewSecretPassword@2026!';
+
+        $this->artisan('admin:rotate-password', ['email' => $admin->email])
+            ->expectsQuestion('Enter new admin password (hidden)', $newPassword)
+            ->expectsQuestion('Confirm new admin password (hidden)', $newPassword)
+            ->assertSuccessful();
+
+        $admin->refresh();
+        $this->assertSame($oldVersion + 1, (int) $admin->session_version);
+        $this->assertTrue(\Illuminate\Support\Facades\Hash::check($newPassword, $admin->password));
+    }
 }
