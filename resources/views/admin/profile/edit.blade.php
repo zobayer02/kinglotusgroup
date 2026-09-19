@@ -858,6 +858,20 @@
                 </div>
 
                 <div class="field-group">
+                    <label class="field-label" for="profile_current_password">Current Password <span style="font-weight: normal; color: #64748b;">(Required only when changing email)</span></label>
+                    <div class="input-icon-group password-field">
+                        <span class="input-icon">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                        </span>
+                        <input class="field-input field-input--with-icon" id="profile_current_password" type="password" name="current_password" placeholder="Confirm current password to change email" autocomplete="current-password">
+                    </div>
+                    @error('current_password')
+                        <span class="field-error">{{ $message }}</span>
+                    @enderror
+                    <span class="field-hint">Required for security confirmation only when changing your email address.</span>
+                </div>
+
+                <div class="field-group">
                     <label class="field-label" for="mobile">Mobile Number</label>
                     <div class="input-icon-group">
                         <span class="input-icon">

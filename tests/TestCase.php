@@ -60,9 +60,7 @@ abstract class TestCase extends BaseTestCase
                     : base_path($dbPath);
 
                 File::ensureDirectoryExists(dirname($resolved));
-                if (! File::exists($resolved)) {
-                    File::put($resolved, '');
-                }
+                File::put($resolved, '');
             }
         }
 

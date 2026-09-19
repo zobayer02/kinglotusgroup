@@ -94,6 +94,7 @@ class SecurityHardeningTest extends TestCase
                 'full_name' => 'Updated Admin Name',
                 'name' => 'Lead Super Admin',
                 'email' => 'updated.admin@kinglotusgroup.com',
+                'current_password' => 'TestSecretPassword@123!',
                 'mobile' => '01812345678',
             ]);
 
@@ -105,6 +106,108 @@ class SecurityHardeningTest extends TestCase
         $this->assertSame('Lead Super Admin', $admin->name);
         $this->assertSame('updated.admin@kinglotusgroup.com', $admin->email);
         $this->assertSame('01812345678', $admin->mobile);
+    }
+
+    public function test_admin_role_middleware_enforces_super_admin_and_admin_permissions(): void
+    {
+        // 1. Unauthenticated guest is redirected
+        $guestResponse = $this->get(route('admin.content.index'));
+        $guestResponse->assertRedirect(route('admin.login'));
+
+        // 2. Regular admin (role: admin) can access content management
+        $regularAdmin = Admin::query()->create([
+            'email' => 'editor@kinglotusgroup.com',
+            'name' => 'Editor Admin',
+            'full_name' => 'Editor Admin User',
+            'password' => 'EditorSecret@123!',
+            'role' => 'admin',
+            'session_version' => 1,
+        ]);
+
+        $adminResponse = $this->actingAs($regularAdmin, 'admin')
+            ->withSession([
+                'admin_session_version' => 1,
+                'admin_last_activity_at' => now()->timestamp,
+            ])
+            ->get(route('admin.content.index'));
+        $adminResponse->assertStatus(200);
+
+        // 3. Regular admin cannot access super_admin-only profile route
+        $forbiddenResponse = $this->actingAs($regularAdmin, 'admin')
+            ->withSession([
+                'admin_session_version' => 1,
+                'admin_last_activity_at' => now()->timestamp,
+            ])
+            ->get(route('admin.profile.edit'));
+        $forbiddenResponse->assertStatus(403);
+
+        // 4. Super admin can access profile route
+        $superAdmin = Admin::query()->where('role', 'super_admin')->first();
+        $superResponse = $this->actingAs($superAdmin, 'admin')
+            ->withSession([
+                'admin_session_version' => (int) $superAdmin->session_version,
+                'admin_last_activity_at' => now()->timestamp,
+            ])
+            ->get(route('admin.profile.edit'));
+        $superResponse->assertStatus(200);
+    }
+
+    public function test_updating_password_increments_session_version_and_invalidates_stale_sessions(): void
+    {
+        $admin = Admin::query()->where('role', 'super_admin')->first();
+        $oldVersion = (int) $admin->session_version;
+
+        $newPassword = 'BrandNewPassword@2026!';
+
+        $response = $this->actingAs($admin, 'admin')
+            ->withSession([
+                'admin_session_version' => $oldVersion,
+                'admin_last_activity_at' => now()->timestamp,
+            ])
+            ->from(route('admin.profile.edit'))
+            ->withoutMiddleware(\Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class)
+            ->put(route('admin.profile.password.update'), [
+                'current_password' => 'TestSecretPassword@123!',
+                'password' => $newPassword,
+                'password_confirmation' => $newPassword,
+            ]);
+
+        $response->assertSessionHasNoErrors();
+        $admin->refresh();
+        $this->assertSame($oldVersion + 1, (int) $admin->session_version);
+
+        // Stale session with old session_version is rejected by EnsureAdminAuthenticated
+        $staleResponse = $this->actingAs($admin, 'admin')
+            ->withSession([
+                'admin_session_version' => $oldVersion,
+                'admin_last_activity_at' => now()->timestamp,
+            ])
+            ->get(route('admin.dashboard'));
+
+        $staleResponse->assertRedirect(route('login'));
+        $staleResponse->assertSessionHas('error', 'Your session was ended. Please sign in again.');
+    }
+
+    public function test_changing_email_requires_current_password(): void
+    {
+        $admin = Admin::query()->where('role', 'super_admin')->first();
+
+        // Attempting to change email without current_password fails
+        $response = $this->actingAs($admin, 'admin')
+            ->withSession([
+                'admin_session_version' => (int) $admin->session_version,
+                'admin_last_activity_at' => now()->timestamp,
+            ])
+            ->from(route('admin.profile.edit'))
+            ->withoutMiddleware(\Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class)
+            ->patch(route('admin.profile.update'), [
+                'full_name' => $admin->full_name,
+                'name' => $admin->name,
+                'email' => 'new.email@kinglotusgroup.com',
+                'mobile' => $admin->mobile,
+            ]);
+
+        $response->assertSessionHasErrors('current_password');
     }
 
     public function test_custom_404_view_renders_on_missing_route(): void

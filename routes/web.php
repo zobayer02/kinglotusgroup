@@ -38,24 +38,32 @@ Route::prefix('admin')->name('admin.')->group(function (): void {
 
     Route::middleware('admin.auth')->group(function (): void {
         Route::get('/dashboard', DashboardController::class)->name('dashboard');
-        Route::get('/content-management', [ContentManagementController::class, 'index'])->name('content.index');
-        Route::patch('/content-management/notice', [ContentManagementController::class, 'updateNotice'])->name('content.notice.update');
-        Route::patch('/content-management/about', [ContentManagementController::class, 'updateAbout'])->name('content.about.update');
-        Route::patch('/content-management/why', [ContentManagementController::class, 'updateWhy'])->name('content.why.update');
-        Route::patch('/content-management/projects', [ContentManagementController::class, 'updateProjects'])->name('content.projects.update');
-        Route::patch('/content-management/gallery', [ContentManagementController::class, 'updateGallery'])->name('content.gallery.update');
-        Route::patch('/content-management/reviews', [ContentManagementController::class, 'updateReviews'])->name('content.reviews.update');
-        Route::patch('/content-management/leadership', [ContentManagementController::class, 'updateLeadership'])->name('content.leadership.update');
-        Route::patch('/content-management/valued-shareholders', [ContentManagementController::class, 'updateValuedShareholders'])->name('content.valued-shareholders.update');
-        Route::get('/content-management/valued-shareholders/items', [ContentManagementController::class, 'getShareholders'])->name('content.valued-shareholders.items');
-        Route::post('/content-management/valued-shareholders/items', [ContentManagementController::class, 'storeShareholder'])->name('content.valued-shareholders.store');
-        Route::post('/content-management/valued-shareholders/items/{shareholder}', [ContentManagementController::class, 'updateShareholder'])->name('content.valued-shareholders.item.update');
-        Route::delete('/content-management/valued-shareholders/items/{shareholder}', [ContentManagementController::class, 'destroyShareholder'])->name('content.valued-shareholders.destroy');
-        Route::patch('/content-management/footer', [ContentManagementController::class, 'updateFooter'])->name('content.footer.update');
-        Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-        Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-        Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password.update');
-        Route::post('/profile/logout-other-devices', [ProfileController::class, 'logoutOtherDevices'])->name('profile.logout-other-devices');
         Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
+
+        // Content management: accessible by super_admin and admin
+        Route::middleware('admin.role:super_admin,admin')->group(function (): void {
+            Route::get('/content-management', [ContentManagementController::class, 'index'])->name('content.index');
+            Route::patch('/content-management/notice', [ContentManagementController::class, 'updateNotice'])->name('content.notice.update');
+            Route::patch('/content-management/about', [ContentManagementController::class, 'updateAbout'])->name('content.about.update');
+            Route::patch('/content-management/why', [ContentManagementController::class, 'updateWhy'])->name('content.why.update');
+            Route::patch('/content-management/projects', [ContentManagementController::class, 'updateProjects'])->name('content.projects.update');
+            Route::patch('/content-management/gallery', [ContentManagementController::class, 'updateGallery'])->name('content.gallery.update');
+            Route::patch('/content-management/reviews', [ContentManagementController::class, 'updateReviews'])->name('content.reviews.update');
+            Route::patch('/content-management/leadership', [ContentManagementController::class, 'updateLeadership'])->name('content.leadership.update');
+            Route::patch('/content-management/valued-shareholders', [ContentManagementController::class, 'updateValuedShareholders'])->name('content.valued-shareholders.update');
+            Route::get('/content-management/valued-shareholders/items', [ContentManagementController::class, 'getShareholders'])->name('content.valued-shareholders.items');
+            Route::post('/content-management/valued-shareholders/items', [ContentManagementController::class, 'storeShareholder'])->name('content.valued-shareholders.store');
+            Route::post('/content-management/valued-shareholders/items/{shareholder}', [ContentManagementController::class, 'updateShareholder'])->name('content.valued-shareholders.item.update');
+            Route::delete('/content-management/valued-shareholders/items/{shareholder}', [ContentManagementController::class, 'destroyShareholder'])->name('content.valued-shareholders.destroy');
+            Route::patch('/content-management/footer', [ContentManagementController::class, 'updateFooter'])->name('content.footer.update');
+        });
+
+        // Profile & Security & Password management: privileged, super_admin only
+        Route::middleware('admin.role:super_admin')->group(function (): void {
+            Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+            Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+            Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password.update');
+            Route::post('/profile/logout-other-devices', [ProfileController::class, 'logoutOtherDevices'])->name('profile.logout-other-devices');
+        });
     });
 });

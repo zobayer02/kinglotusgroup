@@ -25,6 +25,8 @@ class ProfileController extends Controller
         /** @var Admin $admin */
         $admin = Auth::guard('admin')->user();
 
+        $emailChanged = $request->filled('email') && strtolower(trim((string) $request->input('email'))) !== strtolower((string) $admin->email);
+
         $validated = $request->validate([
             'full_name' => ['required', 'string', 'max:255'],
             'name' => ['nullable', 'string', 'max:255'],
@@ -36,8 +38,18 @@ class ProfileController extends Controller
                 'max:255',
                 Rule::unique(Admin::class, 'email')->ignore($admin->id),
             ],
+            'current_password' => [
+                Rule::requiredIf($emailChanged),
+                'nullable',
+                'current_password:admin',
+            ],
             'mobile' => ['nullable', 'string', 'max:30'],
+        ], [
+            'current_password.required' => 'Your current password is required to change your email address.',
+            'current_password.current_password' => 'Your current password is incorrect.',
         ]);
+
+        unset($validated['current_password']);
 
         if (empty($validated['name'])) {
             $validated['name'] = $admin->name ?: 'Super Admin';
@@ -69,9 +81,13 @@ class ProfileController extends Controller
             'current_password.current_password' => 'Your current password is incorrect.',
         ]);
 
-        $admin->update([
+        $admin->forceFill([
             'password' => $validated['password'],
-        ]);
+            'session_version' => ((int) $admin->session_version) + 1,
+        ])->save();
+
+        $request->session()->put('admin_session_version', (int) $admin->session_version);
+        $request->session()->put('admin_last_activity_at', now()->timestamp);
 
         return back()->with('success', 'Password updated successfully.');
     }
