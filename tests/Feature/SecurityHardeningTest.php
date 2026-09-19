@@ -316,4 +316,75 @@ class SecurityHardeningTest extends TestCase
 
         $this->assertFileExists(public_path('uploads/.htaccess'));
     }
+
+    public function test_url_validation_rejects_dangerous_schemes_and_untrusted_hosts(): void
+    {
+        $admin = Admin::query()->where('role', 'super_admin')->first();
+
+        // 1. Non http/https schemes like javascript: or ftp: are rejected
+        $response = $this->actingAs($admin, 'admin')
+            ->withSession([
+                'admin_session_version' => (int) $admin->session_version,
+                'admin_last_activity_at' => now()->timestamp,
+            ])
+            ->withoutMiddleware(\Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class)
+            ->patch(route('admin.content.about.update'), [
+                'title' => 'About Us',
+                'description' => 'Valid description',
+                'left_video_url' => 'javascript:alert(1)',
+            ]);
+
+        $response->assertSessionHasErrors('left_video_url');
+
+        // 2. Untrusted/lookalike hosts for YouTube are rejected
+        $fakeYoutubeResponse = $this->actingAs($admin, 'admin')
+            ->withSession([
+                'admin_session_version' => (int) $admin->session_version,
+                'admin_last_activity_at' => now()->timestamp,
+            ])
+            ->withoutMiddleware(\Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class)
+            ->patch(route('admin.content.about.update'), [
+                'title' => 'About Us',
+                'description' => 'Valid description',
+                'left_video_url' => 'https://evil-youtube.com/watch?v=12345',
+            ]);
+
+        $fakeYoutubeResponse->assertSessionHasErrors('left_video_url');
+
+        // 3. Valid YouTube URL is accepted
+        $validYoutubeResponse = $this->actingAs($admin, 'admin')
+            ->withSession([
+                'admin_session_version' => (int) $admin->session_version,
+                'admin_last_activity_at' => now()->timestamp,
+            ])
+            ->withoutMiddleware(\Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class)
+            ->patch(route('admin.content.about.update'), [
+                'title' => 'About Us',
+                'description' => 'Valid description',
+                'left_video_url' => 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+            ]);
+
+        $validYoutubeResponse->assertSessionHasNoErrors();
+    }
+
+    public function test_shareholder_search_escapes_sql_wildcards(): void
+    {
+        \App\Models\ValuedShareholder::query()->create([
+            'name' => 'John Doe Special',
+            'position' => 'Lead Architect',
+            'sort_order' => 1,
+        ]);
+
+        // Searching '%' should NOT match 'John Doe Special' because '%' is escaped as literal
+        $queryPercent = \App\Models\ValuedShareholder::query()->search('%')->get();
+        $this->assertFalse($queryPercent->contains('name', 'John Doe Special'));
+
+        // Searching '_' should NOT match 'John Doe Special'
+        $queryUnderscore = \App\Models\ValuedShareholder::query()->search('_')->get();
+        $this->assertFalse($queryUnderscore->contains('name', 'John Doe Special'));
+
+        // Searching exact name matches
+        $queryMatch = \App\Models\ValuedShareholder::query()->search('John Doe')->get();
+        $this->assertTrue($queryMatch->contains('name', 'John Doe Special'));
+    }
 }

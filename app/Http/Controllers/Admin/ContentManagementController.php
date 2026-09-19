@@ -88,8 +88,8 @@ class ContentManagementController extends Controller
             'title' => ['required', 'string', 'max:180'],
             'subtitle' => ['nullable', 'string', 'max:220'],
             'description' => ['required', 'string', 'max:2000'],
-            'left_video_url' => ['nullable', 'url', 'max:2048'],
-            'right_video_url' => ['nullable', 'url', 'max:2048'],
+            'left_video_url' => ['nullable', 'url:http,https', 'max:2048'],
+            'right_video_url' => ['nullable', 'url:http,https', 'max:2048'],
             'left_thumbnail' => ['nullable', 'image', 'max:6144'],
             'right_thumbnail' => ['nullable', 'image', 'max:6144'],
         ]);
@@ -141,25 +141,31 @@ class ContentManagementController extends Controller
     public function updateFooter(Request $request): RedirectResponse
     {
         $validated = $request->validate([
-            'youtube_url' => ['nullable', 'url', 'max:2048'],
-            'facebook_url' => ['nullable', 'url', 'max:2048'],
+            'youtube_url' => ['nullable', 'url:http,https', 'max:2048'],
+            'facebook_url' => ['nullable', 'url:http,https', 'max:2048'],
             'contact_email' => ['nullable', 'email', 'max:255'],
             'contact_phone' => ['nullable', 'string', 'max:500'],
             'location_title' => ['nullable', 'string', 'max:180'],
             'location_subtitle' => ['nullable', 'string', 'max:255'],
-            'location_map_url' => ['nullable', 'url', 'max:2048'],
+            'location_map_url' => ['nullable', 'url:http,https', 'max:2048'],
             'office_section_title' => ['nullable', 'string', 'max:180'],
             'office_section_subtitle' => ['nullable', 'string', 'max:255'],
             'office_cards' => ['nullable', 'array'],
             'office_cards.*.name' => ['nullable', 'string', 'max:180'],
             'office_cards.*.address' => ['nullable', 'string', 'max:1200'],
-            'office_cards.*.map_url' => ['nullable', 'url', 'max:2048'],
+            'office_cards.*.map_url' => ['nullable', 'url:http,https', 'max:2048'],
             'office_cards.*.phone' => ['nullable', 'string', 'max:60'],
             'office_cards.*.email' => ['nullable', 'email', 'max:255'],
             'terms_title' => ['nullable', 'string', 'max:180'],
             'terms_subtitle' => ['nullable', 'string', 'max:255'],
             'terms_content' => ['nullable', 'string', 'max:20000'],
         ]);
+
+        $this->assertYoutubeUrl($validated['youtube_url'] ?? null, 'youtube_url');
+        $this->assertGoogleMapsUrl($validated['location_map_url'] ?? null, 'location_map_url');
+        foreach (($validated['office_cards'] ?? []) as $index => $office) {
+            $this->assertGoogleMapsUrl($office['map_url'] ?? null, "office_cards.{$index}.map_url");
+        }
 
         $officeCards = collect($validated['office_cards'] ?? [])
             ->map(function ($office): ?array {
@@ -232,8 +238,8 @@ class ContentManagementController extends Controller
             'why_description' => ['required', 'string', 'max:2000'],
             'feature_points' => ['nullable', 'string', 'max:2500'],
             'cta_label' => ['nullable', 'string', 'max:120'],
-            'cta_url' => ['nullable', 'url', 'max:2048'],
-            'video_url' => ['nullable', 'url', 'max:2048'],
+            'cta_url' => ['nullable', 'url:http,https', 'max:2048'],
+            'video_url' => ['nullable', 'url:http,https', 'max:2048'],
             'thumbnail' => ['nullable', 'image', 'max:6144'],
         ]);
 
@@ -461,7 +467,7 @@ class ContentManagementController extends Controller
             'review_section_subtitle' => ['nullable', 'string', 'max:255'],
             'shareholder_reviews' => ['nullable', 'array'],
             'shareholder_reviews.*.name' => ['nullable', 'string', 'max:180'],
-            'shareholder_reviews.*.video_url' => ['nullable', 'url', 'max:2048'],
+            'shareholder_reviews.*.video_url' => ['nullable', 'url:http,https', 'max:2048'],
             'shareholder_reviews.*.thumbnail_path' => ['nullable', 'string', 'max:2048'],
             'shareholder_reviews.*.remove_thumbnail' => ['nullable', 'boolean'],
             'shareholder_review_thumbnails' => ['nullable', 'array'],
@@ -641,8 +647,8 @@ class ContentManagementController extends Controller
 
     public function getShareholders(Request $request): JsonResponse
     {
-        $search = trim((string) $request->input('search', ''));
-        $page = max(1, (int) $request->input('page', 1));
+        $search = mb_substr(trim((string) $request->input('search', '')), 0, 100);
+        $page = min(1000, max(1, (int) $request->input('page', 1)));
         $perPage = 20;
 
         $query = ValuedShareholder::query()
@@ -821,11 +827,46 @@ class ContentManagementController extends Controller
             return;
         }
 
-        $host = strtolower(parse_url($url, PHP_URL_HOST) ?? '');
+        $host = strtolower((string) parse_url($url, PHP_URL_HOST));
+        $allowedHosts = [
+            'youtube.com',
+            'www.youtube.com',
+            'm.youtube.com',
+            'youtu.be',
+            'www.youtu.be',
+            'youtube-nocookie.com',
+            'www.youtube-nocookie.com',
+        ];
 
-        if (! str_contains($host, 'youtube.com') && $host !== 'youtu.be' && ! str_contains($host, 'youtube-nocookie.com')) {
+        if (! in_array($host, $allowedHosts, true)) {
             throw ValidationException::withMessages([
-                $field => 'Please provide a valid YouTube video link.',
+                $field => 'Please provide a valid YouTube video link (e.g. https://www.youtube.com/watch?v=... or https://youtu.be/...).',
+            ]);
+        }
+    }
+
+    protected function assertGoogleMapsUrl(?string $url, string $field): void
+    {
+        if (! filled($url)) {
+            return;
+        }
+
+        $host = strtolower((string) parse_url($url, PHP_URL_HOST));
+        $allowedHosts = [
+            'google.com',
+            'www.google.com',
+            'maps.google.com',
+            'maps.app.goo.gl',
+            'goo.gl',
+        ];
+
+        $isGoogle = in_array($host, $allowedHosts, true)
+            || str_ends_with($host, '.google.com')
+            || str_ends_with($host, '.google.com.bd');
+
+        if (! $isGoogle) {
+            throw ValidationException::withMessages([
+                $field => 'Please provide a valid Google Maps link (e.g. https://maps.google.com/... or https://goo.gl/maps/...).',
             ]);
         }
     }

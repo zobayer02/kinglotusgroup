@@ -17,7 +17,7 @@ class ValuedShareholderPageController extends Controller
 
     public function __invoke(Request $request): View
     {
-        $search = trim((string) $request->input('search', ''));
+        $search = mb_substr(trim((string) $request->input('search', '')), 0, 100);
 
         $commonData = Cache::remember(SiteCache::SHAREHOLDERS_PAGE_DATA_KEY, now()->addMinutes(SiteCache::ttl()), fn (): array => [
             'valuedShareholderSection' => ValuedShareholderSection::query()->first(),
@@ -42,8 +42,8 @@ class ValuedShareholderPageController extends Controller
 
     public function items(Request $request): JsonResponse
     {
-        $search = trim((string) $request->input('search', ''));
-        $page = max(1, (int) $request->input('page', 1));
+        $search = mb_substr(trim((string) $request->input('search', '')), 0, 100);
+        $page = min(1000, max(1, (int) $request->input('page', 1)));
         $perPage = self::PER_PAGE;
 
         $query = ValuedShareholder::query()

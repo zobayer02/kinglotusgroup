@@ -43,15 +43,18 @@ class ValuedShareholder extends Model
 
     public function scopeSearch(Builder $query, ?string $term): Builder
     {
-        $clean = trim((string) $term);
+        $clean = mb_substr(trim((string) $term), 0, 100);
 
         if (! filled($clean)) {
             return $query;
         }
 
-        return $query->where(function (Builder $sub) use ($clean): void {
-            $sub->where('name', 'like', "%{$clean}%")
-                ->orWhere('position', 'like', "%{$clean}%");
+        // Escape SQL LIKE wildcards (\ % _) to prevent wildcard DoS or unintended matching
+        $escaped = addcslashes($clean, '\\%_');
+
+        return $query->where(function (Builder $sub) use ($escaped): void {
+            $sub->where('name', 'like', "%{$escaped}%")
+                ->orWhere('position', 'like', "%{$escaped}%");
         });
     }
 

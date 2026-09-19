@@ -120,29 +120,46 @@ class ShareholderReviewSection extends Model
             return null;
         }
 
+        $scheme = strtolower($parts['scheme'] ?? '');
+        if (! in_array($scheme, ['http', 'https'], true)) {
+            return null;
+        }
+
         $host = strtolower($parts['host'] ?? '');
+        $allowedHosts = [
+            'youtube.com',
+            'www.youtube.com',
+            'm.youtube.com',
+            'youtu.be',
+            'www.youtu.be',
+            'youtube-nocookie.com',
+            'www.youtube-nocookie.com',
+        ];
+
+        if (! in_array($host, $allowedHosts, true)) {
+            return null;
+        }
+
         $path = trim($parts['path'] ?? '', '/');
 
-        if ($host === 'youtu.be') {
+        if ($host === 'youtu.be' || $host === 'www.youtu.be') {
             return static::sanitizeVideoId($path);
         }
 
-        if (str_contains($host, 'youtube.com') || str_contains($host, 'youtube-nocookie.com')) {
-            if (isset($parts['query'])) {
-                parse_str($parts['query'], $query);
+        if (isset($parts['query'])) {
+            parse_str($parts['query'], $query);
 
-                if (! empty($query['v'])) {
-                    return static::sanitizeVideoId((string) $query['v']);
-                }
+            if (! empty($query['v'])) {
+                return static::sanitizeVideoId((string) $query['v']);
             }
+        }
 
-            if (str_starts_with($path, 'embed/')) {
-                return static::sanitizeVideoId(substr($path, 6));
-            }
+        if (str_starts_with($path, 'embed/')) {
+            return static::sanitizeVideoId(substr($path, 6));
+        }
 
-            if (str_starts_with($path, 'shorts/')) {
-                return static::sanitizeVideoId(substr($path, 7));
-            }
+        if (str_starts_with($path, 'shorts/')) {
+            return static::sanitizeVideoId(substr($path, 7));
         }
 
         return null;
