@@ -27,3 +27,4 @@ class EnsureAdminRole
         return $next($request);
     }
 }
+

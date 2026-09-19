@@ -59,3 +59,4 @@ class RotateAdminPasswordCommand extends Command
         return self::SUCCESS;
     }
 }
+

@@ -163,7 +163,7 @@ class ValuedShareholdersManagementTest extends TestCase
         $response->assertStatus(200);
         $response->assertSee('Our Valued Shareholders');
         $response->assertSee(route('shareholders.index'));
-        $response->assertSee('Explore All Shareholders');
+        $response->assertSee('All Shareholders');
     }
 
     public function test_public_shareholders_directory_page_renders_successfully(): void

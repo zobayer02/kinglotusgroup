@@ -77,3 +77,4 @@ class CreateAdminCommand extends Command
         return self::SUCCESS;
     }
 }
+

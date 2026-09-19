@@ -551,10 +551,7 @@
 
                 <div class="valued-shareholders-actions">
                     <a class="valued-shareholders-view-all" href="{{ route('shareholders.index') }}">
-                        <span>Explore All Shareholders</span>
-                        <svg viewBox="0 0 20 20" fill="none" aria-hidden="true" width="18" height="18">
-                            <path d="M4.167 10h11.666m-4.166-4.167 4.166 4.167-4.166 4.167" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>
+                        <span>All Shareholders</span>
                     </a>
                 </div>
             @endif
