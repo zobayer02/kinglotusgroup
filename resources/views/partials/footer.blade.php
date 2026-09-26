@@ -19,12 +19,7 @@
         <div class="footer-main">
             <div class="footer-brand">
                 <div class="footer-brand-mark" aria-label="King Lotus Group">
-                    <span class="footer-brand-top">KING LOTUS</span>
-                    <span class="footer-brand-bottom">
-                        <span class="footer-brand-line" aria-hidden="true"></span>
-                        <span>GROUP</span>
-                        <span class="footer-brand-line" aria-hidden="true"></span>
-                    </span>
+                    <img class="footer-brand-logo" src="{{ asset('images/logo-brand.png') }}" alt="King Lotus Group" width="280" height="70">
                 </div>
             </div>
 
@@ -76,6 +71,7 @@
             <div class="footer-meta">
                 <a href="#">Privacy Policy</a>
                 <a href="{{ route('terms.show') }}">Terms and Conditions</a>
+                <a href="{{ route('faq.index') }}">FAQ</a>
             </div>
         </div>
     </div>

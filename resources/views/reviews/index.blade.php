@@ -30,7 +30,7 @@
 
         .review-page-kicker {
             margin: 0;
-            color: rgba(16, 33, 44, 0.62);
+            color: #000000;
             font-size: 0.92rem;
             font-weight: 700;
             letter-spacing: 0.16em;
@@ -44,7 +44,7 @@
             font-size: var(--section-title-size);
             font-weight: 400;
             line-height: 0.94;
-            color: #101214;
+            color: #000000;
         }
 
         .review-page-subtitle {
@@ -54,7 +54,7 @@
             font-size: clamp(1rem, 1.5vw, 1.12rem);
             line-height: 1.8;
             text-align: center;
-            color: rgba(16, 33, 44, 0.76);
+            color: #000000;
         }
 
         .review-card-grid {
@@ -71,7 +71,7 @@
             border: 1px solid rgba(178, 193, 204, 0.58);
             border-radius: 20px;
             background: rgba(255, 255, 255, 0.42);
-            color: #101214;
+            color: #000000;
             box-shadow: 0 18px 38px rgba(18, 33, 44, 0.1);
             cursor: pointer;
             opacity: 0;
@@ -213,7 +213,7 @@
             border: 1px solid rgba(178, 193, 204, 0.58);
             border-radius: 26px;
             background: rgba(255, 255, 255, 0.44);
-            color: rgba(16, 33, 44, 0.72);
+            color: #000000;
             font-size: 1rem;
             line-height: 1.7;
             text-align: center;

@@ -181,7 +181,7 @@
             section.classList.add('is-visible');
         };
 
-        const revealSections = document.querySelectorAll('.site-footer, .valued-shareholders-section, .leadership-section, .office-section, .location-section, .shareholder-review-section, .gallery-section, .notice-banner, .about-section, .why-section, .projects-section');
+        const revealSections = document.querySelectorAll('.site-footer, .valued-shareholders-section, .leadership-section, .office-section, .location-section, .shareholder-review-section, .prospectus-section, .gallery-section, .notice-banner, .about-section, .why-section, .projects-section');
 
         if (!revealSections.length) {
             return;

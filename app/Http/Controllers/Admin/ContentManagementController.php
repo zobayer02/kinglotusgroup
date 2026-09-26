@@ -4,10 +4,12 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\AboutSection;
+use App\Models\Faq;
 use App\Models\FooterSetting;
 use App\Models\GallerySection;
 use App\Models\LeadershipSection;
 use App\Models\ProjectSection;
+use App\Models\ProspectusSection;
 use App\Models\ShareholderReviewSection;
 use App\Models\SiteNotice;
 use App\Models\ValuedShareholder;
@@ -35,12 +37,16 @@ class ContentManagementController extends Controller
             'aboutSection' => AboutSection::query()->first(),
             'whySection' => WhySection::query()->first(),
             'projectSection' => ProjectSection::query()->first(),
+            'prospectusSection' => ProspectusSection::query()->first(),
             'gallerySection' => GallerySection::query()->first(),
             'shareholderReviewSection' => ShareholderReviewSection::query()->first(),
             'leadershipSection' => LeadershipSection::query()->first(),
             'valuedShareholderSection' => ValuedShareholderSection::query()->first(),
             'valuedShareholdersCount' => ValuedShareholder::query()->count(),
             'footerSetting' => FooterSetting::query()->first(),
+            'faqs' => Faq::query()->ordered()->take(10)->get(),
+            'faqsTotal' => Faq::query()->count(),
+            'faqsHasMore' => Faq::query()->count() > 10,
         ]);
     }
 
@@ -140,6 +146,36 @@ class ContentManagementController extends Controller
 
     public function updateFooter(Request $request): RedirectResponse
     {
+        $normalizeUrl = function (?string $url): ?string {
+            $trimmed = trim((string) $url);
+            if ($trimmed === '') {
+                return null;
+            }
+            if (! preg_match('#^https?://#i', $trimmed)) {
+                return 'https://'.$trimmed;
+            }
+            return $trimmed;
+        };
+
+        $input = $request->all();
+        if (array_key_exists('youtube_url', $input)) {
+            $input['youtube_url'] = $normalizeUrl($input['youtube_url']);
+        }
+        if (array_key_exists('facebook_url', $input)) {
+            $input['facebook_url'] = $normalizeUrl($input['facebook_url']);
+        }
+        if (array_key_exists('location_map_url', $input)) {
+            $input['location_map_url'] = $normalizeUrl($input['location_map_url']);
+        }
+        if (isset($input['office_cards']) && is_array($input['office_cards'])) {
+            foreach ($input['office_cards'] as $key => $card) {
+                if (is_array($card) && array_key_exists('map_url', $card)) {
+                    $input['office_cards'][$key]['map_url'] = $normalizeUrl($card['map_url']);
+                }
+            }
+        }
+        $request->merge($input);
+
         $validated = $request->validate([
             'youtube_url' => ['nullable', 'url:http,https', 'max:2048'],
             'facebook_url' => ['nullable', 'url:http,https', 'max:2048'],
@@ -228,7 +264,15 @@ class ContentManagementController extends Controller
         $footerSetting->save();
         SiteCache::forgetPublicPages();
 
-        return back()->with('success', 'Footer, location, and legal content updated successfully.');
+        $activeFooterSubtab = (string) $request->input('active_footer_subtab', 'offices');
+        if (! in_array($activeFooterSubtab, ['social', 'location', 'offices', 'terms'], true)) {
+            $activeFooterSubtab = 'offices';
+        }
+
+        return back()
+            ->with('success', 'Footer, location, and legal content updated successfully.')
+            ->with('active_module', 'footer')
+            ->with('active_footer_subtab', $activeFooterSubtab);
     }
 
     public function updateWhy(Request $request, PublicWebpUploader $uploader): RedirectResponse
@@ -318,6 +362,73 @@ class ContentManagementController extends Controller
         SiteCache::forgetPublicPages();
 
         return back()->with('success', 'Our Projects section updated successfully.');
+    }
+
+    public function updateProspectus(Request $request, PublicWebpUploader $uploader): RedirectResponse
+    {
+        $validated = $request->validate([
+            'section_title' => ['nullable', 'string', 'max:180'],
+            'section_subtitle' => ['nullable', 'string', 'max:255'],
+            'is_visible' => ['nullable', 'boolean'],
+            'brochures' => ['nullable', 'array'],
+            'brochures.*.title' => ['nullable', 'string', 'max:180'],
+            'brochures.*.subtitle' => ['nullable', 'string', 'max:255'],
+            'brochures.*.image_path' => ['nullable', 'string', 'max:2048'],
+            'brochure_images' => ['nullable', 'array'],
+            'brochure_images.*' => ['nullable', 'image', 'max:8192'],
+        ]);
+
+        $prospectusSection = ProspectusSection::query()->firstOrNew();
+
+        $brochures = collect($validated['brochures'] ?? [])
+            ->map(function ($brochure, $index) use ($request, $uploader): ?array {
+                $data = is_array($brochure) ? $brochure : [];
+                $imagePath = $this->sanitizeManagedUploadPath($data['image_path'] ?? null, 'uploads/prospectus');
+
+                try {
+                    if ($request->hasFile('brochure_images.'.$index)) {
+                        $imagePath = $uploader->store(
+                            $request->file('brochure_images.'.$index),
+                            'uploads/prospectus',
+                            $imagePath,
+                        );
+                    }
+                } catch (RuntimeException $exception) {
+                    throw ValidationException::withMessages([
+                        'brochure_images.'.$index => 'Brochure image upload failed. Please try another image.',
+                    ]);
+                }
+
+                $normalized = [
+                    'title' => trim((string) ($data['title'] ?? '')),
+                    'subtitle' => trim((string) ($data['subtitle'] ?? '')),
+                    'image_path' => $imagePath,
+                ];
+
+                if (! filled($normalized['title']) && ! filled($normalized['image_path'])) {
+                    return null;
+                }
+
+                return $normalized;
+            })
+            ->filter()
+            ->values()
+            ->all();
+
+        $prospectusSection->section_title = filled($validated['section_title'] ?? null)
+            ? trim((string) $validated['section_title'])
+            : null;
+        $prospectusSection->section_subtitle = filled($validated['section_subtitle'] ?? null)
+            ? trim((string) $validated['section_subtitle'])
+            : null;
+        $prospectusSection->is_visible = $request->boolean('is_visible');
+        $prospectusSection->brochures = $brochures;
+        $prospectusSection->save();
+
+        SiteCache::forgetPublicPages();
+
+        return redirect()->route('admin.content.index', ['module' => 'prospectus'])
+            ->with('success', 'Prospectus & Brochure section updated successfully.');
     }
 
     public function updateGallery(Request $request, PublicWebpUploader $uploader): RedirectResponse
@@ -768,6 +879,92 @@ class ContentManagementController extends Controller
             'message' => 'Shareholder removed successfully.',
             'total' => ValuedShareholder::count(),
         ]);
+    }
+
+    public function getFaqs(Request $request): JsonResponse
+    {
+        $search = mb_substr(trim((string) $request->input('search', '')), 0, 100);
+        $page = min(1000, max(1, (int) $request->input('page', 1)));
+        $perPage = 10;
+
+        $query = Faq::query()->ordered();
+
+        if ($search !== '') {
+            $query->where(function ($q) use ($search) {
+                $q->where('question', 'like', "%{$search}%")
+                  ->orWhere('answer', 'like', "%{$search}%");
+            });
+        }
+
+        $total = $query->count();
+        $items = $query->forPage($page, $perPage)->get();
+
+        return response()->json([
+            'data' => $items->map(fn (Faq $f): array => [
+                'id' => $f->id,
+                'question' => $f->question,
+                'answer' => $f->answer,
+                'is_active' => (bool) $f->is_active,
+                'updated_at_human' => $f->updated_at?->diffForHumans() ?? 'recently',
+                'update_url' => route('admin.content.faqs.update', $f),
+                'destroy_url' => route('admin.content.faqs.destroy', $f),
+            ]),
+            'current_page' => $page,
+            'has_more' => ($page * $perPage) < $total,
+            'total' => $total,
+            'per_page' => $perPage,
+        ]);
+    }
+
+    public function storeFaq(Request $request): RedirectResponse
+    {
+        $validated = $request->validate([
+            'question' => ['required', 'string', 'max:500'],
+            'answer' => ['required', 'string', 'max:5000'],
+            'is_active' => ['nullable', 'boolean'],
+        ]);
+
+        Faq::query()->create([
+            'question' => trim($validated['question']),
+            'answer' => trim($validated['answer']),
+            'sort_order' => 0,
+            'is_active' => $request->boolean('is_active', true),
+        ]);
+
+        SiteCache::forgetPublicPages();
+
+        return redirect()->route('admin.content.index', ['module' => 'faq'])
+            ->with('success', 'FAQ added successfully.');
+    }
+
+    public function updateFaq(Request $request, Faq $faq): RedirectResponse
+    {
+        $validated = $request->validate([
+            'question' => ['required', 'string', 'max:500'],
+            'answer' => ['required', 'string', 'max:5000'],
+            'is_active' => ['nullable', 'boolean'],
+        ]);
+
+        $faq->update([
+            'question' => trim($validated['question']),
+            'answer' => trim($validated['answer']),
+            'is_active' => $request->boolean('is_active'),
+        ]);
+
+        SiteCache::forgetPublicPages();
+
+        return redirect()->route('admin.content.index', ['module' => 'faq'])
+            ->with('success', 'FAQ updated successfully.');
+    }
+
+    public function destroyFaq(Faq $faq): RedirectResponse
+    {
+        $faq->delete();
+
+        SiteCache::forgetPublicPages();
+
+        return redirect()->route('admin.content.index', ['module' => 'faq'])
+            ->with('success', 'FAQ deleted successfully.');
     }
 
     protected function storeProjectCards(

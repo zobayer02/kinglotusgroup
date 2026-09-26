@@ -23,7 +23,8 @@
             width: 100%;
             max-width: 1240px;
             margin: 0 auto;
-            height: clamp(760px, calc(100vh - 56px), 980px);
+            aspect-ratio: 16 / 9;
+            height: auto;
             min-height: 0;
             overflow: hidden;
             border-radius: 34px;
@@ -214,7 +215,8 @@
             }
 
             .hero-shell {
-                height: clamp(700px, calc(100vh - 48px), 900px);
+                aspect-ratio: 16 / 9;
+                height: auto;
             }
 
             .hero-message-stage {
@@ -236,17 +238,13 @@
 
         @media (max-width: 768px) {
             .hero {
-                padding: 18px;
+                padding: 112px 18px 18px;
             }
 
             .hero-shell {
-                width: 100%;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                justify-content: flex-start;
+                aspect-ratio: 16 / 9;
                 height: auto;
-                min-height: calc(100vh - 36px);
+                min-height: 0;
                 border-radius: 28px;
             }
 
@@ -328,23 +326,6 @@
     <section class="hero" id="home" data-nav-section="home">
         <div class="hero-shell">
             @include('partials.navbar')
-
-            <div class="hero-copy" aria-label="King Lotus Group highlights">
-                <div class="hero-message-stage">
-                    <p class="hero-message">
-                        <span class="hero-title">Invest in Luxury Hotel Ownership</span>
-                        <span class="hero-script">Discover exclusive hotel share opportunities with transparent ownership, premium hospitality value, and trusted guidance.</span>
-                    </p>
-                </div>
-
-                @if (count($shareholderPhoneOptions))
-                    <button class="join-button" type="button" data-phone-trigger aria-haspopup="dialog" aria-expanded="false">
-                        Become a Shareholder
-                    </button>
-                @else
-                    <a class="join-button" href="#book">Become a Shareholder</a>
-                @endif
-            </div>
         </div>
     </section>
 
@@ -352,6 +333,7 @@
     @includeWhen(isset($aboutSection) && $aboutSection && $aboutSection->hasRenderableContent(), 'partials.about-section', ['aboutSection' => $aboutSection])
     @includeWhen(isset($whySection) && $whySection && $whySection->hasRenderableContent(), 'partials.why-section', ['whySection' => $whySection])
     @includeWhen(isset($projectSection) && $projectSection && $projectSection->hasRenderableContent(), 'partials.projects-section', ['projectSection' => $projectSection])
+    @includeWhen(($prospectusSection ?? null)?->shouldDisplayOnWebsite(), 'partials.prospectus-section', ['prospectusSection' => $prospectusSection ?? null])
     @includeWhen(isset($gallerySection) && $gallerySection && $gallerySection->hasRenderableContent(), 'partials.gallery-section', ['gallerySection' => $gallerySection])
     @includeWhen(isset($shareholderReviewSection) && $shareholderReviewSection && $shareholderReviewSection->hasRenderableContent(), 'partials.shareholder-review-section', ['shareholderReviewSection' => $shareholderReviewSection])
     @include('partials.location-section', ['footerSetting' => $footerSetting])

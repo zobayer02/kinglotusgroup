@@ -141,6 +141,19 @@
             font-family: "Fraunces", "Times New Roman", serif;
         }
 
+        .sidebar-brand-logo {
+            display: block;
+            width: auto;
+            height: clamp(38px, 2.5vw, 48px);
+            max-width: 100%;
+            object-fit: contain;
+            transition: transform 0.2s ease;
+        }
+
+        .sidebar-mark:hover .sidebar-brand-logo {
+            transform: scale(1.02);
+        }
+
         .sidebar-mark-top {
             font-size: clamp(1.18rem, 1.55vw, 1.72rem);
             line-height: 0.88;
@@ -930,6 +943,10 @@
                 margin-bottom: 32px;
             }
 
+            .sidebar-brand-logo {
+                height: 48px;
+            }
+
             .sidebar-mark-top {
                 font-size: 1.85rem;
             }
@@ -1075,14 +1092,9 @@
 
         <aside class="admin-sidebar">
             <div class="sidebar-brand">
-                <div class="sidebar-mark" aria-label="King Lotus Group">
-                    <span class="sidebar-mark-top">King Lotus</span>
-                    <span class="sidebar-mark-bottom">
-                        <span class="sidebar-mark-line" aria-hidden="true"></span>
-                        <span>Group</span>
-                        <span class="sidebar-mark-line" aria-hidden="true"></span>
-                    </span>
-                </div>
+                <a class="sidebar-mark" href="{{ route('home') }}" aria-label="King Lotus Group">
+                    <img class="sidebar-brand-logo" src="{{ asset('images/logo-brand.png') }}" alt="King Lotus Group" width="180" height="45">
+                </a>
             </div>
 
             <nav class="sidebar-nav" aria-label="Admin navigation">

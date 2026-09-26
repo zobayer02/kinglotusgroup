@@ -11,6 +11,56 @@
         linear-gradient(135deg, rgba(255, 255, 255, 0.94) 0%, rgba(232, 241, 247, 0.9) 42%, rgba(208, 222, 232, 0.84) 100%);
 }
 
+/* ========================================================
+   Orbitron Font - Company Brand Style
+   ======================================================== */
+@font-face {
+    font-family: 'Orbitron';
+    font-style: normal;
+    font-weight: 400 900;
+    font-display: swap;
+    src: url('{{ asset('fonts/Orbitron-VariableFont.ttf') }}') format('truetype-variations'),
+         url('{{ asset('fonts/Orbitron-Black.woff2') }}') format('woff2');
+}
+
+/* Reusable Utility Classes for Company Name / Brand */
+.font-brand,
+.font-tech {
+    font-family: 'Orbitron', sans-serif;
+}
+
+/* Black Title (KING LOTUS) */
+.brand-tech-title,
+.tech-heading {
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 900;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: #10212c;
+}
+
+/* Black Subtitle (GROUP) */
+.brand-tech-sub,
+.tech-subtitle {
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 800;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: #10212c;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.tech-subtitle::before,
+.tech-subtitle::after {
+    content: '';
+    flex: 1;
+    height: 3px;
+    background-color: #10212c;
+    border-radius: 2px;
+}
+
 .floating-nav {
     position: relative;
     overflow: hidden;
@@ -137,45 +187,66 @@
     display: inline-flex;
     flex-direction: column;
     align-items: center;
-    gap: 2px;
-    color: #0f1114;
+    gap: 3px;
     text-transform: uppercase;
     text-align: center;
-    font-family: var(--font-primary);
+    font-family: 'Orbitron', sans-serif;
+    color: #10212c;
     text-shadow: none;
     animation: brandCenterReveal 0.68s cubic-bezier(0.16, 1, 0.3, 1) 80ms both;
 }
 
+.brand-logo {
+    display: block;
+    width: auto;
+    height: clamp(38px, 4.4vw, 54px);
+    max-width: 100%;
+    object-fit: contain;
+    transition: height 0.32s ease, transform 0.32s ease;
+}
+
+.brand:hover .brand-logo {
+    transform: scale(1.02);
+}
+
 .brand-top {
     display: block;
-    font-size: clamp(1.9rem, 3.1vw, 3.45rem);
-    font-weight: 500;
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 900;
     letter-spacing: 0.07em;
-    line-height: 0.9;
+    line-height: 0.92;
     white-space: nowrap;
+    font-size: clamp(1.9rem, 3.1vw, 3.45rem);
+    color: #10212c;
     transition: font-size 0.32s ease;
 }
 
 .brand-bottom {
     display: inline-flex;
     align-items: center;
-    gap: 9px;
-    font-size: clamp(0.92rem, 1.3vw, 1.18rem);
-    font-weight: 500;
-    letter-spacing: 0.24em;
+    gap: 10px;
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 800;
+    letter-spacing: 0.28em;
     line-height: 1;
     white-space: nowrap;
+    color: #10212c;
+    font-size: clamp(0.92rem, 1.3vw, 1.18rem);
     transition:
         font-size 0.32s ease,
         gap 0.32s ease;
 }
 
+.brand-bottom span:not(.brand-line) {
+    margin-right: -0.28em;
+}
+
 .brand-line {
-    width: clamp(76px, 5.8vw, 124px);
-    height: 4px;
-    border-radius: 999px;
-    background: currentColor;
-    opacity: 0.92;
+    width: clamp(70px, 5.5vw, 120px);
+    height: 3.5px;
+    border-radius: 2px;
+    background-color: #10212c;
+    opacity: 1;
     transition:
         width 0.32s ease,
         height 0.32s ease;
@@ -316,7 +387,7 @@
     font-weight: 700;
     letter-spacing: 0.12em;
     text-transform: uppercase;
-    color: rgba(16, 33, 44, 0.62);
+    color: #000000;
 }
 
 .footer-heading {
@@ -326,7 +397,7 @@
     font-weight: 400;
     line-height: 0.98;
     letter-spacing: 0;
-    color: #101214;
+    color: #000000;
     font-family: var(--font-primary);
 }
 
@@ -335,7 +406,7 @@
     max-width: 760px;
     font-size: 1.02rem;
     line-height: 1.7;
-    color: rgba(16, 33, 44, 0.72);
+    color: #000000;
 }
 
 .footer-main {
@@ -350,7 +421,7 @@
 
 .footer-meta a,
 .footer-bottom a {
-    color: #10212c;
+    color: #000000;
     transition: opacity 0.2s ease;
 }
 
@@ -361,7 +432,7 @@
 
 .footer-brand {
     justify-self: center;
-    color: #101214;
+    color: #000000;
     font-family: var(--font-primary);
     opacity: 0;
     transform: translateY(24px);
@@ -378,6 +449,19 @@
     gap: 4px;
     text-transform: uppercase;
     line-height: 1;
+}
+
+.footer-brand-logo {
+    display: block;
+    width: auto;
+    height: clamp(52px, 5.5vw, 76px);
+    max-width: 100%;
+    object-fit: contain;
+    transition: transform 0.3s ease;
+}
+
+.footer-brand-mark:hover .footer-brand-logo {
+    transform: scale(1.02);
 }
 
 .footer-brand-top {
@@ -781,7 +865,7 @@ body.footer-phone-picker-open {
     padding-top: 20px;
     text-align: center;
     font-size: 0.98rem;
-    color: rgba(16, 33, 44, 0.72);
+    color: #000000;
     opacity: 0;
     transform: translateY(24px);
     transition:
@@ -875,15 +959,24 @@ body.footer-phone-picker-open {
         font-size: clamp(1.45rem, 2.2vw, 2.35rem);
     }
 
+    .brand-logo {
+        height: clamp(30px, 3.2vw, 42px);
+    }
+
     .brand-bottom {
         font-size: clamp(0.72rem, 0.95vw, 0.92rem);
         gap: 6px;
-        letter-spacing: 0.18em;
+        letter-spacing: 0.22em;
+    }
+
+    .brand-bottom span:not(.brand-line) {
+        margin-right: -0.22em;
     }
 
     .brand-line {
         width: clamp(36px, 4vw, 74px);
-        height: 3px;
+        height: 2.5px;
+        background-color: #10212c;
     }
 
     .footer-shell {
@@ -898,6 +991,10 @@ body.footer-phone-picker-open {
     .footer-brand,
     .footer-socials {
         justify-self: center;
+    }
+
+    .footer-brand-logo {
+        height: clamp(42px, 6vw, 60px);
     }
 
     .footer-brand-top {
@@ -940,6 +1037,10 @@ body.footer-phone-picker-open {
     .floating-nav.is-scrolled .nav-link {
         padding: 11px 13px;
         font-size: 0.95rem;
+    }
+
+    .floating-nav.is-scrolled .brand-logo {
+        height: clamp(32px, 3.6vw, 44px);
     }
 
     .floating-nav.is-scrolled .brand-top {

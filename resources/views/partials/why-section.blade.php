@@ -37,7 +37,7 @@
                 font-size: var(--section-title-size);
                 font-weight: 400;
                 line-height: 1.02;
-                color: #121926;
+                color: #000000;
             }
 
             .why-description {
@@ -45,7 +45,7 @@
                 font-family: var(--font-secondary);
                 font-size: clamp(1rem, 1.5vw, 1.12rem);
                 line-height: 1.78;
-                color: rgba(17, 25, 38, 0.76);
+                color: #000000;
                 text-align: justify;
             }
 
@@ -65,7 +65,7 @@
                 font-family: var(--font-secondary);
                 font-size: clamp(0.98rem, 1.45vw, 1.08rem);
                 line-height: 1.6;
-                color: #1a2432;
+                color: #000000;
             }
 
             .why-point::before {

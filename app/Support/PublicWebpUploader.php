@@ -9,10 +9,10 @@ use RuntimeException;
 
 class PublicWebpUploader
 {
-    private const MAX_WIDTH = 5000;
-    private const MAX_HEIGHT = 5000;
-    private const MAX_PIXELS = 16000000;
-    private const MAX_DECODE_BYTES = 67108864;
+    private const MAX_WIDTH = 6000;
+    private const MAX_HEIGHT = 6000;
+    private const MAX_PIXELS = 25000000;
+    private const MAX_DECODE_BYTES = 104857600;
 
     public function store(UploadedFile $file, string $directory, ?string $oldPath = null): string
     {

@@ -2615,21 +2615,39 @@
             ->map->toEditorArray()
             ->all();
         $officeCards = old('office_cards', $footerSetting?->officeCardsForEditor() ?? []);
-        $activeModule = $footerModuleHasErrors
-            ? 'footer'
-            : ($valuedShareholderModuleHasErrors
-                ? 'valued-shareholders'
-                : ($leadershipModuleHasErrors
-                ? 'leadership'
-                : ($reviewModuleHasErrors
-                ? 'reviews'
-                : ($galleryModuleHasErrors
-                    ? 'gallery'
-                    : ($projectModuleHasErrors
-                    ? 'projects'
-                    : (collect($whyFieldNames)->contains(fn ($field) => $errors->has($field))
-                    ? 'why'
-                    : (collect($aboutFieldNames)->contains(fn ($field) => $errors->has($field)) ? 'about' : 'notice')))))));
+        $prospectusFieldNames = ['section_title', 'section_subtitle', 'is_visible'];
+        $prospectusModuleHasErrors = collect($errors->keys())->contains(
+            fn ($field) => in_array($field, $prospectusFieldNames, true)
+                || str_starts_with($field, 'brochures.')
+                || str_starts_with($field, 'brochure_images.')
+        );
+        $brochureCards = collect(old('brochures', $prospectusSection?->brochuresForEditor() ?? []))
+            ->values()
+            ->all();
+        $faqFieldNames = ['question', 'answer', 'sort_order', 'is_active'];
+        $faqModuleHasErrors = collect($errors->keys())->contains(
+            fn ($field) => in_array($field, $faqFieldNames, true)
+        );
+        $activeModule = request('module')
+            ?: (($faqModuleHasErrors || session('active_module') === 'faq')
+                ? 'faq'
+                : (($footerModuleHasErrors || session('active_module') === 'footer')
+                    ? 'footer'
+                    : ($valuedShareholderModuleHasErrors || session('active_module') === 'valued-shareholders'
+                    ? 'valued-shareholders'
+                    : ($leadershipModuleHasErrors || session('active_module') === 'leadership'
+                    ? 'leadership'
+                    : ($reviewModuleHasErrors || session('active_module') === 'reviews'
+                    ? 'reviews'
+                    : ($galleryModuleHasErrors || session('active_module') === 'gallery'
+                        ? 'gallery'
+                        : ($prospectusModuleHasErrors || session('active_module') === 'prospectus'
+                            ? 'prospectus'
+                            : ($projectModuleHasErrors || session('active_module') === 'projects'
+                            ? 'projects'
+                            : (collect($whyFieldNames)->contains(fn ($field) => $errors->has($field)) || session('active_module') === 'why'
+                            ? 'why'
+                            : (collect($aboutFieldNames)->contains(fn ($field) => $errors->has($field)) || session('active_module') === 'about' ? 'about' : (session('active_module') ?? 'notice')))))))))));
     @endphp
 
     <header class="admin-header">
@@ -2679,6 +2697,13 @@
                     <span class="module-title">Projects</span>
                 </button>
 
+                <button class="module-button {{ $activeModule === 'prospectus' ? 'is-active' : '' }}" type="button" aria-expanded="{{ $activeModule === 'prospectus' ? 'true' : 'false' }}" aria-controls="prospectus-editor-panel" data-module-toggle="prospectus-editor-panel">
+                    <span class="module-btn-icon">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+                    </span>
+                    <span class="module-title">Prospectus</span>
+                </button>
+
                 <button class="module-button {{ $activeModule === 'gallery' ? 'is-active' : '' }}" type="button" aria-expanded="{{ $activeModule === 'gallery' ? 'true' : 'false' }}" aria-controls="gallery-editor-panel" data-module-toggle="gallery-editor-panel">
                     <span class="module-btn-icon">
                         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
@@ -2712,6 +2737,13 @@
                         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
                     </span>
                     <span class="module-title">Footer & Location</span>
+                </button>
+
+                <button class="module-button {{ $activeModule === 'faq' ? 'is-active' : '' }}" type="button" aria-expanded="{{ $activeModule === 'faq' ? 'true' : 'false' }}" aria-controls="faq-editor-panel" data-module-toggle="faq-editor-panel">
+                    <span class="module-btn-icon">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                    </span>
+                    <span class="module-title">FAQ Management</span>
                 </button>
             </div>
         </article>
@@ -3143,6 +3175,303 @@
                     ],
                     'showErrors' => false,
                 ])
+            </template>
+        </article>
+
+        <article class="admin-card editor-panel" id="prospectus-editor-panel" data-module-panel @if($activeModule !== 'prospectus') hidden @endif>
+            <div class="editor-header">
+                <div class="editor-copy">
+                    <p class="section-kicker">Prospectus Editor</p>
+                    <h2>Project Prospectus &amp; Brochure Section</h2>
+                    <p class="admin-subtitle">Manage the prospectus brochures and flyers shown in the public slider. Section title, subtitle, and flyer cards can be updated here.</p>
+                </div>
+
+                <span class="editor-status {{ $prospectusSection?->is_visible ? '' : 'is-hidden' }}">
+                    {{ $prospectusSection?->is_visible ? 'Visible on website' : 'Hidden on website' }}
+                </span>
+            </div>
+
+            <form class="editor-form" action="{{ route('admin.content.prospectus.update') }}" method="POST" enctype="multipart/form-data">
+                @csrf
+                @method('PATCH')
+
+                <label class="toggle-bar">
+                    <span class="toggle-switch">
+                        <input type="checkbox" name="is_visible" value="1" @checked(old('is_visible', $prospectusSection?->exists ? $prospectusSection->is_visible : true))>
+                        <span class="toggle-track" aria-hidden="true">
+                            <span class="toggle-thumb"></span>
+                        </span>
+                    </span>
+
+                    <span class="toggle-copy">
+                        <span class="toggle-title">Show prospectus &amp; brochure on website</span>
+                        <span class="toggle-meta">Turn this off if you want to conceal the brochure section from the public.</span>
+                    </span>
+                </label>
+
+                <div class="field-grid field-grid--2">
+                    <div class="field-group">
+                        <label class="field-label" for="prospectus_section_title">Section Title</label>
+                        <input class="field-input" id="prospectus_section_title" type="text" name="section_title" value="{{ old('section_title', $prospectusSection?->section_title ?? \App\Models\ProspectusSection::DEFAULT_SECTION_TITLE) }}" placeholder="Project Prospectus &amp; Brochure">
+                        @error('section_title')
+                            <span class="field-error">{{ $message }}</span>
+                        @enderror
+                    </div>
+
+                    <div class="field-group">
+                        <label class="field-label" for="prospectus_section_subtitle">Section Subtitle</label>
+                        <input class="field-input" id="prospectus_section_subtitle" type="text" name="section_subtitle" value="{{ old('section_subtitle', $prospectusSection?->section_subtitle ?? \App\Models\ProspectusSection::DEFAULT_SECTION_SUBTITLE) }}" placeholder="কিং লোটাস ইন্টারন্যাশনালের পূর্ণাঙ্গ প্রকল্প রূপরেখা">
+                        @error('section_subtitle')
+                            <span class="field-error">{{ $message }}</span>
+                        @enderror
+                    </div>
+                </div>
+
+                <div class="projects-group" data-prospectus-directory-root style="margin-top: 20px;">
+                    <div class="projects-group-head" style="flex-wrap: wrap; gap: 12px;">
+                        <div>
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <h3 class="projects-group-title">Brochure Directory</h3>
+                                <span class="gallery-album-sidebar-count" data-prospectus-total-badge>{{ count($brochureCards) }} total</span>
+                            </div>
+                            <p class="projects-group-meta">Search, edit, or add prospectus brochure pages. Expand any page to customize its details or replace the flyer.</p>
+                        </div>
+
+                        <div class="leadership-group-actions">
+                            <button class="leadership-btn-text" type="button" data-prospectus-expand-all>Expand All</button>
+                            <button class="leadership-btn-text" type="button" data-prospectus-collapse-all>Collapse All</button>
+                            <button class="project-editor-add" type="button" data-prospectus-add-card>+ Add Brochure Page</button>
+                        </div>
+                    </div>
+
+                    {{-- Search Toolbar --}}
+                    <div class="shareholder-search-toolbar">
+                        <div class="shareholder-search-box">
+                            <span class="shareholder-search-icon" aria-hidden="true">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="11" cy="11" r="8"></circle>
+                                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                                </svg>
+                            </span>
+                            <input type="text" class="field-input shareholder-search-input" placeholder="Search brochure pages by title or description..." data-prospectus-search-input autocomplete="off">
+                            <button type="button" class="shareholder-search-clear-btn" data-prospectus-clear-btn style="display: none;" title="Clear search" aria-label="Clear search">
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+                                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                                </svg>
+                            </button>
+                        </div>
+                        <span class="shareholder-search-feedback" data-prospectus-search-feedback></span>
+                    </div>
+
+                    {{-- Accordion List Container matching Image 2 --}}
+                    <div class="leadership-member-accordion-list" data-prospectus-card-list data-next-index="{{ count($brochureCards) }}">
+                        @forelse ($brochureCards as $index => $brochure)
+                            @php
+                                $label = 'Page #' . ($index + 1);
+                                $errorPrefix = 'brochures.'.$index;
+                                $titleId = 'brochures-title-'.$index;
+                                $subtitleId = 'brochures-subtitle-'.$index;
+                                $imageId = 'brochures-image-'.$index;
+                                $existingPath = $brochure['image_path'] ?? '';
+                                $existingUrl = filled($existingPath) ? asset(ltrim($existingPath, '/')) : null;
+                                $hasErrors = $errors->has($errorPrefix.'.title') || $errors->has($errorPrefix.'.subtitle') || $errors->has('brochure_images.'.$index);
+                            @endphp
+                            <div class="leadership-member-accordion-card prospectus-card-item {{ $hasErrors ? 'is-expanded' : '' }}" data-prospectus-editor-card>
+                                <div class="leadership-member-summary" data-prospectus-toggle-accordion tabindex="0" role="button" aria-expanded="{{ $hasErrors ? 'true' : 'false' }}">
+                                    <div class="leadership-summary-left">
+                                        <span class="leadership-summary-chevron" aria-hidden="true">
+                                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                                <polyline points="6 9 12 15 18 9"></polyline>
+                                            </svg>
+                                        </span>
+
+                                        <span class="leadership-summary-badge" data-prospectus-badge>{{ $label }}</span>
+
+                                        <div class="prospectus-summary-thumb" data-prospectus-summary-thumb style="width: 36px; height: 50px; border-radius: 6px; overflow: hidden; background: #eef4f8; flex-shrink: 0; display: flex; align-items: center; justify-content: center; border: 1px solid rgba(175, 191, 207, 0.45); box-shadow: 0 2px 5px rgba(0,0,0,0.06);">
+                                            @if ($existingUrl)
+                                                <img src="{{ $existingUrl }}" alt="{{ $brochure['title'] ?? 'Flyer' }}" style="width: 100%; height: 100%; object-fit: cover; display: block;" loading="lazy">
+                                            @else
+                                                <div style="color: var(--ink-400); display: flex; align-items: center; justify-content: center;">
+                                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                                                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                                                        <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                                                        <polyline points="21 15 16 10 5 21"></polyline>
+                                                    </svg>
+                                                </div>
+                                            @endif
+                                        </div>
+
+                                        <div class="leadership-summary-info">
+                                            <span class="leadership-summary-name" data-prospectus-summary-name>{{ $brochure['title'] ?: 'Page ' . ($index + 1) }}</span>
+                                            <span class="leadership-summary-position" data-prospectus-summary-position>{{ $brochure['subtitle'] ?: 'No subtitle set' }}</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="leadership-summary-right">
+                                        <button class="leadership-btn-toggle" type="button" data-prospectus-toggle-btn aria-label="Toggle edit brochure page">
+                                            <span class="leadership-btn-toggle-label">{{ $hasErrors ? 'Close' : 'Edit' }}</span>
+                                        </button>
+                                        <button class="project-editor-remove" type="button" data-prospectus-remove-card data-confirm-message="Are you sure you want to remove this brochure page?" aria-label="Remove brochure page">Remove</button>
+                                    </div>
+                                </div>
+
+                                <div class="leadership-member-body">
+                                    <div class="leadership-member-body-inner">
+                                        <div class="leadership-member-editor-grid" style="grid-template-columns: 140px minmax(0, 1fr); gap: 24px;">
+                                            <div class="leadership-photo-editor-box">
+                                                <div class="leadership-photo-tile-wrapper">
+                                                    <div class="leadership-photo-tile" data-prospectus-editor-preview style="width: 120px; height: 165px; border-radius: 12px; background: #eef4f8; border: 1px solid rgba(175, 191, 207, 0.45); overflow: hidden; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(15, 31, 40, 0.08);">
+                                                        @if ($existingUrl)
+                                                            <img src="{{ $existingUrl }}" alt="{{ $brochure['title'] ?? 'Flyer' }}" style="width: 100%; height: 100%; object-fit: cover; display: block;" loading="lazy">
+                                                        @else
+                                                            <div style="color: var(--ink-400); text-align: center; padding: 10px;">
+                                                                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                                                                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                                                                    <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                                                                    <polyline points="21 15 16 10 5 21"></polyline>
+                                                                </svg>
+                                                                <span style="font-size: 0.72rem; display: block; margin-top: 4px; color: var(--ink-500);">No image</span>
+                                                            </div>
+                                                        @endif
+                                                    </div>
+
+                                                    <div class="leadership-photo-upload-actions" style="width: 100%;">
+                                                        <label class="leadership-photo-picker-btn" for="{{ $imageId }}" style="font-size: 0.78rem; width: 100%; justify-content: center; cursor: pointer;">
+                                                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                                                                <circle cx="12" cy="13" r="4"></circle>
+                                                            </svg>
+                                                            <span>{{ $existingUrl ? 'Change Flyer' : 'Upload Flyer' }}</span>
+                                                        </label>
+                                                        <input class="leadership-photo-file-input" id="{{ $imageId }}" type="file" name="brochure_images[{{ $index }}]" accept="image/*" data-prospectus-file-input style="display: none;">
+                                                        <input type="hidden" name="brochures[{{ $index }}][image_path]" value="{{ $existingPath }}" data-prospectus-image-path>
+                                                        <span class="field-hint" data-prospectus-hint style="font-size: 0.73rem; margin-top: 2px;">{{ $existingPath ? basename($existingPath) : 'High-res flyer image' }}</span>
+                                                        @error('brochure_images.'.$index)
+                                                            <span class="field-error">{{ $message }}</span>
+                                                        @enderror
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="leadership-member-fields-col">
+                                                <div class="field-group">
+                                                    <label class="field-label" for="{{ $titleId }}">Page Title / Heading <span style="color: #e53935;">*</span></label>
+                                                    <input class="field-input" id="{{ $titleId }}" type="text" name="brochures[{{ $index }}][title]" value="{{ $brochure['title'] ?? '' }}" placeholder="e.g. 5-Star Luxury in Royal" data-prospectus-name-input required>
+                                                    @error($errorPrefix.'.title')
+                                                        <span class="field-error">{{ $message }}</span>
+                                                    @enderror
+                                                </div>
+
+                                                <div class="field-group">
+                                                    <label class="field-label" for="{{ $subtitleId }}">Page Subtitle / Highlights</label>
+                                                    <input class="field-input" id="{{ $subtitleId }}" type="text" name="brochures[{{ $index }}][subtitle]" value="{{ $brochure['subtitle'] ?? '' }}" placeholder="e.g. সংক্ষিপ্ত বিবরণ বা সাবটাইটেল" data-prospectus-position-input>
+                                                    @error($errorPrefix.'.subtitle')
+                                                        <span class="field-error">{{ $message }}</span>
+                                                    @enderror
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        @empty
+                            <div class="shareholder-empty-state" data-prospectus-empty>
+                                <p>No brochure pages added yet. Click <strong>+ Add Brochure Page</strong> above to create one.</p>
+                            </div>
+                        @endforelse
+                    </div>
+                </div>
+
+                <div class="editor-actions" style="margin-top: 24px;">
+                    <button class="primary-button admin-save-btn" type="submit">
+                        <span class="submit-button-label">Save Prospectus Section</span>
+                    </button>
+                </div>
+            </form>
+
+            <template id="prospectus-card-template">
+                <div class="leadership-member-accordion-card prospectus-card-item is-expanded" data-prospectus-editor-card>
+                    <div class="leadership-member-summary" data-prospectus-toggle-accordion tabindex="0" role="button" aria-expanded="true">
+                        <div class="leadership-summary-left">
+                            <span class="leadership-summary-chevron" aria-hidden="true">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                    <polyline points="6 9 12 15 18 9"></polyline>
+                                </svg>
+                            </span>
+
+                            <span class="leadership-summary-badge" data-prospectus-badge>Page #__NUMBER__</span>
+
+                            <div class="prospectus-summary-thumb" data-prospectus-summary-thumb style="width: 36px; height: 50px; border-radius: 6px; overflow: hidden; background: #eef4f8; flex-shrink: 0; display: flex; align-items: center; justify-content: center; border: 1px solid rgba(175, 191, 207, 0.45); box-shadow: 0 2px 5px rgba(0,0,0,0.06);">
+                                <div style="color: var(--ink-400); display: flex; align-items: center; justify-content: center;">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                                        <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                                        <polyline points="21 15 16 10 5 21"></polyline>
+                                    </svg>
+                                </div>
+                            </div>
+
+                            <div class="leadership-summary-info">
+                                <span class="leadership-summary-name" data-prospectus-summary-name>New Brochure Page</span>
+                                <span class="leadership-summary-position" data-prospectus-summary-position>Click to add subtitle</span>
+                            </div>
+                        </div>
+
+                        <div class="leadership-summary-right">
+                            <button class="leadership-btn-toggle" type="button" data-prospectus-toggle-btn aria-label="Toggle edit brochure page">
+                                <span class="leadership-btn-toggle-label">Close</span>
+                            </button>
+                            <button class="project-editor-remove" type="button" data-prospectus-remove-card data-confirm-message="Are you sure you want to remove this brochure page?" aria-label="Remove brochure page">Remove</button>
+                        </div>
+                    </div>
+
+                    <div class="leadership-member-body">
+                        <div class="leadership-member-body-inner">
+                            <div class="leadership-member-editor-grid" style="grid-template-columns: 140px minmax(0, 1fr); gap: 24px;">
+                                <div class="leadership-photo-editor-box">
+                                    <div class="leadership-photo-tile-wrapper">
+                                        <div class="leadership-photo-tile" data-prospectus-editor-preview style="width: 120px; height: 165px; border-radius: 12px; background: #eef4f8; border: 1px solid rgba(175, 191, 207, 0.45); overflow: hidden; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(15, 31, 40, 0.08);">
+                                            <div style="color: var(--ink-400); text-align: center; padding: 10px;">
+                                                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                                                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                                                    <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                                                    <polyline points="21 15 16 10 5 21"></polyline>
+                                                </svg>
+                                                <span style="font-size: 0.72rem; display: block; margin-top: 4px; color: var(--ink-500);">No image</span>
+                                            </div>
+                                        </div>
+
+                                        <div class="leadership-photo-upload-actions" style="width: 100%;">
+                                            <label class="leadership-photo-picker-btn" for="brochures-image-__INDEX__" style="font-size: 0.78rem; width: 100%; justify-content: center; cursor: pointer;">
+                                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                    <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                                                    <circle cx="12" cy="13" r="4"></circle>
+                                                </svg>
+                                                <span>Upload Flyer</span>
+                                            </label>
+                                            <input class="leadership-photo-file-input" id="brochures-image-__INDEX__" type="file" name="brochure_images[__INDEX__]" accept="image/*" data-prospectus-file-input style="display: none;">
+                                            <input type="hidden" name="brochures[__INDEX__][image_path]" value="" data-prospectus-image-path>
+                                            <span class="field-hint" data-prospectus-hint style="font-size: 0.73rem; margin-top: 2px;">High-res flyer image</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="leadership-member-fields-col">
+                                    <div class="field-group">
+                                        <label class="field-label" for="brochures-title-__INDEX__">Page Title / Heading <span style="color: #e53935;">*</span></label>
+                                        <input class="field-input" id="brochures-title-__INDEX__" type="text" name="brochures[__INDEX__][title]" value="" placeholder="e.g. 5-Star Luxury in Royal" data-prospectus-name-input required>
+                                    </div>
+
+                                    <div class="field-group">
+                                        <label class="field-label" for="brochures-subtitle-__INDEX__">Page Subtitle / Highlights</label>
+                                        <input class="field-input" id="brochures-subtitle-__INDEX__" type="text" name="brochures[__INDEX__][subtitle]" value="" placeholder="e.g. সংক্ষিপ্ত বিবরণ বা সাবটাইটেল" data-prospectus-position-input>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </template>
         </article>
 
@@ -4033,6 +4362,8 @@
                 </div>
             </form>
         </article>
+
+        @include('admin.content.partials.faq-editor-panel')
     </section>
 @endsection
 
@@ -4421,6 +4752,102 @@
                 list.dataset.nextIndex = String(index + 1);
                 syncOfficeCardLabels(list);
                 markFooterDirty();
+            };
+
+            const syncProspectusCardLabels = (list) => {
+                if (!list) {
+                    return;
+                }
+
+                const cards = list.querySelectorAll('[data-prospectus-editor-card]');
+                cards.forEach((card, index) => {
+                    const badge = card.querySelector('[data-prospectus-badge]');
+                    if (badge) {
+                        badge.textContent = `Page #${index + 1}`;
+                    }
+
+                    const titleInput = card.querySelector('[data-prospectus-name-input]');
+                    if (titleInput) {
+                        titleInput.name = `brochures[${index}][title]`;
+                        titleInput.id = `brochures-title-${index}`;
+                    }
+                    const titleLabel = card.querySelector('label[for*="brochures-title"]');
+                    if (titleLabel) {
+                        titleLabel.htmlFor = `brochures-title-${index}`;
+                    }
+
+                    const posInput = card.querySelector('[data-prospectus-position-input]');
+                    if (posInput) {
+                        posInput.name = `brochures[${index}][subtitle]`;
+                        posInput.id = `brochures-subtitle-${index}`;
+                    }
+                    const posLabel = card.querySelector('label[for*="brochures-subtitle"]');
+                    if (posLabel) {
+                        posLabel.htmlFor = `brochures-subtitle-${index}`;
+                    }
+
+                    const pathInput = card.querySelector('[data-prospectus-image-path]');
+                    if (pathInput) {
+                        pathInput.name = `brochures[${index}][image_path]`;
+                    }
+
+                    const fileInput = card.querySelector('[data-prospectus-file-input]');
+                    if (fileInput) {
+                        fileInput.name = `brochure_images[${index}]`;
+                        fileInput.id = `brochures-image-${index}`;
+                    }
+                    const fileLabel = card.querySelector('.leadership-photo-picker-btn');
+                    if (fileLabel) {
+                        fileLabel.htmlFor = `brochures-image-${index}`;
+                    }
+                });
+
+                const totalBadge = document.querySelector('[data-prospectus-total-badge]');
+                if (totalBadge) {
+                    totalBadge.textContent = `${cards.length} total`;
+                }
+
+                let emptyState = list.querySelector('[data-prospectus-empty]');
+                if (cards.length === 0) {
+                    if (!emptyState) {
+                        list.insertAdjacentHTML('beforeend', '<div class="shareholder-empty-state" data-prospectus-empty><p>No brochure pages added yet. Click <strong>+ Add Brochure Page</strong> above to create one.</p></div>');
+                    }
+                } else if (emptyState) {
+                    emptyState.remove();
+                }
+            };
+
+            const createProspectusCard = () => {
+                const list = document.querySelector('[data-prospectus-card-list]');
+                const template = document.getElementById('prospectus-card-template');
+
+                if (!list || !template) {
+                    return;
+                }
+
+                const empty = list.querySelector('[data-prospectus-empty]');
+                if (empty) {
+                    empty.remove();
+                }
+
+                const index = Number(list.dataset.nextIndex || list.children.length || 0);
+                const number = list.querySelectorAll('[data-prospectus-editor-card]').length + 1;
+                const html = template.innerHTML
+                    .replaceAll('__INDEX__', String(index))
+                    .replaceAll('__NUMBER__', String(number));
+
+                list.insertAdjacentHTML('beforeend', html);
+                list.dataset.nextIndex = String(index + 1);
+                syncProspectusCardLabels(list);
+
+                const newCard = list.lastElementChild;
+                if (newCard) {
+                    newCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                    const input = newCard.querySelector('[data-prospectus-name-input]');
+                    if (input) {
+                        setTimeout(() => input.focus(), 150);
+                    }
+                }
             };
 
             const syncLeadershipMemberLabels = (list) => {
@@ -5470,9 +5897,19 @@
                 });
             });
 
+            document.querySelectorAll('[data-prospectus-add-card]').forEach((button) => {
+                button.addEventListener('click', () => {
+                    createProspectusCard();
+                });
+            });
+
             document.querySelectorAll('[data-project-card-list]').forEach((list) => {
                 syncProjectCardLabels(list, list.dataset.projectCardList);
                 list.querySelectorAll('[data-project-editor-card]').forEach((card) => initializeProjectCard(card));
+            });
+
+            document.querySelectorAll('[data-prospectus-card-list]').forEach((list) => {
+                syncProspectusCardLabels(list);
             });
 
             document.querySelectorAll('[data-office-card-list]').forEach((list) => {
@@ -5496,9 +5933,67 @@
                 syncLeadershipMemberLabels(list);
             });
 
+            const initProspectusDirectory = () => {
+                const searchInput = document.querySelector('[data-prospectus-search-input]');
+                const clearBtn = document.querySelector('[data-prospectus-clear-btn]');
+                if (!searchInput) return;
+
+                const filter = () => {
+                    const query = searchInput.value.trim().toLowerCase();
+                    if (clearBtn) {
+                        clearBtn.style.display = query ? 'inline-flex' : 'none';
+                    }
+                    const cards = document.querySelectorAll('[data-prospectus-card-list] [data-prospectus-editor-card]');
+                    let matchCount = 0;
+                    cards.forEach((card) => {
+                        const name = (card.querySelector('[data-prospectus-name-input]')?.value || card.querySelector('[data-prospectus-summary-name]')?.textContent || '').toLowerCase();
+                        const sub = (card.querySelector('[data-prospectus-position-input]')?.value || card.querySelector('[data-prospectus-summary-position]')?.textContent || '').toLowerCase();
+                        const badge = (card.querySelector('[data-prospectus-badge]')?.textContent || '').toLowerCase();
+                        const match = !query || name.includes(query) || sub.includes(query) || badge.includes(query);
+                        card.style.display = match ? '' : 'none';
+                        if (match) matchCount++;
+                    });
+                    const feedback = document.querySelector('[data-prospectus-search-feedback]');
+                    if (feedback) {
+                        feedback.textContent = query ? `${matchCount} of ${cards.length} matching "${query}"` : '';
+                    }
+                };
+
+                searchInput.addEventListener('input', filter);
+                if (clearBtn) {
+                    clearBtn.addEventListener('click', () => {
+                        searchInput.value = '';
+                        filter();
+                        searchInput.focus();
+                    });
+                }
+            };
+
             initValuedShareholderDirectory();
+            initProspectusDirectory();
 
             document.addEventListener('input', (event) => {
+                const prospectusNameInput = event.target.closest('[data-prospectus-name-input]');
+                if (prospectusNameInput) {
+                    const card = prospectusNameInput.closest('[data-prospectus-editor-card]');
+                    const summaryName = card?.querySelector('[data-prospectus-summary-name]');
+                    if (summaryName) {
+                        const val = prospectusNameInput.value.trim();
+                        summaryName.textContent = val !== '' ? val : 'New Brochure Page';
+                    }
+                    return;
+                }
+
+                const prospectusPositionInput = event.target.closest('[data-prospectus-position-input]');
+                if (prospectusPositionInput) {
+                    const card = prospectusPositionInput.closest('[data-prospectus-editor-card]');
+                    const summaryPos = card?.querySelector('[data-prospectus-summary-position]');
+                    if (summaryPos) {
+                        const val = prospectusPositionInput.value.trim();
+                        summaryPos.textContent = val !== '' ? val : 'No subtitle set';
+                    }
+                    return;
+                }
                 const titleInput = event.target.closest('[data-gallery-album-title-input]');
                 if (titleInput) {
                     const card = titleInput.closest('[data-gallery-album-card]');
@@ -5756,9 +6251,92 @@
                     }
                     return;
                 }
+
+                const prospectusFileInput = event.target.closest('[data-prospectus-file-input]');
+                if (prospectusFileInput && prospectusFileInput.files && prospectusFileInput.files[0]) {
+                    const file = prospectusFileInput.files[0];
+                    if (file.type.startsWith('image/')) {
+                        const card = prospectusFileInput.closest('[data-prospectus-editor-card]');
+                        const reader = new FileReader();
+                        reader.onload = (e) => {
+                            const result = e.target.result;
+                            const previewTile = card?.querySelector('[data-prospectus-editor-preview]');
+                            if (previewTile) {
+                                previewTile.innerHTML = `<img src="${result}" alt="Flyer preview" style="width: 100%; height: 100%; object-fit: cover; display: block;" loading="lazy">`;
+                            }
+                            const summaryThumb = card?.querySelector('[data-prospectus-summary-thumb]');
+                            if (summaryThumb) {
+                                summaryThumb.innerHTML = `<img src="${result}" alt="Flyer" style="width: 100%; height: 100%; object-fit: cover; display: block;" loading="lazy">`;
+                            }
+                            const hint = card?.querySelector('[data-prospectus-hint]');
+                            if (hint) {
+                                hint.textContent = file.name;
+                            }
+                            const labelSpan = card?.querySelector('.leadership-photo-picker-btn span');
+                            if (labelSpan) {
+                                labelSpan.textContent = 'Change Flyer';
+                            }
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                    return;
+                }
             });
 
             document.addEventListener('click', async (event) => {
+                const prospectusExpandAllBtn = event.target.closest('[data-prospectus-expand-all]');
+                if (prospectusExpandAllBtn) {
+                    document.querySelectorAll('[data-prospectus-card-list] [data-prospectus-editor-card]').forEach((card) => {
+                        card.classList.add('is-expanded');
+                        card.querySelector('.leadership-member-summary')?.setAttribute('aria-expanded', 'true');
+                        const label = card.querySelector('.leadership-btn-toggle-label');
+                        if (label) label.textContent = 'Close';
+                    });
+                    return;
+                }
+
+                const prospectusCollapseAllBtn = event.target.closest('[data-prospectus-collapse-all]');
+                if (prospectusCollapseAllBtn) {
+                    document.querySelectorAll('[data-prospectus-card-list] [data-prospectus-editor-card]').forEach((card) => {
+                        card.classList.remove('is-expanded');
+                        card.querySelector('.leadership-member-summary')?.setAttribute('aria-expanded', 'false');
+                        const label = card.querySelector('.leadership-btn-toggle-label');
+                        if (label) label.textContent = 'Edit';
+                    });
+                    return;
+                }
+
+                const prospectusToggleBtn = event.target.closest('[data-prospectus-toggle-btn]');
+                if (prospectusToggleBtn) {
+                    const card = prospectusToggleBtn.closest('[data-prospectus-editor-card]');
+                    if (card) {
+                        const isExpanded = card.classList.toggle('is-expanded');
+                        const summary = card.querySelector('.leadership-member-summary');
+                        if (summary) {
+                            summary.setAttribute('aria-expanded', isExpanded ? 'true' : 'false');
+                        }
+                        const toggleLabel = card.querySelector('.leadership-btn-toggle-label');
+                        if (toggleLabel) {
+                            toggleLabel.textContent = isExpanded ? 'Close' : 'Edit';
+                        }
+                    }
+                    return;
+                }
+
+                const prospectusToggleAccordion = event.target.closest('[data-prospectus-toggle-accordion]');
+                if (prospectusToggleAccordion && !event.target.closest('button, a, input, label')) {
+                    const card = prospectusToggleAccordion.closest('[data-prospectus-editor-card]');
+                    if (card) {
+                        const isExpanded = card.classList.toggle('is-expanded');
+                        prospectusToggleAccordion.setAttribute('aria-expanded', isExpanded ? 'true' : 'false');
+                        const toggleLabel = card.querySelector('.leadership-btn-toggle-label');
+                        if (toggleLabel) {
+                            toggleLabel.textContent = isExpanded ? 'Close' : 'Edit';
+                        }
+                    }
+                    return;
+                }
+
                 const leadershipExpandAllBtn = event.target.closest('[data-leadership-expand-all]');
                 if (leadershipExpandAllBtn) {
                     document.querySelectorAll('[data-leadership-member-list] [data-leadership-member-card]').forEach((card) => {
@@ -5926,6 +6504,32 @@
                     return;
                 }
 
+                const prospectusRemoveButton = event.target.closest('[data-prospectus-remove-card]');
+
+                if (prospectusRemoveButton) {
+                    const confirmed = await (window.adminConfirm?.({
+                        title: 'Remove brochure page',
+                        message: prospectusRemoveButton.dataset.confirmMessage || 'Are you sure you want to remove this brochure page?',
+                        confirmLabel: 'Remove',
+                        cancelLabel: 'Keep',
+                    }) ?? Promise.resolve(window.confirm(prospectusRemoveButton.dataset.confirmMessage || 'Are you sure you want to remove this brochure page?')));
+
+                    if (!confirmed) {
+                        return;
+                    }
+
+                    const card = prospectusRemoveButton.closest('[data-prospectus-editor-card]');
+                    const list = card?.closest('[data-prospectus-card-list]');
+
+                    card?.remove();
+
+                    if (list) {
+                        syncProspectusCardLabels(list);
+                    }
+
+                    return;
+                }
+
                 const reviewRemoveButton = event.target.closest('[data-review-remove-card]');
 
                 if (reviewRemoveButton) {
@@ -6082,6 +6686,21 @@
 
             document.addEventListener('keydown', (event) => {
                 if (event.key === 'Enter' || event.key === ' ') {
+                    const prospectusSummary = event.target.closest('[data-prospectus-toggle-accordion]');
+                    if (prospectusSummary && !event.target.closest('button, input, a, label')) {
+                        event.preventDefault();
+                        const card = prospectusSummary.closest('[data-prospectus-editor-card]');
+                        if (card) {
+                            const isExpanded = card.classList.toggle('is-expanded');
+                            prospectusSummary.setAttribute('aria-expanded', isExpanded ? 'true' : 'false');
+                            const toggleLabel = card.querySelector('.leadership-btn-toggle-label');
+                            if (toggleLabel) {
+                                toggleLabel.textContent = isExpanded ? 'Close' : 'Edit';
+                            }
+                        }
+                        return;
+                    }
+
                     const target = event.target;
                     if (target && target.matches && target.matches('[data-review-toggle-accordion]')) {
                         event.preventDefault();
@@ -6211,6 +6830,180 @@
                         saveBtn.classList.add('is-loading');
                     }
                 });
+            }
+
+            // FAQ Management Handlers & Infinite Scroll Loading
+            const faqCreateWrap = document.getElementById('faq-create-form-wrap');
+            document.querySelectorAll('[data-faq-toggle-create]').forEach((btn) => {
+                btn.addEventListener('click', () => {
+                    if (!faqCreateWrap) return;
+                    const isHidden = faqCreateWrap.style.display === 'none';
+                    faqCreateWrap.style.display = isHidden ? 'block' : 'none';
+                    if (isHidden) {
+                        faqCreateWrap.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                        const qInput = faqCreateWrap.querySelector('input[name="question"]');
+                        if (qInput) qInput.focus();
+                    }
+                });
+            });
+
+            // Event delegation for Edit toggle on dynamically loaded and initial items
+            document.addEventListener('click', (event) => {
+                const editBtn = event.target.closest('[data-faq-toggle-edit]');
+                if (editBtn) {
+                    const faqId = editBtn.dataset.faqToggleEdit;
+                    const editWrap = document.getElementById(`faq-edit-form-${faqId}`);
+                    if (!editWrap) return;
+                    const isHidden = editWrap.style.display === 'none';
+                    editWrap.style.display = isHidden ? 'block' : 'none';
+                    const labelSpan = editBtn.querySelector('.leadership-btn-toggle-label');
+                    if (labelSpan) {
+                        labelSpan.textContent = isHidden ? 'Close' : 'Edit';
+                    }
+                }
+            });
+
+            // Event delegation for Delete submission with adminConfirm
+            document.addEventListener('submit', async (event) => {
+                const deleteForm = event.target.closest('[data-faq-delete-form]');
+                if (!deleteForm) return;
+
+                event.preventDefault();
+                const btn = deleteForm.querySelector('button[type="submit"]');
+                const msg = btn?.dataset.confirmMessage || 'Are you sure you want to delete this FAQ question?';
+                const confirmed = await (window.adminConfirm?.({
+                    title: 'Delete FAQ',
+                    message: msg,
+                    confirmLabel: 'Delete',
+                    cancelLabel: 'Cancel',
+                }) ?? Promise.resolve(window.confirm(msg)));
+
+                if (confirmed) {
+                    deleteForm.submit();
+                }
+            });
+
+            // Admin FAQ Infinite Scroll Loading
+            const faqContainer = document.querySelector('[data-faq-list]');
+            const faqSentinel = document.querySelector('[data-faq-sentinel]');
+            const faqLoader = document.querySelector('[data-faq-loader]');
+            const faqCardTemplate = document.getElementById('faq-card-template');
+
+            if (faqContainer && faqSentinel && faqCardTemplate) {
+                let faqPage = parseInt(faqContainer.dataset.currentPage || '1', 10);
+                let faqHasMore = faqContainer.dataset.hasMore === 'true';
+                let faqLoading = false;
+                const faqItemsUrl = faqContainer.dataset.itemsUrl;
+                const loadedFaqIds = new Set();
+
+                document.querySelectorAll('[data-faq-card-id]').forEach(el => {
+                    if (el.dataset.faqCardId) loadedFaqIds.add(el.dataset.faqCardId);
+                });
+
+                const escapeHtml = (str) => {
+                    const d = document.createElement('div');
+                    d.textContent = str || '';
+                    return d.innerHTML;
+                };
+
+                const fetchNextFaqPage = async () => {
+                    if (faqLoading || !faqHasMore || !faqItemsUrl) return;
+                    faqLoading = true;
+                    if (faqLoader) faqLoader.style.display = 'inline-flex';
+
+                    try {
+                        const url = new URL(faqItemsUrl, window.location.origin);
+                        url.searchParams.set('page', String(faqPage + 1));
+
+                        const res = await fetch(url.toString(), {
+                            headers: {
+                                'Accept': 'application/json',
+                                'X-Requested-With': 'XMLHttpRequest'
+                            }
+                        });
+
+                        if (!res.ok) throw new Error('Failed to load next FAQ page');
+
+                        const result = await res.json();
+                        const items = Array.isArray(result.data) ? result.data : [];
+                        faqHasMore = Boolean(result.has_more);
+                        faqPage = Number(result.current_page) || (faqPage + 1);
+
+                        faqContainer.dataset.currentPage = String(faqPage);
+                        faqContainer.dataset.hasMore = faqHasMore ? 'true' : 'false';
+                        faqSentinel.style.display = faqHasMore ? 'flex' : 'none';
+
+                        if (items.length > 0) {
+                            const fragment = document.createDocumentFragment();
+
+                            items.forEach((item) => {
+                                if (loadedFaqIds.has(String(item.id))) return;
+                                loadedFaqIds.add(String(item.id));
+
+                                const temp = document.createElement('div');
+                                let html = faqCardTemplate.innerHTML
+                                    .replace(/__ID__/g, escapeHtml(String(item.id)))
+                                    .replace(/__QUESTION__/g, escapeHtml(item.question))
+                                    .replace(/__STATUS__/g, item.is_active ? 'Visible' : 'Hidden')
+                                    .replace(/__UPDATED__/g, 'Updated ' + escapeHtml(item.updated_at_human || 'recently'))
+                                    .replace(/__DESTROY_URL__/g, item.destroy_url || '')
+                                    .replace(/__UPDATE_URL__/g, item.update_url || '');
+
+                                temp.innerHTML = html.trim();
+                                const card = temp.firstElementChild;
+                                if (!card) return;
+
+                                card.id = `faq-card-${item.id}`;
+                                const editForm = card.querySelector(`[id^="faq-edit-form-"]`);
+                                if (editForm) editForm.id = `faq-edit-form-${item.id}`;
+
+                                const statusBadge = card.querySelector('[data-faq-status-badge]');
+                                if (statusBadge) {
+                                    if (item.is_active) {
+                                        statusBadge.style.background = '#dcfce7';
+                                        statusBadge.style.color = '#15803d';
+                                    } else {
+                                        statusBadge.style.background = '#f1f5f9';
+                                        statusBadge.style.color = '#64748b';
+                                    }
+                                }
+
+                                const activeCheckbox = card.querySelector('[data-faq-active-input]');
+                                if (activeCheckbox) activeCheckbox.checked = Boolean(item.is_active);
+
+                                const qInput = card.querySelector('[data-faq-question-input]');
+                                if (qInput) qInput.value = item.question || '';
+
+                                const aInput = card.querySelector('[data-faq-answer-input]');
+                                if (aInput) aInput.value = item.answer || '';
+
+                                fragment.appendChild(card);
+                            });
+
+                            faqContainer.appendChild(fragment);
+                        }
+                    } catch (err) {
+                        console.error('Error loading more FAQs:', err);
+                    } finally {
+                        faqLoading = false;
+                        if (faqLoader) faqLoader.style.display = 'none';
+                    }
+                };
+
+                if ('IntersectionObserver' in window) {
+                    const faqObserver = new IntersectionObserver((entries) => {
+                        const entry = entries[0];
+                        if (entry.isIntersecting && faqHasMore && !faqLoading) {
+                            fetchNextFaqPage();
+                        }
+                    }, {
+                        root: null,
+                        rootMargin: '200px 0px',
+                        threshold: 0.1
+                    });
+
+                    faqObserver.observe(faqSentinel);
+                }
             }
         });
     </script>

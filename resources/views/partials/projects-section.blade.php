@@ -44,7 +44,7 @@
                 font-family: var(--font-primary);
                 font-weight: 400;
                 line-height: 1.02;
-                color: #121926;
+                color: #000000;
                 text-align: center;
             }
 
@@ -167,7 +167,7 @@
             }
 
             .project-card--top .project-name {
-                color: #121926;
+                color: #000000;
                 font-size: clamp(1.08rem, 1.25vw, 1.34rem);
                 font-weight: 600;
                 line-height: 1.08;
@@ -175,12 +175,12 @@
 
             .project-card--top .project-location {
                 margin-top: 6px;
-                color: rgba(18, 25, 38, 0.72);
+                color: #000000;
                 font-size: 0.94rem;
             }
 
             .project-card--top .project-location::before {
-                color: #121926;
+                color: #000000;
             }
 
             .project-card--top .project-arrow {
@@ -441,11 +441,11 @@
 
             .project-showcase-title {
                 margin: 0;
-                color: #111827;
+                color: #000000;
                 font-family: var(--font-secondary);
-                font-size: 0.72rem;
+                font-size: 1.15rem !important;
                 font-weight: 700;
-                line-height: 1.12;
+                line-height: 1.25;
             }
 
             .projects-bottom-dots {
@@ -668,7 +668,7 @@
                 }
 
                 .project-showcase-title {
-                    font-size: 0.64rem;
+                    font-size: 0.92rem !important;
                 }
 
                 .projects-bottom-dots {

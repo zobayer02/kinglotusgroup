@@ -2,6 +2,11 @@
 
 @section('title', 'Login | King Lotus International')
 
+@php
+    $notice = $notice ?? \App\Models\SiteNotice::query()->active()->latest('updated_at')->first();
+    $heroBackgroundUrl = $notice?->heroBackgroundUrl() ?: asset('images/beautiful-rustic-house-landscape.webp');
+@endphp
+
 @push('styles')
     <style>
         @include('partials.chrome-styles')
@@ -19,6 +24,8 @@
         }
 
         .login-hero {
+            position: relative;
+            min-height: 0;
             padding: 28px;
             background: var(--section-surface);
         }
@@ -30,15 +37,15 @@
             width: 100%;
             max-width: 1240px;
             margin: 0 auto;
-            height: clamp(760px, calc(100vh - 56px), 980px);
+            aspect-ratio: 16 / 9;
+            height: auto;
             min-height: 0;
             overflow: hidden;
-            padding: 28px;
             border-radius: 34px;
             border: 1px solid rgba(190, 205, 214, 0.68);
             background:
                 linear-gradient(180deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 100%),
-                url('{{ asset('images/beautiful-rustic-house-landscape.webp') }}') center center / cover no-repeat;
+                url('{{ $heroBackgroundUrl }}') center center / cover no-repeat;
             box-shadow:
                 0 28px 80px rgba(24, 43, 56, 0.12),
                 inset 0 1px 0 rgba(255, 255, 255, 0.4);
@@ -50,7 +57,7 @@
             justify-content: center;
             height: 100%;
             min-height: 0;
-            padding: 122px 18px 28px;
+            padding: 104px 18px 24px;
         }
 
         .login-card {
@@ -122,7 +129,7 @@
         }
 
         .visual-title {
-            margin: 0 0 18px;
+            margin: 0;
             font-family: var(--font-primary);
             font-size: clamp(1.75rem, 2.7vw, 3.2rem);
             font-weight: 600;
@@ -204,7 +211,7 @@
         }
 
         .login-title {
-            margin: 0;
+            margin: 0 0 20px;
             font-size: clamp(1.6rem, 2vw, 2.35rem);
             font-weight: 600;
             line-height: 1.04;
@@ -369,29 +376,89 @@
             line-height: 1.6;
         }
 
-        .signup-copy {
-            margin: 18px 0 0;
+        .login-status {
+            margin-bottom: 16px;
+            padding: 14px 16px;
+            border-radius: 18px;
+            border: 1px solid rgba(22, 101, 52, 0.2);
+            background: rgba(22, 101, 52, 0.1);
+            color: #14532d;
+            line-height: 1.6;
+            font-size: 0.92rem;
             text-align: center;
-            font-size: clamp(0.68rem, 2.35vw, 0.95rem);
-            line-height: 1.45;
+        }
+
+        .login-forgot-wrap {
+            margin-top: 14px;
+            text-align: center;
+        }
+
+        .login-forgot-link {
+            display: inline-block;
+            font-size: clamp(0.75rem, 2.35vw, 0.88rem);
+            font-weight: 600;
             color: var(--panel-soft);
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .login-forgot-link:hover {
+            color: var(--primary);
+            text-decoration: underline;
+        }
+
+        .share-owner-divider {
+            display: flex;
+            align-items: center;
+            margin: 18px 0 14px;
             width: 100%;
         }
 
-        .signup-copy a,
-        .signup-copy button {
-            font-weight: 700;
-            color: #0c505d;
-            font: inherit;
-            padding: 0;
-            border: 0;
-            background: transparent;
-            cursor: pointer;
+        .share-owner-divider::before,
+        .share-owner-divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: rgba(155, 173, 185, 0.35);
         }
 
-        .signup-copy a:hover,
-        .signup-copy button:hover {
-            text-decoration: underline;
+        .share-owner-divider span {
+            padding: 0 12px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: var(--panel-soft);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .share-owner-wrap {
+            width: 100%;
+        }
+
+        .share-owner-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            height: clamp(44px, 5.5vw, 50px);
+            padding: 0 20px;
+            border-radius: 999px;
+            border: 1.5px solid var(--primary);
+            background: transparent;
+            color: var(--primary);
+            font-size: clamp(0.82rem, 2.4vw, 0.95rem);
+            font-weight: 700;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            box-sizing: border-box;
+        }
+
+        .share-owner-button:hover {
+            background: var(--primary);
+            color: #ffffff;
+            transform: translateY(-1px);
+            box-shadow: 0 10px 24px rgba(12, 80, 93, 0.2);
         }
 
         @keyframes loginCardAppear {
@@ -516,25 +583,49 @@
         }
 
         @media (max-width: 768px) {
-            .login-hero,
+            .login-hero {
+                padding: 112px 18px 24px;
+                min-height: calc(100vh - 36px);
+                min-height: 100dvh;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                box-sizing: border-box;
+            }
+
             .site-footer {
                 padding: 18px 18px 18px;
             }
 
             .login-shell {
+                aspect-ratio: auto;
+                width: 100%;
+                max-width: 480px;
                 min-height: auto;
-                padding: 16px;
+                margin: auto auto;
+                padding: 18px 16px;
                 border-radius: 26px;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                box-sizing: border-box;
             }
 
             .login-stage {
+                width: 100%;
                 min-height: auto;
-                padding: 118px 0 0;
+                padding: 0;
+                display: flex;
+                align-items: center;
+                justify-content: center;
             }
 
             .login-card {
                 grid-template-columns: 1fr;
                 width: 100%;
+                max-width: 420px;
+                margin: 0 auto;
                 border-radius: 22px;
                 overflow: hidden;
             }
@@ -545,7 +636,7 @@
 
             .login-panel {
                 min-height: auto;
-                padding: 22px 18px 24px;
+                padding: 24px 20px 24px;
                 border-radius: 22px;
             }
 
@@ -561,12 +652,15 @@
 
         @media (max-width: 520px) {
             .login-hero {
-                padding: 12px;
+                padding: 108px 12px 20px;
+                min-height: calc(100vh - 24px);
+                min-height: 100dvh;
             }
 
             .login-shell {
-                padding: 12px;
+                padding: 14px 10px;
                 border-radius: 22px;
+                max-width: 100%;
             }
 
             .floating-nav {
@@ -583,7 +677,7 @@
             }
 
             .login-panel {
-                padding: 18px 16px 20px;
+                padding: 18px 14px 20px;
                 border-radius: 18px;
             }
 
@@ -607,7 +701,7 @@
 
             .visual-description,
             .login-subtitle,
-            .signup-copy {
+            .login-forgot-link {
                 font-size: clamp(0.62rem, 2.7vw, 0.8rem);
             }
 
@@ -662,15 +756,18 @@
 
                             <div class="visual-copy">
                                 <h1 class="visual-title">Your Private Gateway to Hotel Ownership</h1>
-                                <p class="visual-description">Secure access. Trusted updates. Premium hospitality investment.</p>
                             </div>
                         </div>
 
                         <div class="login-panel">
                             <div class="login-panel-inner">
-                                <p class="login-kicker">Member Access</p>
                                 <h2 class="login-title">Welcome Back</h2>
-                                <p class="login-subtitle">Sign in to access your dashboard, investment profile, and shareholder tools.</p>
+
+                                @if (session('status'))
+                                    <div class="login-status">{{ session('status') }}</div>
+                                @elseif (session('success'))
+                                    <div class="login-status">{{ session('success') }}</div>
+                                @endif
 
                                 @if (session('error'))
                                     <div class="login-error">{{ session('error') }}</div>
@@ -682,8 +779,8 @@
                                     @csrf
 
                                     <div class="field-group">
-                                        <label class="field-label" for="email">Email or mobile number</label>
-                                        <input class="field-input" id="email" type="text" name="email" value="{{ old('email') }}" placeholder="Enter your email or mobile number" autocomplete="username" inputmode="email" maxlength="255" required>
+                                        <label class="field-label" for="email">Email</label>
+                                        <input class="field-input" id="email" type="email" name="email" value="{{ old('email') }}" placeholder="Enter your email" autocomplete="email" inputmode="email" maxlength="255" required>
                                     </div>
 
                                     <div class="field-group">
@@ -707,9 +804,25 @@
 
                                     <button class="primary-button" type="submit">Sign In</button>
 
+                                    <div class="login-forgot-wrap">
+                                        <a href="{{ route('password.request') }}" class="login-forgot-link">Forgot password?</a>
+                                    </div>
                                 </form>
 
-                                <p class="signup-copy">Don’t have an account?<br><a href="#">Contact King Lotus Group</a></p>
+                                <div class="share-owner-divider">
+                                    <span>or</span>
+                                </div>
+
+                                <div class="share-owner-wrap">
+                                    <a href="https://kinglotusgroup.com/customer/login.php" target="_blank" rel="noopener noreferrer" class="share-owner-button">
+                                        <span>Share Owner Login</span>
+                                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                                            <polyline points="15 3 21 3 21 9"></polyline>
+                                            <line x1="10" y1="14" x2="21" y2="3"></line>
+                                        </svg>
+                                    </a>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -728,8 +841,6 @@
         document.addEventListener('DOMContentLoaded', () => {
             const toggle = document.querySelector('[data-password-toggle]');
             const input = document.getElementById('password');
-            const contactLink = document.querySelector('.signup-copy a');
-            const phoneTrigger = document.querySelector('[data-phone-trigger]');
 
             if (toggle && input) {
                 toggle.addEventListener('click', () => {
@@ -739,14 +850,6 @@
                     toggle.setAttribute('data-state', isPassword ? 'visible' : 'hidden');
                 });
             }
-
-            if (contactLink && phoneTrigger) {
-                contactLink.addEventListener('click', (event) => {
-                    event.preventDefault();
-                    phoneTrigger.click();
-                });
-            }
-
         });
     </script>
 @endpush

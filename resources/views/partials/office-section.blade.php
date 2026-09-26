@@ -58,11 +58,15 @@
             }
 
             .office-section.is-visible .office-card:nth-child(2) {
-                transition-delay: 0.32s;
+                transition-delay: 0.3s;
             }
 
-            .office-section.is-visible .office-card:nth-child(n + 3) {
-                transition-delay: 0.44s;
+            .office-section.is-visible .office-card:nth-child(3) {
+                transition-delay: 0.4s;
+            }
+
+            .office-section.is-visible .office-card:nth-child(n + 4) {
+                transition-delay: 0.5s;
             }
 
             .office-frame {
@@ -93,7 +97,7 @@
 
             .office-kicker {
                 margin: 0 0 14px;
-                color: rgba(16, 33, 44, 0.62);
+                color: #000000;
                 font-size: 0.92rem;
                 font-weight: 700;
                 letter-spacing: 0.16em;
@@ -106,17 +110,27 @@
                 font-size: var(--section-title-size);
                 font-weight: 400;
                 line-height: 0.98;
-                color: #101214;
+                color: #000000;
             }
 
             .office-grid {
                 display: grid;
-                grid-template-columns: repeat(2, minmax(0, 1fr));
+                grid-template-columns: repeat(3, minmax(0, 1fr));
                 gap: 20px;
             }
 
-            .office-grid--single {
+            .office-grid--single,
+            .office-grid--1-col {
                 grid-template-columns: minmax(0, 1fr);
+            }
+
+            .office-grid--2-col,
+            .office-grid--4-col {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .office-grid--3-col {
+                grid-template-columns: repeat(3, minmax(0, 1fr));
             }
 
             .office-card {
@@ -137,8 +151,9 @@
                     inset 0 1px 0 rgba(255, 255, 255, 0.08);
             }
 
-            .office-grid--single .office-card {
-                width: min(100%, 860px);
+            .office-grid--single .office-card,
+            .office-grid--1-col .office-card {
+                width: min(100%, 720px);
                 justify-self: center;
             }
 
@@ -228,6 +243,7 @@
                 font-family: var(--font-secondary);
                 font-size: 0.94rem;
                 font-weight: 600;
+                white-space: nowrap;
                 box-shadow: 0 12px 24px rgba(16, 33, 44, 0.08);
                 transition:
                     transform 0.2s ease,
@@ -243,6 +259,13 @@
                 background: #d6bf87;
                 color: #233930;
                 box-shadow: 0 20px 34px rgba(28, 45, 38, 0.2);
+            }
+
+            @media (max-width: 992px) {
+                .office-grid,
+                .office-grid--3-col {
+                    grid-template-columns: repeat(2, minmax(0, 1fr));
+                }
             }
 
             @media (max-width: 768px) {
@@ -270,6 +293,20 @@
                     font-size: var(--section-title-size-mobile);
                 }
 
+                .office-grid,
+                .office-grid--single,
+                .office-grid--1-col,
+                .office-grid--2-col,
+                .office-grid--3-col,
+                .office-grid--4-col {
+                    grid-template-columns: 1fr;
+                }
+
+                .office-grid--single .office-card,
+                .office-grid--1-col .office-card {
+                    width: 100%;
+                }
+
                 .office-card {
                     padding: 20px 16px;
                     border-radius: 24px;
@@ -288,12 +325,6 @@
                     width: 100%;
                 }
             }
-
-            @media (max-width: 900px) {
-                .office-grid {
-                    grid-template-columns: 1fr;
-                }
-            }
         </style>
     @endpush
 @endonce
@@ -306,7 +337,17 @@
                 <h2 class="office-title">{{ $officeSectionTitle }}</h2>
             </div>
 
-            <div class="office-grid {{ count($officeCards) === 1 ? 'office-grid--single' : '' }}">
+            @php
+                $cardCount = count($officeCards);
+                $gridModifier = match(true) {
+                    $cardCount === 1 => 'office-grid--1-col office-grid--single',
+                    $cardCount === 2 => 'office-grid--2-col',
+                    $cardCount === 4 => 'office-grid--4-col',
+                    default => 'office-grid--3-col',
+                };
+            @endphp
+
+            <div class="office-grid {{ $gridModifier }}">
                 @foreach ($officeCards as $office)
                     <article class="office-card">
                         <span class="office-card-icon" aria-hidden="true">

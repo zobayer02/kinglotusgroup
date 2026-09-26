@@ -50,7 +50,7 @@
 
                 .shareholder-review-kicker {
                     margin: 0;
-                    color: rgba(16, 33, 44, 0.62);
+                    color: #000000;
                     font-size: 0.9rem;
                     font-weight: 700;
                     letter-spacing: 0.16em;
@@ -64,7 +64,7 @@
                     font-size: var(--section-title-size);
                     font-weight: 400;
                     line-height: 0.98;
-                    color: #101214;
+                    color: #000000;
                 }
 
                 .shareholder-review-showcase {
@@ -258,7 +258,7 @@
 
                 .shareholder-review-name {
                     margin: 0;
-                    color: #111827;
+                    color: #000000;
                     font-family: var(--font-secondary);
                     font-size: 0.74rem;
                     font-weight: 700;
@@ -271,7 +271,7 @@
                     font-family: var(--font-secondary);
                     font-size: 0.38rem;
                     font-weight: 600;
-                    color: rgba(17, 24, 39, 0.42);
+                    color: #000000;
                     text-transform: uppercase;
                     letter-spacing: 0.08em;
                 }
@@ -357,7 +357,7 @@
                     border-radius: 999px;
                     border: 1px solid rgba(18, 25, 38, 0.72);
                     background: rgba(255, 255, 255, 0.9);
-                    color: #121926;
+                    color: #000000;
                     font-family: var(--font-secondary);
                     font-size: 0.96rem;
                     font-weight: 600;

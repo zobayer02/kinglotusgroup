@@ -16,13 +16,13 @@
     <meta name="apple-mobile-web-app-title" content="KLI">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Orbitron:wght@400..900&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
             color-scheme: light;
             --page-bg: #dbe7ee;
-            --text-primary: #10212c;
-            --text-soft: rgba(16, 33, 44, 0.74);
+            --text-primary: #000000;
+            --text-soft: #000000;
             --glass-bg: rgba(240, 246, 250, 0.48);
             --glass-border: rgba(255, 255, 255, 0.38);
             --button-bg: #1f1f1f;
@@ -30,6 +30,7 @@
             --shadow-soft: 0 24px 80px rgba(27, 63, 89, 0.18);
             --font-primary: "Fraunces", "Times New Roman", serif;
             --font-secondary: "Playfair Display", "Times New Roman", serif;
+            --font-brand: "Orbitron", sans-serif;
         }
 
         * {

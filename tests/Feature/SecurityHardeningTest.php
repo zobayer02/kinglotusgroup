@@ -341,19 +341,57 @@ class SecurityHardeningTest extends TestCase
         \Illuminate\Support\Facades\Cache::forget(\App\Support\SiteCache::TERMS_PAGE_DATA_KEY);
 
         $setting = \App\Models\FooterSetting::query()->firstOrNew();
-        $setting->terms_title = 'Terms of Service';
-        $setting->terms_intro = '<div><img src=x onerror=alert(1)></div><p>Intro</p>';
-        $setting->terms_content = '<div><a href="javascript:alert(1)">Click here</a></div><span><script>alert(2)</script></span>';
-        $setting->save();
+        $originalTitle = $setting->terms_title;
+        $originalIntro = $setting->terms_intro;
+        $originalContent = $setting->terms_content;
 
-        $response = $this->get(route('terms.show'));
+        try {
+            $setting->terms_title = 'Terms of Service';
+            $setting->terms_intro = '<div><img src=x onerror=alert(1)></div><p>Intro</p>';
+            $setting->terms_content = '<div><a href="javascript:alert(1)">Click here</a></div><span><script>alert(2)</script></span>';
+            $setting->save();
 
-        $response->assertStatus(200);
-        $response->assertDontSee('onerror=alert(1)', false);
-        $response->assertDontSee('javascript:alert(1)', false);
-        $response->assertDontSee('<script>alert(2)', false);
-        $response->assertSee('Intro');
-        $response->assertSee('Click here');
+            $response = $this->get(route('terms.show'));
+
+            $response->assertStatus(200);
+            $response->assertDontSee('onerror=alert(1)', false);
+            $response->assertDontSee('javascript:alert(1)', false);
+            $response->assertDontSee('<script>alert(2)', false);
+            $response->assertSee('Intro');
+            $response->assertSee('Click here');
+        } finally {
+            $setting->terms_title = $originalTitle;
+            $setting->terms_intro = $originalIntro;
+            $setting->terms_content = $originalContent;
+            $setting->save();
+            \App\Support\SiteCache::forgetPublicPages();
+        }
+    }
+
+    public function test_terms_page_preserves_safe_inline_formatting_and_colors(): void
+    {
+        \Illuminate\Support\Facades\Cache::forget(\App\Support\SiteCache::TERMS_PAGE_DATA_KEY);
+
+        $setting = \App\Models\FooterSetting::query()->firstOrNew();
+        $originalTitle = $setting->terms_title;
+        $originalContent = $setting->terms_content;
+
+        try {
+            $setting->terms_title = 'Terms and Conditions';
+            $setting->terms_content = '<p><span style="color: rgb(255, 0, 0); background-color: rgb(255, 235, 59);">Highlighted and colored text</span></p>';
+            $setting->save();
+
+            $response = $this->get(route('terms.show'));
+
+            $response->assertStatus(200);
+            $response->assertSee('style="color: rgb(255, 0, 0); background-color: rgb(255, 235, 59);"', false);
+            $response->assertSee('Highlighted and colored text', false);
+        } finally {
+            $setting->terms_title = $originalTitle;
+            $setting->terms_content = $originalContent;
+            $setting->save();
+            \App\Support\SiteCache::forgetPublicPages();
+        }
     }
 
     public function test_uploads_directory_has_htaccess_blocking_scripts(): void
@@ -445,5 +483,26 @@ class SecurityHardeningTest extends TestCase
         // Searching exact name matches
         $queryMatch = \App\Models\ValuedShareholder::query()->search('John Doe')->get();
         $this->assertTrue($queryMatch->contains('name', 'John Doe Special'));
+    }
+
+    public function test_admin_system_migrate_rejects_unauthorized_requests(): void
+    {
+        $response = $this->get('/admin/system/migrate');
+        $response->assertStatus(403);
+
+        $invalidResponse = $this->get('/admin/system/migrate?key=wrong-key');
+        $invalidResponse->assertStatus(403);
+    }
+
+    public function test_admin_system_migrate_allows_valid_app_key(): void
+    {
+        $appKey = (string) config('app.key');
+        $this->assertNotEmpty($appKey);
+
+        $response = $this->get('/admin/system/migrate?key=' . urlencode($appKey));
+        $response->assertStatus(200);
+        $response->assertJson([
+            'status' => 'success',
+        ]);
     }
 }

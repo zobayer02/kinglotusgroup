@@ -55,7 +55,7 @@
             font-weight: 700;
             letter-spacing: 0.18em;
             text-transform: uppercase;
-            color: #0c505d;
+            color: #000000;
             text-align: center;
         }
 
@@ -65,7 +65,7 @@
             font-size: clamp(2rem, 4vw, 4.2rem);
             font-weight: 500;
             line-height: 0.98;
-            color: #121926;
+            color: #000000;
             text-align: center;
         }
 
@@ -74,7 +74,7 @@
             font-family: var(--font-secondary);
             font-size: clamp(1rem, 1.45vw, 1.16rem);
             line-height: 1.78;
-            color: rgba(17, 25, 38, 0.76);
+            color: #000000;
             text-align: justify;
             text-justify: inter-word;
         }
@@ -109,7 +109,7 @@
         .terms-body h2,
         .terms-body h3 {
             font-family: var(--font-primary);
-            color: #121926;
+            color: #000000;
             line-height: 1.08;
         }
 
@@ -126,7 +126,7 @@
             font-size: clamp(1.04rem, 1.7vw, 1.28rem);
             font-weight: 600;
             line-height: 1.6;
-            color: rgba(17, 25, 38, 0.78);
+            color: #000000;
             text-align: center;
         }
 
@@ -136,15 +136,32 @@
             font-family: var(--font-secondary);
             font-size: clamp(0.98rem, 1.35vw, 1.08rem);
             line-height: 1.85;
-            color: rgba(17, 25, 38, 0.8);
+            color: #000000;
             text-align: justify;
             text-justify: inter-word;
         }
 
         .terms-body p {
+            margin: 0 0 14px;
             text-align: justify;
             text-justify: inter-word;
-            white-space: pre-line;
+        }
+
+        .terms-body p:last-child {
+            margin-bottom: 0;
+        }
+
+        .terms-body p:empty {
+            display: none;
+        }
+
+        .terms-body mark,
+        .terms-body [style*="background-color"],
+        .terms-body [style*="background:"] {
+            padding: 2px 6px;
+            border-radius: 4px;
+            box-decoration-break: clone;
+            -webkit-box-decoration-break: clone;
         }
 
         .terms-body,

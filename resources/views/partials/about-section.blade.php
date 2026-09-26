@@ -28,7 +28,7 @@
 
             .about-copy {
                 text-align: center;
-                color: #111827;
+                color: #000000;
                 opacity: 0;
                 transform: translateY(-12px);
             }
@@ -39,7 +39,7 @@
                 font-size: var(--section-title-size);
                 font-weight: 400;
                 line-height: 1.05;
-                color: #121926;
+                color: #000000;
                 white-space: nowrap;
             }
 
@@ -48,7 +48,7 @@
                 font-family: var(--font-secondary);
                 font-size: clamp(1rem, 1.9vw, 1.42rem);
                 line-height: 1.45;
-                color: rgba(17, 25, 38, 0.78);
+                color: #000000;
             }
 
             .about-description {
@@ -56,7 +56,7 @@
                 font-family: var(--font-secondary);
                 font-size: clamp(1.02rem, 1.7vw, 1.32rem);
                 line-height: 1.5;
-                color: rgba(17, 25, 38, 0.72);
+                color: #000000;
                 text-align: justify;
                 text-align-last: center;
             }

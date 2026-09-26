@@ -38,7 +38,7 @@
 
         .shareholder-directory-kicker {
             margin: 0;
-            color: rgba(16, 33, 44, 0.62);
+            color: #000000;
             font-size: 0.9rem;
             font-weight: 700;
             letter-spacing: 0.16em;
@@ -52,7 +52,7 @@
             font-size: var(--section-title-size);
             font-weight: 400;
             line-height: 0.98;
-            color: #101214;
+            color: #000000;
         }
 
         .shareholder-directory-subtitle {
@@ -61,7 +61,7 @@
             font-family: var(--font-secondary);
             font-size: clamp(0.98rem, 1.35vw, 1.08rem);
             line-height: 1.68;
-            color: rgba(16, 33, 44, 0.74);
+            color: #000000;
         }
 
         .shareholder-search-panel {
@@ -120,7 +120,7 @@
             background: transparent;
             font-family: var(--font-secondary);
             font-size: 0.98rem;
-            color: #101214;
+            color: #000000;
             outline: none;
         }
 
@@ -175,7 +175,7 @@
             flex-direction: column;
             width: 100%;
             min-height: 100%;
-            color: #101724;
+            color: #000000;
             position: relative;
             padding: 10px 10px 12px;
             border-radius: 20px;
@@ -306,7 +306,7 @@
             font-size: 0.92rem;
             font-weight: 500;
             line-height: 1.15;
-            color: #101214;
+            color: #000000;
             max-height: 34px;
             display: -webkit-box;
             -webkit-box-orient: vertical;
@@ -345,7 +345,7 @@
             font-size: 0.74rem;
             line-height: 1.22;
             max-height: 28px;
-            color: rgba(16, 33, 44, 0.68);
+            color: #000000;
             overflow-wrap: anywhere;
         }
 
@@ -381,7 +381,7 @@
             font-family: var(--font-primary);
             font-size: 1.25rem;
             font-weight: 500;
-            color: #101214;
+            color: #000000;
         }
 
         .shareholder-empty-desc {
@@ -389,7 +389,7 @@
             max-width: 420px;
             font-size: 0.92rem;
             line-height: 1.6;
-            color: rgba(16, 33, 44, 0.68);
+            color: #000000;
         }
 
         .shareholder-empty-reset {
@@ -436,7 +436,7 @@
             text-align: center;
             font-size: 0.88rem;
             letter-spacing: 0.04em;
-            color: rgba(16, 33, 44, 0.52);
+            color: #000000;
             padding: 24px 0 12px;
         }
 

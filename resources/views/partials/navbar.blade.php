@@ -13,12 +13,7 @@
     </div>
 
     <a class="brand" href="{{ route('home') }}" aria-label="King Lotus Group">
-        <span class="brand-top">King Lotus</span>
-        <span class="brand-bottom">
-            <span class="brand-line" aria-hidden="true"></span>
-            <span>Group</span>
-            <span class="brand-line" aria-hidden="true"></span>
-        </span>
+        <img class="brand-logo" src="{{ asset('images/logo-brand.png') }}" alt="King Lotus Group" width="220" height="55">
     </a>
 
     <div class="nav-actions">

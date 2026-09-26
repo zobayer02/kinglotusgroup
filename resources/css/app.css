@@ -5,4 +5,56 @@
 @theme {
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-orbitron: 'Orbitron', sans-serif;
+    --font-brand: 'Orbitron', sans-serif;
+}
+
+/* ========================================================
+   Orbitron Font - Company Brand Style
+   ======================================================== */
+@font-face {
+    font-family: 'Orbitron';
+    font-style: normal;
+    font-weight: 400 900;
+    font-display: swap;
+    src: url('./fonts/Orbitron-VariableFont.ttf') format('truetype-variations'),
+         url('./fonts/Orbitron-Black.woff2') format('woff2');
+}
+
+/* Reusable Utility Classes for Company Name / Brand */
+.font-brand,
+.font-tech {
+    font-family: 'Orbitron', sans-serif;
+}
+
+/* Black Title (KING LOTUS) */
+.brand-tech-title,
+.tech-heading {
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 900;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: #10212c;
+}
+
+/* Black Subtitle (GROUP) */
+.brand-tech-sub,
+.tech-subtitle {
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 800;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: #10212c;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.tech-subtitle::before,
+.tech-subtitle::after {
+    content: '';
+    flex: 1;
+    height: 3px;
+    background-color: #10212c;
+    border-radius: 2px;
 }

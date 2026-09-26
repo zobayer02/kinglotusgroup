@@ -83,7 +83,7 @@
                 font-weight: 700;
                 letter-spacing: 0.16em;
                 text-transform: uppercase;
-                color: rgba(16, 33, 44, 0.62);
+                color: #000000;
             }
 
             .location-heading {
@@ -92,7 +92,7 @@
                 font-size: var(--section-title-size);
                 font-weight: 400;
                 line-height: 0.98;
-                color: #101214;
+                color: #000000;
             }
 
             .location-subtitle {
@@ -100,7 +100,7 @@
                 max-width: 660px;
                 font-size: 1rem;
                 line-height: 1.75;
-                color: rgba(16, 33, 44, 0.74);
+                color: #000000;
             }
 
             .location-actions {
@@ -146,7 +146,7 @@
                 border: 1px solid rgba(172, 189, 202, 0.72);
                 border-radius: 999px;
                 background: rgba(255, 255, 255, 0.56);
-                color: rgba(16, 33, 44, 0.7);
+                color: #000000;
                 font-size: 0.9rem;
             }
 

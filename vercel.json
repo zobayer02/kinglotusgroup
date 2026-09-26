@@ -39,6 +39,14 @@
       "dest": "/public/uploads/$1"
     },
     {
+      "src": "/build/(.*)",
+      "dest": "/public/build/$1"
+    },
+    {
+      "src": "/fonts/(.*)",
+      "dest": "/public/fonts/$1"
+    },
+    {
       "src": "/(.*)",
       "dest": "/api/index.php"
     }

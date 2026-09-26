@@ -7,6 +7,7 @@ use App\Models\FooterSetting;
 use App\Models\GallerySection;
 use App\Models\LeadershipSection;
 use App\Models\ProjectSection;
+use App\Models\ProspectusSection;
 use App\Models\ShareholderReviewSection;
 use App\Models\SiteNotice;
 use App\Models\ValuedShareholderSection;
@@ -24,6 +25,7 @@ class HomeController extends Controller
             'aboutSection' => AboutSection::query()->first(),
             'whySection' => WhySection::query()->first(),
             'projectSection' => ProjectSection::query()->first(),
+            'prospectusSection' => ProspectusSection::query()->first(),
             'gallerySection' => GallerySection::query()->first(),
             'shareholderReviewSection' => ShareholderReviewSection::query()->first(),
             'leadershipSection' => LeadershipSection::query()->first(),

@@ -49,7 +49,7 @@
                     font-size: var(--section-title-size);
                     font-weight: 400;
                     line-height: 0.98;
-                    color: #101214;
+                    color: #000000;
                 }
 
                 .valued-shareholders-showcase {
@@ -133,7 +133,7 @@
                     width: 100%;
                     height: 100%;
                     min-height: 100%;
-                    color: #101724;
+                    color: #000000;
                     position: relative;
                     padding: 10px 10px 12px;
                     border-radius: 20px;
@@ -269,7 +269,7 @@
                     font-size: 0.92rem;
                     font-weight: 500;
                     line-height: 1.15;
-                    color: #101214;
+                    color: #000000;
                     max-height: 34px;
                     display: -webkit-box;
                     -webkit-box-orient: vertical;
@@ -308,7 +308,7 @@
                     font-size: 0.74rem;
                     line-height: 1.22;
                     max-height: 28px;
-                    color: rgba(16, 33, 44, 0.68);
+                    color: #000000;
                     overflow-wrap: anywhere;
                 }
 
@@ -455,7 +455,7 @@
                     border-radius: 999px;
                     border: 1px solid rgba(18, 25, 38, 0.72);
                     background: rgba(255, 255, 255, 0.9);
-                    color: #121926;
+                    color: #000000;
                     font-family: var(--font-secondary);
                     font-size: 0.96rem;
                     font-weight: 600;
