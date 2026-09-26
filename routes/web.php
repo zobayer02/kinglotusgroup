@@ -67,12 +67,21 @@ Route::prefix('admin')->name('admin.')->group(function (): void {
         \Illuminate\Support\Facades\Artisan::call('migrate', ['--force' => true]);
         $output = \Illuminate\Support\Facades\Artisan::output();
 
+        // Run ContentSyncSeeder to sync all image paths and section content
+        if ($request->boolean('sync_content', true)) {
+            \Illuminate\Support\Facades\Artisan::call('db:seed', [
+                '--class' => 'Database\\Seeders\\ContentSyncSeeder',
+                '--force' => true,
+            ]);
+            $output .= "\n" . \Illuminate\Support\Facades\Artisan::output();
+        }
+
         // Clear site cache so newly migrated data immediately shows up
         \Illuminate\Support\Facades\Cache::flush();
 
         return response()->json([
             'status' => 'success',
-            'message' => 'Database migrations executed successfully.',
+            'message' => 'Database migrations and content sync executed successfully.',
             'output' => $output,
         ]);
     })->middleware('throttle:10,1')->name('system.migrate');

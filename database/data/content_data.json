@@ -1,0 +1,196 @@
+{
+    "site_notices": [
+        {
+            "id": 1,
+            "title": null,
+            "message": "📢 বিশেষ ডিসকাউন্ট অফার !! আমাদের সম্মানিত বিনিয়োগকারীদের জন্য এই মুহূর্তে আকর্ষণীয় ডিসকাউন্ট অফার চলছে । ক্রমান্বয়ে শেয়ারের মূল্য ও পরিমাণ দেওয়া হলো : ৪,৪৫,০০০ টাকা মূল্যে — ২,০০০ শেয়ার | ৫,৬৫,০০০ টাকা মূল্যে — ২,০০০ শেয়ার | ৭,৪৫,০০০ টাকা মূল্যে — ৫,০০০ শেয়ার | ৯,২৫,০০০ টাকা মূল্যে — শেষ ১০,০০০ শেয়ার | অফারটি সীমিত সময়ের জন্য ! আজই আপনার কাঙ্ক্ষিত শেয়ারটি নিশ্চিত করুন ।",
+            "is_active": 1,
+            "hero_background_path": "uploads/hero/ea46b741-58db-4081-861a-606d0901deb3.webp",
+            "created_at": "2026-06-26 18:57:22",
+            "updated_at": "2026-09-26 21:39:09"
+        }
+    ],
+    "about_sections": [
+        {
+            "id": 1,
+            "title": "About King Lotus Group",
+            "subtitle": "A Luxury & Signature Destination in Cox’s Bazar.",
+            "description": "King Lotus International, under construction in the heart of Cox’s Bazar, is a luxury signature destination designed to redefine world-class hospitality. With elegant architecture, breathtaking sea views, premium facilities, and personalized service, we are creating an exclusive lifestyle experience where every moment reflects comfort, beauty, trust and excellence.",
+            "left_video_url": "https://youtu.be/Ghyljd1crBk?si=6d313vXfPsiVAoor",
+            "right_video_url": "https://youtu.be/IJH-LOwfOhk?si=-NkVzUfz7pW_LGYK",
+            "left_thumbnail_path": "uploads/about/b9e3f459-b627-4927-b861-bf59db445355.webp",
+            "right_thumbnail_path": "uploads/about/fa668884-ba56-49d9-a3f5-82766225639f.webp",
+            "created_at": "2026-06-26 20:00:06",
+            "updated_at": "2026-06-26 21:14:53"
+        }
+    ],
+    "why_sections": [
+        {
+            "id": 1,
+            "title": "Why King Lotus Group",
+            "description": "King Lotus International is an upcoming mega hospitality project designed with a halal, safe and family-friendly concept. Spread across 50 acres, the project will feature a modern five-star hotel, luxury rooms, premium facilities and a secure environment for comfortable family vacations.",
+            "feature_points": "Prime Tourism Location\r\nModern Luxury Living\r\nSecure Investment Opportunity\r\nFamily-Friendly Facilities\r\nWorld-Class Hospitality",
+            "cta_label": "Investment Opportunity Details",
+            "cta_url": null,
+            "video_url": "https://youtu.be/Z6e_jTDr_YM?si=m9YLs5vgXsrQapwF",
+            "thumbnail_path": "uploads/why/5c901a55-acc8-4adb-80fb-85c9064836f0.webp",
+            "created_at": "2026-06-27 11:18:51",
+            "updated_at": "2026-06-27 15:51:00"
+        }
+    ],
+    "project_sections": [
+        {
+            "id": 1,
+            "top_title": "Luxury, Comfort and Exceptional Service — All In One Place.",
+            "top_button_label": null,
+            "top_button_url": null,
+            "top_cards": "[{\"order\":1,\"title\":\"Luxury Studio Hotel\",\"location\":\"Cox Bazar\",\"image_path\":\"uploads\\/projects\\/1b61a7f1-b573-45f1-a2d5-b31b788998fe.webp\"},{\"order\":2,\"title\":\"King Lotus International\",\"location\":\"Cox Bazar\",\"image_path\":\"uploads\\/projects\\/a692328a-277f-4ae9-9dd5-ec5b9985977d.webp\"},{\"order\":3,\"title\":\"Luxury 3 Star Hotel\",\"location\":\"Cox Bazar\",\"image_path\":\"uploads\\/projects\\/4d7cfa1e-780c-4ad7-83c2-b31a9867a1e5.webp\"}]",
+            "bottom_title": "Premium Destination for Relaxation",
+            "bottom_cards": "[{\"order\":1,\"title\":\"Sea World\",\"location\":\"\",\"image_path\":\"uploads\\/projects\\/bfe0758b-97a1-46ff-b996-0af877b0115c.webp\"},{\"order\":2,\"title\":\"Ladies Exclusive Zone\",\"location\":\"\",\"image_path\":\"uploads\\/projects\\/ac5dad34-0d5f-4642-9987-677105c9440a.webp\"},{\"order\":3,\"title\":\"Gents Zone\",\"location\":\"\",\"image_path\":\"uploads\\/projects\\/3007965c-02c3-4b44-a86a-d50b756e4d7f.webp\"},{\"order\":4,\"title\":\"Family Fun Zone\",\"location\":\"\",\"image_path\":\"uploads\\/projects\\/ce704a95-5548-494d-bff9-d474a2061f7a.webp\"},{\"order\":5,\"title\":\"Competition Pool\",\"location\":\"\",\"image_path\":\"uploads\\/projects\\/ff9e1ae7-896e-489b-9a21-148741672276.webp\"},{\"order\":6,\"title\":\"Relax pool\",\"location\":\"\",\"image_path\":\"uploads\\/projects\\/cc9c26a3-6c98-4f24-aa20-c880ef48b7bb.webp\"},{\"order\":7,\"title\":\"Elegant Mosque\",\"location\":\"\",\"image_path\":\"uploads\\/projects\\/b5f891e1-6584-4da3-955d-aa36c6950d90.webp\"},{\"order\":8,\"title\":\"Baby Entertaining Point\",\"location\":\"\",\"image_path\":\"uploads\\/projects\\/6702a38b-c1ea-4497-8f2b-32a4ef30d5e3.webp\"},{\"order\":9,\"title\":\"Shopping mall\",\"location\":\"\",\"image_path\":\"uploads\\/projects\\/c402215c-faff-424a-ace4-06e65d2c87e5.webp\"},{\"order\":10,\"title\":\"Live BBQ Village\",\"location\":\"\",\"image_path\":\"uploads\\/projects\\/626e7653-eaca-4616-9078-dfd636d2ef4f.webp\"},{\"order\":11,\"title\":\"Indoor stadium\",\"location\":\"\",\"image_path\":\"uploads\\/projects\\/63b39ba4-bf9c-4286-85d0-747f1dade7fc.webp\"}]",
+            "cards": null,
+            "created_at": "2026-06-27 21:12:27",
+            "updated_at": "2026-09-26 15:45:01"
+        }
+    ],
+    "prospectus_sections": [
+        {
+            "id": 1,
+            "section_title": "Project Prospectus & Brochure",
+            "section_subtitle": "কিং লোটাস ইন্টারন্যাশনালের পূর্ণাঙ্গ প্রকল্প রূপরেখা",
+            "is_visible": 1,
+            "brochures": "[{\"title\":\"5-Star Luxury in Royal\",\"subtitle\":\"\\u0995\\u09bf\\u0982 \\u09b2\\u09cb\\u099f\\u09be\\u09b8 \\u0987\\u09a8\\u09cd\\u099f\\u09be\\u09b0\\u09a8\\u09cd\\u09af\\u09be\\u09b6\\u09a8\\u09be\\u09b2 \\u2014 \\u09ae\\u09c7\\u09b0\\u09bf\\u09a8 \\u09a1\\u09cd\\u09b0\\u09be\\u0987\\u09ad \\u09b0\\u09cb\\u09a1, \\u0995\\u0995\\u09cd\\u09b8\\u09ac\\u09be\\u099c\\u09be\\u09b0\",\"image_path\":\"uploads\\/prospectus\\/prospectus-page-01-cover.jpg\"},{\"title\":\"\\u09ad\\u09bf\\u09b6\\u09a8, \\u09ae\\u09bf\\u09b6\\u09a8 \\u0993 \\u098f\\u09ae\\u09a1\\u09bf\\u09b0 \\u09ac\\u09be\\u09b0\\u09cd\\u09a4\\u09be\",\"subtitle\":\"\\u0986\\u09a8\\u09cd\\u09a4\\u09b0\\u09cd\\u099c\\u09be\\u09a4\\u09bf\\u0995 \\u09ae\\u09be\\u09a8\\u09c7\\u09b0 \\u0986\\u09a4\\u09bf\\u09a5\\u09c7\\u09af\\u09bc\\u09a4\\u09be \\u0993 \\u099f\\u09c7\\u0995\\u09b8\\u0987 \\u09aa\\u09b0\\u09cd\\u09af\\u099f\\u09a8\",\"image_path\":\"uploads\\/prospectus\\/prospectus-page-02-vision-md-message.jpg\"},{\"title\":\"\\u09a8\\u09bf\\u09b0\\u09cd\\u09ae\\u09be\\u09a3\\u09be\\u09a7\\u09c0\\u09a8 \\u09ab\\u09be\\u0987\\u09ad \\u09b8\\u09cd\\u099f\\u09be\\u09b0 \\u09b9\\u09cb\\u099f\\u09c7\\u09b2\",\"subtitle\":\"Luxury Suites, Deluxe Rooms, Dining & Wellness\",\"image_path\":\"uploads\\/prospectus\\/prospectus-page-03-5-star-hotel.jpg\"},{\"title\":\"\\u09ac\\u09bf\\u09b6\\u09cd\\u09ac\\u09ae\\u09be\\u09a8\\u09c7\\u09b0 \\u09b8\\u09c1\\u09ac\\u09bf\\u09a7\\u09be\\u09b8\\u09ae\\u09c2\\u09b9\",\"subtitle\":\"Recreation, Corporate Facilities, Lifestyle & Kids Zone\",\"image_path\":\"uploads\\/prospectus\\/prospectus-page-04-world-class-amenities.jpg\"},{\"title\":\"\\u09ae\\u09c7\\u0997\\u09be \\u0986\\u0995\\u09b0\\u09cd\\u09b7\\u09a3 (\\u0985\\u0982\\u09b6 \\u09e7)\",\"subtitle\":\"\\u09a5\\u09cd\\u09b0\\u09bf-\\u09b8\\u09cd\\u099f\\u09be\\u09b0, \\u09b8\\u09cd\\u099f\\u09c1\\u09a1\\u09bf\\u0993 \\u09b9\\u09cb\\u099f\\u09c7\\u09b2, \\u09ac\\u09c7\\u09ac\\u09bf \\u098f\\u09a8\\u09cd\\u099f\\u09be\\u09b0\\u099f\\u09c7\\u0987\\u09a8\\u09ae\\u09c7\\u09a8\\u09cd\\u099f \\u0993 \\u09ac\\u09be\\u09b0\\u09ac\\u09bf\\u0995\\u09bf\\u0989 \\u09ad\\u09bf\\u09b2\\u09c7\\u099c\",\"image_path\":\"uploads\\/prospectus\\/prospectus-page-05-mega-attractions-part-1.jpg\"},{\"title\":\"\\u09ae\\u09c7\\u0997\\u09be \\u0986\\u0995\\u09b0\\u09cd\\u09b7\\u09a3 (\\u0985\\u0982\\u09b6 \\u09e8)\",\"subtitle\":\"\\u09ae\\u09c7\\u0997\\u09be \\u09b6\\u09aa\\u09bf\\u0982 \\u09ae\\u09b2 \\u0993 \\u09b8\\u09bf\\u09a8\\u09c7\\u09aa\\u09cd\\u09b2\\u09c7\\u0995\\u09cd\\u09b8, \\u09b8\\u09bf \\u0993\\u09af\\u09bc\\u09be\\u09b0\\u09cd\\u09b2\\u09cd\\u09a1 \\u0993 \\u0993\\u09af\\u09bc\\u09be\\u099f\\u09be\\u09b0 \\u09aa\\u09be\\u09b0\\u09cd\\u0995\",\"image_path\":\"uploads\\/prospectus\\/prospectus-page-06-mega-attractions-part-2.jpg\"},{\"title\":\"\\u09ae\\u09c7\\u0997\\u09be \\u0986\\u0995\\u09b0\\u09cd\\u09b7\\u09a3 (\\u0985\\u0982\\u09b6 \\u09e9)\",\"subtitle\":\"\\u09ab\\u09cd\\u09af\\u09be\\u09ae\\u09bf\\u09b2\\u09bf \\u09aa\\u09be\\u09b0\\u09cd\\u0995, \\u09b8\\u09c1\\u0987\\u09ae\\u09bf\\u0982 \\u099c\\u09cb\\u09a8, \\u0987\\u09a8\\u09a1\\u09cb\\u09b0 \\u09b8\\u09cd\\u099f\\u09c7\\u09a1\\u09bf\\u09af\\u09bc\\u09be\\u09ae \\u0993 \\u0995\\u09c7\\u09a8\\u09cd\\u09a6\\u09cd\\u09b0\\u09c0\\u09af\\u09bc \\u09ae\\u09b8\\u099c\\u09bf\\u09a6\",\"image_path\":\"uploads\\/prospectus\\/prospectus-page-07-mega-attractions-part-3.jpg\"},{\"title\":\"\\u09b6\\u09b0\\u09cd\\u09a4\\u09be\\u09ac\\u09b2\\u09bf, \\u09b6\\u09c7\\u09af\\u09bc\\u09be\\u09b0 \\u0993 \\u09ac\\u09c1\\u0995\\u09bf\\u0982\",\"subtitle\":\"\\u09b6\\u09c7\\u09af\\u09bc\\u09be\\u09b0\\u09b9\\u09cb\\u09b2\\u09cd\\u09a1\\u09be\\u09b0 \\u09b8\\u09c1\\u09ac\\u09bf\\u09a7\\u09be, \\u09b8\\u09be\\u09ac-\\u0995\\u09ac\\u09b2\\u09be \\u09b0\\u09c7\\u099c\\u09bf\\u09b8\\u09cd\\u099f\\u09cd\\u09b0\\u09c7\\u09b6\\u09a8 \\u0993 \\u0995\\u09b0\\u09cd\\u09aa\\u09cb\\u09b0\\u09c7\\u099f \\u0985\\u09ab\\u09bf\\u09b8\",\"image_path\":\"uploads\\/prospectus\\/prospectus-page-08-terms-and-booking.jpg\"}]",
+            "created_at": "2026-09-26 17:23:22",
+            "updated_at": "2026-09-26 18:05:15"
+        }
+    ],
+    "gallery_sections": [
+        {
+            "id": 1,
+            "section_title": "Recent Gallery",
+            "section_subtitle": "Featured Moments",
+            "view_all_label": "View All",
+            "page_title": "Gallery Albums",
+            "page_subtitle": "Explore curated albums and featured moments from King Lotus Group.",
+            "featured_images": "[{\"order\":1,\"image_path\":\"uploads\\/gallery\\/featured\\/a0e72959-0d8c-4558-a105-867d5a0b1503.webp\"},{\"order\":2,\"image_path\":\"uploads\\/gallery\\/featured\\/a30415c1-3684-4354-9b16-4b605b7968f1.webp\"},{\"order\":3,\"image_path\":\"uploads\\/gallery\\/featured\\/3fa60a4c-ac22-496c-8900-27e1c78eec25.webp\"},{\"order\":4,\"image_path\":\"uploads\\/gallery\\/featured\\/8301b0ad-79e1-4b60-b838-0c74bb9beb88.webp\"},{\"order\":5,\"image_path\":\"uploads\\/gallery\\/featured\\/9ad98d0c-87f9-469c-b901-712351dfd85e.webp\"},{\"order\":6,\"image_path\":\"uploads\\/gallery\\/featured\\/96eb81e0-ff69-464c-8c4a-fe87a3b73a5c.webp\"},{\"order\":7,\"image_path\":\"uploads\\/gallery\\/featured\\/5f8a37c5-d6ca-478f-9b31-b50466bd6111.webp\"}]",
+            "albums": "[{\"title\":\"\\u09aa\\u09cd\\u09b0\\u099c\\u09c7\\u0995\\u09cd\\u099f \\u09ad\\u09bf\\u099c\\u09bf\\u099f\",\"subtitle\":\"\\u09b8\\u09cd\\u09ac\\u09aa\\u09cd\\u09a8\\u09c7\\u09b0 \\u09b8\\u09cd\\u09a5\\u09be\\u09aa\\u09a8\\u09be\\u09af\\u09bc \\u0986\\u09ae\\u09be\\u09a6\\u09c7\\u09b0 \\u09b8\\u09a6\\u09b8\\u09cd\\u09af\\u09b0\\u09be\",\"images\":[{\"image_path\":\"uploads\\/gallery\\/albums\\/f07d6fa2-ef1e-4450-bab7-e9bb324025ca.webp\"},{\"image_path\":\"uploads\\/gallery\\/albums\\/4215ec1b-34a4-4337-bae0-331094100835.webp\"},{\"image_path\":\"uploads\\/gallery\\/albums\\/de30a0e9-df64-4c9f-abb8-3dde1605c8ff.webp\"},{\"image_path\":\"uploads\\/gallery\\/albums\\/9369e497-5e32-4b71-b43b-06ec50647e1e.webp\"}]},{\"title\":\"\\u09b8\\u09a6\\u09b8\\u09cd\\u09af \\u09b8\\u09ae\\u09cd\\u09ae\\u09c7\\u09b2\\u09a8\",\"subtitle\":\"\\u09a8\\u09c7\\u09a4\\u09c3\\u09a4\\u09cd\\u09ac \\u0993 \\u09b8\\u09a6\\u09b8\\u09cd\\u09af\\u09a6\\u09c7\\u09b0 \\u09ae\\u09bf\\u09b2\\u09a8\\u09ae\\u09c7\\u09b2\\u09be\",\"images\":[{\"image_path\":\"uploads\\/gallery\\/albums\\/c13e64c2-8755-4449-8ae1-b7695293eb9d.webp\"}]},{\"title\":\"\\u09b8\\u09cd\\u09ac\\u09aa\\u09cd\\u09a8\\u09c7\\u09b0 \\u09a8\\u09bf\\u09b0\\u09cd\\u09ae\\u09be\\u09a3\\u09af\\u09be\\u09a4\\u09cd\\u09b0\\u09be\",\"subtitle\":\"\\u09b8\\u09cd\\u09ac\\u09aa\\u09cd\\u09a8 \\u09aa\\u09c2\\u09b0\\u09a3\\u09c7\\u09b0 \\u09a8\\u09bf\\u09b0\\u09cd\\u09ae\\u09be\\u09a3\\u09af\\u09be\\u09a4\\u09cd\\u09b0\\u09be\",\"images\":[{\"image_path\":\"uploads\\/gallery\\/albums\\/35ff816e-ba22-4e29-a5b6-32019c3ec79c.webp\"}]},{\"title\":\"King Lotus International (5 Star Hotel)\",\"subtitle\":\"Flagship 5-Star Luxury Resort & Suites in Cox's Bazar\",\"images\":[{\"image_path\":\"uploads\\/gallery\\/albums\\/7efcb82c-16f3-423b-9597-9f37f9d24c39.webp\"},{\"image_path\":\"uploads\\/gallery\\/albums\\/66822633-cc91-4af7-9220-e5bd7abc4754.webp\"},{\"image_path\":\"uploads\\/gallery\\/albums\\/a6dfe8c2-0839-4131-b237-6ab814e21d73.webp\"},{\"image_path\":\"uploads\\/gallery\\/albums\\/9ca9bdf1-6d48-4a57-abaa-b220366e5485.webp\"},{\"image_path\":\"uploads\\/gallery\\/albums\\/e4d2f2d2-e552-4077-92a9-4978584f123c.webp\"},{\"image_path\":\"uploads\\/gallery\\/albums\\/4014f674-9ee9-46a2-b3a8-478ba49a6f3c.webp\"},{\"image_path\":\"uploads\\/gallery\\/albums\\/9d90266a-6411-4f11-af56-cca61f24de0c.webp\"}]},{\"title\":\"Luxury 3 Star Hotel\",\"subtitle\":\"Modern Comfort and Premium Hospitality\",\"images\":[{\"image_path\":\"uploads\\/gallery\\/albums\\/216267e0-c486-451f-8808-c6cd3920131a.webp\"},{\"image_path\":\"uploads\\/gallery\\/albums\\/0dc79fb2-af2d-4acf-9026-e048da533b82.webp\"},{\"image_path\":\"uploads\\/gallery\\/albums\\/6a37178e-b278-4f51-bbe6-2f57c3863327.webp\"},{\"image_path\":\"uploads\\/gallery\\/albums\\/67e44253-c9e0-4587-aaad-a722f359aa8e.webp\"}]},{\"title\":\"Luxury Studio Hotel\",\"subtitle\":\"Exclusive Studio Living Residences\",\"images\":[{\"image_path\":\"uploads\\/gallery\\/albums\\/2880b9d1-517e-4a77-8829-b76d544ba76f.webp\"},{\"image_path\":\"uploads\\/gallery\\/albums\\/aafd7d6e-44e9-4a62-91f0-7440694117e7.webp\"},{\"image_path\":\"uploads\\/gallery\\/albums\\/a4b2c647-b62e-4072-96e4-df4fac2e5190.webp\"}]},{\"title\":\"Triple Zone Water Park\",\"subtitle\":\"Ladies Exclusive, Family Fun & Gents Adventure Zones\",\"images\":[{\"image_path\":\"uploads\\/gallery\\/albums\\/d2da56be-56c0-4f72-9f08-295377272b02.webp\"},{\"image_path\":\"uploads\\/gallery\\/albums\\/b8b9a9b1-9a0a-47ef-bdcc-fe92ed99df7b.webp\"},{\"image_path\":\"uploads\\/gallery\\/albums\\/42aa5d00-88a1-4b68-9d0f-01f10ee9e80c.webp\"},{\"image_path\":\"uploads\\/gallery\\/albums\\/0039c021-ae7c-4e06-9761-b85417c136d7.webp\"},{\"image_path\":\"uploads\\/gallery\\/albums\\/ce67f5f7-01c1-42a1-b502-2f43f3e8f1cf.webp\"}]},{\"title\":\"Sea World Underwater Tunnel\",\"subtitle\":\"Ocean Wonders and Marine Life Experience\",\"images\":[{\"image_path\":\"uploads\\/gallery\\/albums\\/4ec63875-9784-47d6-80d6-0f4020aee45d.webp\"},{\"image_path\":\"uploads\\/gallery\\/albums\\/0cf4ffde-47e0-4825-8e94-6e01bca23d98.webp\"}]},{\"title\":\"Dual Swimming Zone\",\"subtitle\":\"Competition Pool & Relaxation Pool\",\"images\":[{\"image_path\":\"uploads\\/gallery\\/albums\\/e21c8ed6-ad68-45c5-adb4-e7e3cdf96487.webp\"},{\"image_path\":\"uploads\\/gallery\\/albums\\/827243a8-2080-4ea8-b91d-70ea924267cb.webp\"}]},{\"title\":\"The Central Mosque\",\"subtitle\":\"Serene and Architectural Spiritual Landmark\",\"images\":[{\"image_path\":\"uploads\\/gallery\\/albums\\/1f60d787-9ed0-42eb-a4b2-4601c87e6da7.webp\"},{\"image_path\":\"uploads\\/gallery\\/albums\\/bd6257b2-1107-41b1-a3f1-874f96c3e468.webp\"},{\"image_path\":\"uploads\\/gallery\\/albums\\/fcdcc5de-6e18-44e5-9516-141cface9079.webp\"}]},{\"title\":\"Shopping Mall & Cineplex\",\"subtitle\":\"World-Class Retail, Dining & Entertainment Complex\",\"images\":[{\"image_path\":\"uploads\\/gallery\\/albums\\/34f72cdb-ca31-4f96-be9e-3364c3aabc99.webp\"},{\"image_path\":\"uploads\\/gallery\\/albums\\/a924d740-6b3c-4e13-999a-e37778437727.webp\"},{\"image_path\":\"uploads\\/gallery\\/albums\\/48dc7f98-165a-4d1c-9135-1c7341d63a70.webp\"},{\"image_path\":\"uploads\\/gallery\\/albums\\/f31f55f4-d65e-4af3-934b-86df51c44676.webp\"},{\"image_path\":\"uploads\\/gallery\\/albums\\/5b4df207-9dbc-439e-b321-69b9845f8fc0.webp\"},{\"image_path\":\"uploads\\/gallery\\/albums\\/479e6d7d-71d4-4f29-9742-e0f44d6bc79c.webp\"}]},{\"title\":\"Baby Entertainment Point\",\"subtitle\":\"Interactive Kids Play & Educational Wonderland\",\"images\":[{\"image_path\":\"uploads\\/gallery\\/albums\\/a5e374b6-8758-4d92-ad34-673b6293fdf6.webp\"},{\"image_path\":\"uploads\\/gallery\\/albums\\/dc030ca5-686f-4716-83db-39148cbaa7fd.webp\"},{\"image_path\":\"uploads\\/gallery\\/albums\\/e9333a5a-4b0a-4c4a-8b25-05df1112a1aa.webp\"},{\"image_path\":\"uploads\\/gallery\\/albums\\/6a9e964c-5486-4f56-860f-c081c02d83a0.webp\"},{\"image_path\":\"uploads\\/gallery\\/albums\\/46c096ce-51d4-4a87-80ff-667acc940b9b.webp\"},{\"image_path\":\"uploads\\/gallery\\/albums\\/2ce6a46f-eca3-447f-8b7b-0faacc7175b1.webp\"}]},{\"title\":\"Live BBQ Village\",\"subtitle\":\"Authentic Open-Air Culinary Destination\",\"images\":[{\"image_path\":\"uploads\\/gallery\\/albums\\/e6523175-1abe-41df-92fa-518766cc6bc5.webp\"},{\"image_path\":\"uploads\\/gallery\\/albums\\/0a342dd5-b2d2-4d6f-bd75-ecac2dc0136a.webp\"}]},{\"title\":\"Indoor Stadium\",\"subtitle\":\"Multi-Sport Arena & Athletic Facilities\",\"images\":[{\"image_path\":\"uploads\\/gallery\\/albums\\/05e521c8-5eaf-47d2-afa8-d672b0a01e74.webp\"},{\"image_path\":\"uploads\\/gallery\\/albums\\/ec59cf10-71de-4c09-9f8c-c8356808a75a.webp\"}]},{\"title\":\"Project Site & Land\",\"subtitle\":\"Strategic Prime Location in Cox's Bazar\",\"images\":[{\"image_path\":\"uploads\\/gallery\\/albums\\/5e2023a7-0637-4dee-8ed3-b5f4301d3bdf.webp\"}]},{\"title\":\"Brand & Corporate Identity\",\"subtitle\":\"Executive Boardroom & Architectural Identity\",\"images\":[{\"image_path\":\"uploads\\/gallery\\/albums\\/63bfbe2f-4241-473e-86d1-9dfef4835491.webp\"},{\"image_path\":\"uploads\\/gallery\\/albums\\/5e18434e-86f9-4574-9068-2f0251ed6b48.webp\"},{\"image_path\":\"uploads\\/gallery\\/albums\\/ff68c678-75b8-4b5a-80a1-d929fea92e94.webp\"},{\"image_path\":\"uploads\\/gallery\\/albums\\/03737284-f848-45b5-bd17-c5162ed7e6c1.webp\"},{\"image_path\":\"uploads\\/gallery\\/albums\\/fd192fb1-75f3-4318-b58c-efb34cb3a75c.webp\"}]}]",
+            "created_at": "2026-07-01 08:07:56",
+            "updated_at": "2026-09-26 16:07:10"
+        }
+    ],
+    "shareholder_review_sections": [
+        {
+            "id": 1,
+            "section_title": "Shareholder Reviews",
+            "section_subtitle": "Real stories from King Lotus Group shareholders.",
+            "reviews": "[{\"name\":\"\",\"video_url\":\"https:\\/\\/youtu.be\\/2yNBzBVRqFg?si=VjzwNLUILO3KbKg8\",\"thumbnail_path\":\"uploads\\/reviews\\/ad6d65d0-dcef-40ec-9f0b-aaeb9b3ba9ec.webp\"},{\"name\":\"\",\"video_url\":\"https:\\/\\/youtu.be\\/It3qa-dA04s?si=6iyJcC7WTYGDhnTV\",\"thumbnail_path\":\"uploads\\/reviews\\/f94046c9-5034-42d1-9322-6d641c7838a3.webp\"},{\"name\":\"\",\"video_url\":\"https:\\/\\/youtu.be\\/Fd05_jdMdFg?si=gd7pzmZQ2_c_y-00\",\"thumbnail_path\":\"uploads\\/reviews\\/88608bf0-94d9-418b-9d24-e590a8da4daf.webp\"},{\"name\":\"\",\"video_url\":\"https:\\/\\/youtu.be\\/DGrpXPYQrqU?si=YFsvrUtqIGSMNkSH\",\"thumbnail_path\":\"uploads\\/reviews\\/616dc181-69f7-4802-96da-22330348c914.webp\"},{\"name\":\"\",\"video_url\":\"https:\\/\\/youtu.be\\/9IyPQtzFWew?si=jzOEhEKyqPYVi-Ue\",\"thumbnail_path\":\"uploads\\/reviews\\/b8f553d3-7133-4a9f-855f-b4e90cf25009.webp\"},{\"name\":\"\",\"video_url\":\"https:\\/\\/youtu.be\\/FprxZZHsxtE?si=F5A7NJfWnT-rA6US\",\"thumbnail_path\":\"uploads\\/reviews\\/d03a6739-a147-446c-9f1d-e70a124628f8.webp\"},{\"name\":\"\",\"video_url\":\"https:\\/\\/youtu.be\\/ht6O4LP9HFs?si=Dgdr4il8kefdFp4b\",\"thumbnail_path\":\"uploads\\/reviews\\/7a8487e1-ae5e-4e69-ac8f-97e4c154031c.webp\"},{\"name\":\"\",\"video_url\":\"https:\\/\\/youtu.be\\/V9jijYq8sdg?si=xgsiMuP1Xpv58w0o\",\"thumbnail_path\":\"uploads\\/reviews\\/a5377e29-42c0-4c2f-8d41-30aa8152283a.webp\"},{\"name\":\"\",\"video_url\":\"https:\\/\\/youtu.be\\/Gq3NLNelGo0?si=GZvF1iez8vSao_G8\",\"thumbnail_path\":\"uploads\\/reviews\\/23ed1b84-b640-4ffd-994d-f66cc5a2bd1e.webp\"},{\"name\":\"\",\"video_url\":\"https:\\/\\/youtu.be\\/_LmxMWRmAic?si=DcN4locXDL2hXX5j\",\"thumbnail_path\":\"\"},{\"name\":\"\",\"video_url\":\"https:\\/\\/youtu.be\\/rmT_Oaak3Aw?si=6LSLVu0pzo9MholF\",\"thumbnail_path\":\"\"}]",
+            "created_at": "2026-07-01 18:33:12",
+            "updated_at": "2026-07-02 20:09:33"
+        }
+    ],
+    "leadership_sections": [
+        {
+            "id": 1,
+            "section_title": "Board of Directors",
+            "founder_name": "MD. Mizanur Rahman",
+            "founder_position": "Managing Director & CEO",
+            "founder_description": "Our commitment is to shape King Lotus into a world-class 5-star condominium resort built on trust, elegance, and excellence.",
+            "founder_image_path": "uploads/leadership/founder/94c3df7d-07d6-4bc4-bc3c-897da09708ee.webp",
+            "board_members": "[{\"name\":\"MD. Nurul Amin\",\"position\":\"Sales & Marketing Director\",\"image_path\":\"uploads\\/leadership\\/members\\/3533e652-cac8-4a98-ac06-1c3e719803c8.webp\"}]",
+            "is_visible": 1,
+            "created_at": "2026-07-03 14:40:39",
+            "updated_at": "2026-09-26 20:38:12"
+        }
+    ],
+    "valued_shareholders": [
+        {
+            "id": 1,
+            "name": "A.S.M. Zobayer Tanveer",
+            "position": "Software Engineer",
+            "image_path": "uploads/valued-shareholders/946c3259-01b4-453f-82a5-3b3dca2ac287.webp",
+            "sort_order": 0,
+            "created_at": "2026-09-26 20:34:28",
+            "updated_at": "2026-09-26 20:35:41"
+        }
+    ],
+    "valued_shareholder_sections": [
+        {
+            "id": 1,
+            "section_title": "Our Valued Shareholders",
+            "shareholders": "[]",
+            "is_visible": 1,
+            "created_at": "2026-07-03 18:21:54",
+            "updated_at": "2026-09-26 20:30:29"
+        }
+    ],
+    "footer_settings": [
+        {
+            "id": 1,
+            "youtube_url": "https://youtube.com/@kinglotusinternationalltd-x2v?si=Hj8U8b8PIOlX5Dk8",
+            "facebook_url": "https://www.facebook.com/nurulamind2k",
+            "contact_email": "kinglotuscox@gmail.com",
+            "contact_phone": "+880 1816-236822\r\n+880 1815-004959",
+            "location_title": "Visit Our Location",
+            "location_subtitle": "Open our Google Maps location to plan your arrival and explore the surrounding destination.",
+            "location_map_url": "https://maps.app.goo.gl/23NPMkWX8JADhU7t9",
+            "office_section_title": "Get A Quote - No Cost, No Commitment",
+            "office_section_subtitle": "Transparent & Competitive Rates",
+            "office_name": "Head Office",
+            "office_address": "Dhaka Office\r\n54 - Motijheel, Elite House, Motijheel, Dhaka - 1000",
+            "office_map_url": "https://maps.app.goo.gl/WypUJpRgC84Rw2uB7",
+            "office_cards": "[{\"name\":\"Head Office\",\"address\":\"Dhaka Office\\r\\n54 - Motijheel, Elite House, Motijheel, Dhaka - 1000\",\"map_url\":\"https:\\/\\/maps.app.goo.gl\\/WypUJpRgC84Rw2uB7\",\"phone\":\"+88 01897672250\",\"email\":\"support@kinglotusgroup.com\"},{\"name\":\"Branch Office\",\"address\":\"Cumilla Office\\r\\n491\\/437 Artision Nasir Center, Kandirpar, Cumilla-3500\",\"map_url\":\"https:\\/\\/maps.app.goo.gl\\/YaRLtrNbBUwCiqEo9\",\"phone\":\"+88 01816236822\",\"email\":\"cumilla@kinglotusgroup.com\"},{\"name\":\"Foreign Office\",\"address\":\"Qatar Office\\r\\nRawdat Al Khail, B Ring Road, Zone No 24, Street No 220, 2nd Floor, Doha, Qatar\",\"map_url\":\"\",\"phone\":\"+974 77 93 92 88\",\"email\":\"\"}]",
+            "terms_title": "Terms and Conditions",
+            "terms_subtitle": "কিং লোটাস ইন্টারন্যাশনাল লিমিটেড",
+            "terms_intro": null,
+            "terms_content": "<p><strong>শেয়ারের সুবিধা প্রাপ্তি এবং কোম্পানির নীতিমালাঃ</strong>\r\n</p><p><span style=\"background-color: rgb(60, 120, 216); color: rgb(239, 239, 239);\">প্রস্তাবিত পাঁচ তারকা হোটেলের প্রতিটি শেয়ারের মূল্য =&gt; ৯,২৫,০০০/= টাকা। (বর্তমান নির্ধারিত শেয়ার মূল্য)</span></p><ul><li><strong>বুকিং মানিঃ</strong><br>\r\n৩৫,০০০ টাকা কনফার্ম করিয়া প্রতি মাসে EMI জমা দিতে হবে নিম্নে উল্লিখিত পরিমাণে =৭০০০/৯০০০/১২০০০/১৫০০০=৬০/৫৮ মাসে মূল্য পরিশোধ করার সুযোগ রয়েছে।</li></ul><p><strong style=\"background-color: rgb(255, 229, 153);\">এই মুহূর্তে ডিসকাউন্ট অফার চলছে ক্রমান্বয়েঃ</strong>\r\n</p><ul><li>৩,৭৫,০০০ টাকা করিয়া :- ১,০০০ শেয়ার (শেষ)\r\n</li><li>৪,৪৫,০০০ টাকা করিয়া :- ২,০০০ শেয়ার (চলমান)\r\n</li><li>৫,৬৫,০০০ টাকা করিয়া :- ২,০০০ শেয়ার\r\n</li><li>৭,৪৫,০০০ টাকা করিয়া :- ৫,০০০ শেয়ার\r\n</li><li>৯,২৫,০০০ টাকা করিয়া :- শেষ ১০,০০০ শেয়ারের মূল্য নির্ধারণ করা আছে। ভবিষ্যতে প্রয়োজন অনুযায়ী/কোম্পানীর Board of Director-এর সিদ্ধান্ত অনুযায়ী শেয়ার মূল্য বৃদ্ধি হতে পারে যাহা ১২,০০০,০০ ( বারো লক্ষ টাকা) পর্যন্ত নির্ধারণ করা হতে পারে।</li></ul><p><strong style=\"background-color: rgb(255, 229, 153);\">একজন শেয়ারহোল্ডার ভূমির সাব কবলা রেজিস্ট্রি সহ নিম্নোলিখিত সুযোগ সুবিধা পাবেনঃ</strong>\r\n</p><ul><li>ভূমির মালিকানা পাবেন (আজীবনের জন্য) ১০ স্কয়ার ফিট+ভবনে পাবেন ১০ স্কয়ার ফিট।\r\n</li><li>প্রতি মাসে ভাড়া আয় করার সুযোগ পাবেন। সকল শেয়ার হোল্ডার সমহারে ইনকাম পাবেন। যা প্রত্যেক শেয়ার হোল্ডারের ব্যাংক একাউন্টে সমন্বয় করা হবে, একটা শেয়ারের বিপরীতে বছরে ১,০০,০০০ থেকে ২,৫০,০০০ এর অধিক আয় হতে পারে।\r\n</li><li>প্রতি বছরে একবার পরিবার নিয়ে, ৩ রাত ৪ দিন নিজ মালিকানাধীন পাঁচ তারকা হোটেলে যাপন করার সুযোগ পাবেন। বছরে বারং বার যেতে চাইলে প্রতিবছরই শেয়ারহোল্ডার পাবেন রুম ভাড়ার উপর ৫০% ডিসকাউন্ট সুবিধা। কোন শেয়ারহোল্ডার যদি কাউকে রেফার করে তাহলে ঐ ব্যক্তি হোটেলের রুম ভাড়ার ওপর ৩০% সুবিধা পাবেন।\r\n</li><li>এছাড়াও প্রত্যেক শেয়ারহোল্ডারকে একটা Ownership Card প্রদান করা হবে। যার মাধ্যমে প্রজেক্টের অন্যান্য সকল সুযোগ-সুবিধা ভোগ করতে পারবেন।</li></ul><p><strong><span style=\"background-color: rgb(255, 229, 153);\">বিপদে পরিবারের একটা নিরাপত্তা পাবেন।</span></strong></p><ul><li>বুকিং কনফার্ম করিয়া পর পর ১২ মাসের EMI যদি পরিশোধ করা থাকে সেই ক্ষেত্রে কোন শেয়ারহোল্ডারের যে কোন কারণবশত মৃত্যুবরণ করেন, (তবে সেটা যেন আত্মহত্যা না হয়), অথবা কোন শেয়ারহোল্ডার দুর্ঘটনা জনিত কোন কারণে যদি মৃত্যু বরণ করে তাহলে বকেয়া থাকা EMI পরিশোধ করা ছাড়াই সময়াত্তে তার পরিবার জমির সাব কবলা রেজিস্ট্রি সহ শেয়ারের চুক্তিনামা বুঝিয়া পাবেন এবং বৃদ্ধিমূল্য ছাড়া তৎক্ষণাৎ সকল EMI মাফ/ফেরত পাবেন।</li></ul><p><strong><span style=\"color: rgb(225, 55, 55);\">বিঃদ্রঃ শেয়ারহোল্ডারের বিনিয়োগ কৃত অর্থ প্রকল্প বাস্তবায়নের পূর্বে ফেরত চাওয়া বা পাওয়ার কোনো সুযোগ থাকবে না। প্রকল্প বাস্তবায়নের পরে নিয়ম অনুযায়ী শেয়ার হস্তান্তর করতে পারবেন বা অধিক মূল্যে বিক্রয় করিতে পারবেন (শর্ত প্রযোজ্য)</span></strong></p><p><strong>দলিল এবং সার্টিফিকেটঃ</strong><br>\r\nকোম্পানির বোর্ড অফ ডিরেক্টর সিদ্ধান্ত অনুযায়ী যাদের শেয়ারের সম্পূর্ণ টাকা পরিশোধ করা থাকবে তাদেরকে ০১/০১/২০২৭ তারিখ থেকে শেয়ার সার্টিফিকেট সহ জমির সাব কবলা রেজিস্ট্রি বুঝিয়ে দেওয়া হবে।</p><p>প্রকল্প পরিপূর্ণ হওয়ার পর মেরিন ড্রাইভ রোড জিরো পয়েন্ট থেকে এয়ারপোর্ট পর্যন্ত প্রকল্পের নিজস্ব পরিবহন ব্যবস্থাপনা থাকবে।</p>",
+            "created_at": "2026-06-26 22:24:13",
+            "updated_at": "2026-09-26 20:14:38"
+        }
+    ],
+    "faqs": [
+        {
+            "id": 1,
+            "question": "What is King Lotus International hotel share ownership?",
+            "answer": "It is an exclusive opportunity to purchase fractional ownership shares in prime luxury hotel and resort developments. Shareholders own certified property equity and earn proportional revenue from hotel operations without the burden of daily management.",
+            "sort_order": 1,
+            "is_active": 1,
+            "created_at": "2026-09-26 21:22:37",
+            "updated_at": "2026-09-26 21:22:37"
+        },
+        {
+            "id": 2,
+            "question": "How and when do shareholders receive profits or dividends?",
+            "answer": "Dividend returns are generated from hotel room bookings, dining, events, and overall resort operations. Audited earnings are distributed directly to each shareholder's registered bank account on a structured annual or bi-annual schedule, backed by transparent financial reporting.",
+            "sort_order": 2,
+            "is_active": 1,
+            "created_at": "2026-09-26 21:22:37",
+            "updated_at": "2026-09-26 21:22:37"
+        },
+        {
+            "id": 3,
+            "question": "Are shareholders entitled to complimentary room stays and discounts?",
+            "answer": "Yes. Every valued shareholder enjoys dedicated complimentary room nights annually, priority suite reservations, VIP lounge access, and exclusive discounts on resort dining, spa services, and events across all King Lotus properties.",
+            "sort_order": 3,
+            "is_active": 1,
+            "created_at": "2026-09-26 21:22:37",
+            "updated_at": "2026-09-26 21:22:37"
+        },
+        {
+            "id": 4,
+            "question": "What legal documents guarantee my share investment?",
+            "answer": "Every shareholder receives an official, legally notarized Share Ownership Certificate and investment deed registered under King Lotus International, alongside verified credentials for the online Shareholder Portal to track investment valuation and updates.",
+            "sort_order": 4,
+            "is_active": 1,
+            "created_at": "2026-09-26 21:22:37",
+            "updated_at": "2026-09-26 21:22:37"
+        },
+        {
+            "id": 5,
+            "question": "Can I transfer, sell, or pass my shares to my family or nominees?",
+            "answer": "Absolutely. King Lotus hotel shares are legally recognized, transferable assets. You may transfer ownership, assign designated nominees or legal heirs, or sell shares through our official shareholder buy-back and exchange program.",
+            "sort_order": 5,
+            "is_active": 1,
+            "created_at": "2026-09-26 21:22:37",
+            "updated_at": "2026-09-26 21:22:37"
+        }
+    ]
+}
