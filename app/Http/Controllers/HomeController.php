@@ -20,18 +20,22 @@ class HomeController extends Controller
 {
     public function __invoke(): View
     {
-        $data = Cache::remember(SiteCache::HOME_DATA_KEY, now()->addMinutes(SiteCache::ttl()), fn (): array => [
-            'notice' => SiteNotice::query()->active()->latest('updated_at')->first(),
-            'aboutSection' => AboutSection::query()->first(),
-            'whySection' => WhySection::query()->first(),
-            'projectSection' => ProjectSection::query()->first(),
-            'prospectusSection' => ProspectusSection::query()->first(),
-            'gallerySection' => GallerySection::query()->first(),
-            'shareholderReviewSection' => ShareholderReviewSection::query()->first(),
-            'leadershipSection' => LeadershipSection::query()->first(),
-            'valuedShareholderSection' => ValuedShareholderSection::query()->first(),
-            'footerSetting' => FooterSetting::query()->first(),
-        ]);
+        $data = Cache::remember(SiteCache::HOME_DATA_KEY, now()->addMinutes(SiteCache::ttl()), function (): array {
+            $safeQuery = fn (string $modelClass) => rescue(fn () => $modelClass::query()->first(), null, false);
+
+            return [
+                'notice' => rescue(fn () => SiteNotice::query()->active()->latest('updated_at')->first(), null, false),
+                'aboutSection' => $safeQuery(AboutSection::class),
+                'whySection' => $safeQuery(WhySection::class),
+                'projectSection' => $safeQuery(ProjectSection::class),
+                'prospectusSection' => $safeQuery(ProspectusSection::class),
+                'gallerySection' => $safeQuery(GallerySection::class),
+                'shareholderReviewSection' => $safeQuery(ShareholderReviewSection::class),
+                'leadershipSection' => $safeQuery(LeadershipSection::class),
+                'valuedShareholderSection' => $safeQuery(ValuedShareholderSection::class),
+                'footerSetting' => $safeQuery(FooterSetting::class),
+            ];
+        });
 
         return view('home.index', $data);
     }

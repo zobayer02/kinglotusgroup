@@ -18,13 +18,19 @@ class FaqPageController extends Controller
     public function __invoke(Request $request): View
     {
         $commonData = Cache::remember(SiteCache::FAQ_PAGE_DATA_KEY, now()->addMinutes(SiteCache::ttl()), fn (): array => [
-            'footerSetting' => FooterSetting::query()->first(),
-            'notice' => SiteNotice::query()->active()->latest('updated_at')->first(),
+            'footerSetting' => rescue(fn () => FooterSetting::query()->first(), null, false),
+            'notice' => rescue(fn () => SiteNotice::query()->active()->latest('updated_at')->first(), null, false),
         ]);
 
-        $query = Faq::query()->active()->ordered();
-        $totalCount = $query->count();
-        $faqs = $query->take(self::PER_PAGE)->get();
+        $faqs = collect();
+        $totalCount = 0;
+        try {
+            $query = Faq::query()->active()->ordered();
+            $totalCount = $query->count();
+            $faqs = $query->take(self::PER_PAGE)->get();
+        } catch (\Throwable) {
+            // Table pending migration
+        }
 
         return view('faq.index', array_merge($commonData, [
             'faqs' => $faqs,
