@@ -175,20 +175,20 @@
             inset: auto 0 0;
             z-index: 1;
             display: grid;
-            gap: 8px;
-            padding: 24px;
+            gap: 6px;
+            padding: 16px;
             color: #ffffff;
         }
 
         .gallery-album-count {
             width: fit-content;
-            padding: 7px 11px;
+            padding: 4px 8px;
             border-radius: 999px;
             background: rgba(255, 255, 255, 0.18);
             color: rgba(255, 255, 255, 0.88);
-            font-size: 0.8rem;
+            font-size: 0.68rem;
             font-weight: 700;
-            letter-spacing: 0.1em;
+            letter-spacing: 0.08em;
             text-transform: uppercase;
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
@@ -197,17 +197,18 @@
         .gallery-album-card-title {
             margin: 0;
             font-family: var(--font-primary);
-            font-size: clamp(1.45rem, 2.05vw, 2.25rem);
+            font-size: clamp(0.92rem, 1.05vw, 1.15rem);
             font-weight: 600;
-            line-height: 1;
+            line-height: 1.25;
+            word-break: break-word;
         }
 
         .gallery-album-card-subtitle {
             margin: 0;
             max-width: 420px;
-            font-size: 0.98rem;
-            line-height: 1.55;
-            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.78rem;
+            line-height: 1.35;
+            color: rgba(255, 255, 255, 0.82);
         }
 
         .gallery-album-empty {
@@ -500,6 +501,9 @@
 
             .gallery-album-card {
                 min-height: 260px;
+                opacity: 1;
+                transform: none;
+                transition: transform 0.24s ease, border-color 0.24s ease, box-shadow 0.24s ease;
             }
 
             .gallery-album-grid {
@@ -689,8 +693,8 @@
 
 @push('scripts')
     @include('partials.mobile-nav-script')
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
+    <script nonce="{{ Vite::cspNonce() }}">
+        const initGallery = () => {
             const triggers = Array.from(document.querySelectorAll('[data-gallery-album-trigger]'));
             const panels = Array.from(document.querySelectorAll('[data-gallery-album-panel]'));
             const albumCards = document.querySelector('.gallery-album-cards');
@@ -717,7 +721,11 @@
             }
 
             if (albumCards) {
-                if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window)) {
+                if (
+                    window.matchMedia('(prefers-reduced-motion: reduce)').matches ||
+                    window.matchMedia('(max-width: 768px)').matches ||
+                    !('IntersectionObserver' in window)
+                ) {
                     albumCards.classList.add('is-visible');
                 } else {
                     const albumCardObserver = new IntersectionObserver((entries, observer) => {
@@ -730,8 +738,8 @@
                             observer.unobserve(entry.target);
                         });
                     }, {
-                        threshold: 0.18,
-                        rootMargin: '0px 0px -8% 0px',
+                        threshold: 0.05,
+                        rootMargin: '0px 0px -4% 0px',
                     });
 
                     albumCardObserver.observe(albumCards);
@@ -877,6 +885,12 @@
             if (hashTarget && panels.some((panel) => panel.id === hashTarget)) {
                 openAlbum(hashTarget, false);
             }
-        });
+        };
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initGallery);
+        } else {
+            initGallery();
+        }
     </script>
 @endpush

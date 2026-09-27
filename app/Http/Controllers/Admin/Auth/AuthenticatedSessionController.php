@@ -15,7 +15,11 @@ use Illuminate\Validation\ValidationException;
 class AuthenticatedSessionController extends Controller
 {
     private const MAX_LOGIN_ATTEMPTS = 5;
+
     private const MAX_ACCOUNT_ATTEMPTS = 15;
+
+    private const MAX_IP_ATTEMPTS = 20;
+
     private const LOCKOUT_SECONDS = 900;
 
     public function create(): RedirectResponse
@@ -37,6 +41,7 @@ class AuthenticatedSessionController extends Controller
         $identifier = trim((string) $validated['email']);
         $throttleKey = $this->throttleKey($identifier, $request->ip());
         $accountThrottleKey = $this->accountThrottleKey($identifier);
+        $ipThrottleKey = $this->ipThrottleKey($request->ip());
 
         $this->ensureIsNotRateLimited($throttleKey, self::MAX_LOGIN_ATTEMPTS);
         $this->ensureIsNotRateLimited(
@@ -44,8 +49,14 @@ class AuthenticatedSessionController extends Controller
             self::MAX_ACCOUNT_ATTEMPTS,
             'Too many failed attempts on this account. Please try again later.'
         );
+        $this->ensureIsNotRateLimited(
+            $ipThrottleKey,
+            self::MAX_IP_ATTEMPTS,
+            'Too many failed login attempts from this network location. Please try again later.'
+        );
 
         $loginColumn = filter_var($identifier, FILTER_VALIDATE_EMAIL) ? 'email' : 'mobile';
+        /** @var Admin|null $admin */
         $admin = Admin::query()
             ->where($loginColumn, $identifier)
             ->first();
@@ -55,9 +66,10 @@ class AuthenticatedSessionController extends Controller
             'password' => $validated['password'],
         ];
 
-        if (! Auth::guard('admin')->attempt($credentials)) {
+        if (! Auth::guard('admin')->validate($credentials)) {
             RateLimiter::hit($throttleKey, self::LOCKOUT_SECONDS);
             RateLimiter::hit($accountThrottleKey, self::LOCKOUT_SECONDS);
+            RateLimiter::hit($ipThrottleKey, self::LOCKOUT_SECONDS);
 
             Log::warning('Failed admin login attempt', [
                 'identifier' => $identifier,
@@ -70,15 +82,44 @@ class AuthenticatedSessionController extends Controller
             ]);
         }
 
+        $admin = $admin ?? Admin::query()->where('email', $credentials['email'])->first();
+
         RateLimiter::clear($throttleKey);
         RateLimiter::clear($accountThrottleKey);
+        RateLimiter::clear($ipThrottleKey);
+
+        if ($admin && $admin->hasTwoFactorEnabled()) {
+            $request->session()->put('login.mfa_admin_id', $admin->id);
+            $request->session()->put('login.mfa_remember', $request->boolean('remember'));
+            $request->session()->put('login.mfa_expires_at', now()->addMinutes(10)->timestamp);
+
+            return redirect()->route('login.challenge');
+        }
+
+        if ($admin) {
+            Auth::guard('admin')->login($admin, $request->boolean('remember'));
+        } else {
+            Auth::guard('admin')->attempt($credentials, $request->boolean('remember'));
+            /** @var Admin $admin */
+            $admin = Auth::guard('admin')->user();
+        }
+
         $request->session()->regenerate();
 
-        $admin = Auth::guard('admin')->user();
+        if ($admin->last_login_ip && $admin->last_login_ip !== $request->ip()) {
+            Log::warning('Admin login from new IP address', [
+                'admin_id' => $admin->id,
+                'email' => $admin->email,
+                'previous_ip' => $admin->last_login_ip,
+                'current_ip' => $request->ip(),
+            ]);
+        }
+
         $admin->forceFill([
             'last_login_at' => now(),
             'last_login_ip' => $request->ip(),
         ])->save();
+
         $request->session()->put('admin_session_version', (int) $admin->session_version);
         $request->session()->put('admin_last_activity_at', now()->timestamp);
 
@@ -116,6 +157,11 @@ class AuthenticatedSessionController extends Controller
     protected function accountThrottleKey(string $identifier): string
     {
         return 'admin_account|'.Str::transliterate(Str::lower($identifier));
+    }
+
+    protected function ipThrottleKey(?string $ipAddress): string
+    {
+        return 'admin_ip|'.($ipAddress ?? '127.0.0.1');
     }
 
     public function destroy(Request $request): RedirectResponse

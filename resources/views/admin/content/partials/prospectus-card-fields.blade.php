@@ -8,7 +8,7 @@
     $subtitleId = 'brochures-subtitle-'.$index;
     $imageId = 'brochures-image-'.$index;
     $existingPath = $brochure['image_path'] ?? '';
-    $existingUrl = filled($existingPath) ? asset(ltrim($existingPath, '/')) : null;
+    $existingUrl = \App\Support\ManagedUpload::url($existingPath);
 @endphp
 
 <div class="project-editor-card prospectus-card-item" data-prospectus-editor-card>

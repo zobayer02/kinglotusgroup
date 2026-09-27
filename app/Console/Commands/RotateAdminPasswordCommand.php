@@ -34,11 +34,7 @@ class RotateAdminPasswordCommand extends Command
         }
 
         $validator = Validator::make(['password' => $password], [
-            'password' => [
-                'required',
-                'string',
-                Password::min(8)->letters()->mixedCase()->numbers()->symbols(),
-            ],
+            'password' => \App\Support\SecurityPolicy::passwordRules(false),
         ]);
 
         if ($validator->fails()) {

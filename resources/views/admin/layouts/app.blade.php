@@ -6,7 +6,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'Admin Portal | King Lotus International')</title>
     <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}">
-    <style>
+    <style nonce="{{ Vite::cspNonce() }}">
         @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Outfit:wght@400;500;600;700;800&display=swap');
 
         :root {
@@ -1155,8 +1155,15 @@
         </main>
     </div>
 
-    <script>
+    <script nonce="{{ Vite::cspNonce() }}">
         (() => {
+            document.addEventListener('click', (e) => {
+                const btn = e.target.closest('.profile-alert-close');
+                if (btn) {
+                    btn.closest('.profile-alert-banner')?.remove();
+                }
+            });
+
             const shell = document.querySelector('[data-admin-shell]');
             const toggleButtons = document.querySelectorAll('[data-admin-sidebar-toggle]');
             const backdrop = document.querySelector('[data-admin-sidebar-backdrop]');
@@ -1366,7 +1373,7 @@
 
     @stack('scripts')
 
-    <script>
+    <script nonce="{{ Vite::cspNonce() }}">
         (() => {
             const fitText = (element) => {
                 const min = Number(element.dataset.minSize || 10);

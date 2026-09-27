@@ -67,16 +67,7 @@ class ProfileController extends Controller
 
         $validated = $request->validate([
             'current_password' => ['required', 'current_password:admin'],
-            'password' => [
-                'required',
-                'string',
-                Password::min(8)
-                    ->letters()
-                    ->mixedCase()
-                    ->numbers()
-                    ->symbols(),
-                'confirmed',
-            ],
+            'password' => \App\Support\SecurityPolicy::passwordRules(true),
         ], [
             'current_password.current_password' => 'Your current password is incorrect.',
         ]);

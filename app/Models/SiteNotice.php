@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Support\ManagedUpload;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
@@ -28,7 +29,7 @@ class SiteNotice extends Model
     public function heroBackgroundUrl(): ?string
     {
         return filled($this->hero_background_path)
-            ? asset(ltrim((string) $this->hero_background_path, '/'))
+            ? ManagedUpload::url($this->hero_background_path)
             : null;
     }
 }

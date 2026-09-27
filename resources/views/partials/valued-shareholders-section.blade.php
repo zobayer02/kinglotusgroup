@@ -503,7 +503,7 @@
                                 <div class="valued-shareholders-card">
                                     <div class="valued-shareholders-card-visual">
                                         @if (!empty($shareholder['image_url']))
-                                            <img src="{{ $shareholder['image_url'] }}" alt="{{ $shareholder['name'] ?: 'Shareholder' }}" loading="lazy" decoding="async" draggable="false" onerror="this.style.display='none'; if(this.nextElementSibling) this.nextElementSibling.style.display='flex';">
+                                            <img src="{{ $shareholder['image_url'] }}" alt="{{ $shareholder['name'] ?: 'Shareholder' }}" loading="lazy" decoding="async" draggable="false" data-fallback-placeholder>
                                             <div class="valued-shareholders-card-placeholder" aria-label="Shareholder avatar" style="display: none;">
                                                 <div class="valued-shareholders-avatar-icon" aria-hidden="true">
                                                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
@@ -560,7 +560,7 @@
 
     @once
         @push('scripts')
-            <script>
+            <script nonce="{{ Vite::cspNonce() }}">
                 document.addEventListener('DOMContentLoaded', () => {
                     document.querySelectorAll('[data-valued-shareholders-showcase]').forEach((showcase) => {
                         const track = showcase.querySelector('[data-valued-shareholders-track]');

@@ -2560,7 +2560,7 @@
                 || str_starts_with($field, 'shareholder_reviews.')
                 || str_starts_with($field, 'shareholder_review_thumbnails.')
         );
-        $leadershipFieldNames = ['section_title', 'founder_name', 'founder_position', 'founder_description', 'founder_image', 'founder_image_path', 'is_visible'];
+        $leadershipFieldNames = ['section_title', 'founder_name', 'founder_position', 'founder_description', 'founder_image', 'founder_image_path', 'secondary_leader_name', 'secondary_leader_position', 'secondary_leader_description', 'secondary_leader_image', 'secondary_leader_image_path', 'is_visible'];
         $leadershipModuleHasErrors = collect($errors->keys())->contains(
             fn ($field) => in_array($field, $leadershipFieldNames, true)
                 || str_starts_with($field, 'board_members.')
@@ -2805,7 +2805,7 @@
                         <span class="field-label">Current hero preview</span>
                         <div class="thumbnail-preview notice-hero-preview">
                             <img
-                                src="{{ filled(old('hero_background_path', $notice?->hero_background_path)) ? asset(ltrim((string) old('hero_background_path', $notice?->hero_background_path), '/')) : asset('images/beautiful-rustic-house-landscape.webp') }}"
+                                src="{{ \App\Support\ManagedUpload::url(old('hero_background_path', $notice?->hero_background_path)) ?: asset('images/beautiful-rustic-house-landscape.webp') }}"
                                 alt="Hero background preview"
                                 loading="lazy"
                                 decoding="async"
@@ -3274,7 +3274,7 @@
                                 $subtitleId = 'brochures-subtitle-'.$index;
                                 $imageId = 'brochures-image-'.$index;
                                 $existingPath = $brochure['image_path'] ?? '';
-                                $existingUrl = filled($existingPath) ? asset(ltrim($existingPath, '/')) : null;
+                                $existingUrl = \App\Support\ManagedUpload::url($existingPath);
                                 $hasErrors = $errors->has($errorPrefix.'.title') || $errors->has($errorPrefix.'.subtitle') || $errors->has('brochure_images.'.$index);
                             @endphp
                             <div class="leadership-member-accordion-card prospectus-card-item {{ $hasErrors ? 'is-expanded' : '' }}" data-prospectus-editor-card>
@@ -3776,29 +3776,12 @@
                     <h2>Founder and Board Members Section</h2>
                     <p class="admin-subtitle">Manage the founder profile block shown above the footer and the animated Board Members slider. Title, founder details, board member cards, and website visibility all update from here.</p>
                 </div>
-
-                <span class="editor-status {{ $leadershipSection?->shouldDisplayOnWebsite() ? '' : 'is-hidden' }}">
-                    {{ $leadershipSection?->shouldDisplayOnWebsite() ? 'Visible on website' : 'Hidden on website' }}
-                </span>
             </div>
 
             <form class="editor-form" action="{{ route('admin.content.leadership.update') }}" method="post" enctype="multipart/form-data" data-webp-form>
                 @csrf
                 @method('patch')
-
-                <label class="toggle-bar">
-                    <span class="toggle-switch">
-                        <input type="checkbox" name="is_visible" value="1" @checked(old('is_visible', $leadershipSection?->exists ? $leadershipSection->is_visible : true))>
-                        <span class="toggle-track" aria-hidden="true">
-                            <span class="toggle-thumb"></span>
-                        </span>
-                    </span>
-
-                    <span class="toggle-copy">
-                        <span class="toggle-title">Show leadership section on website</span>
-                        <span class="toggle-meta">Turn this off if you want to save the founder and board member content without showing it publicly.</span>
-                    </span>
-                </label>
+                <input type="hidden" name="is_visible" value="1">
 
                 <div class="field-group">
                     <label class="field-label" for="leadership-section-title">Section title</label>
@@ -3887,16 +3870,111 @@
                 </div>
 
                 <div class="projects-group">
-                    <div class="projects-group-head" style="flex-wrap: wrap; gap: 12px;">
+                    <div class="projects-group-head">
                         <div>
-                            <div style="display: flex; align-items: center; gap: 8px;">
+                            <h3 class="projects-group-title">Executive / Co-Founder Feature (Optional)</h3>
+                            <p class="projects-group-meta">Optional second featured leader card displayed below the founder with a side-flipped layout (photo on the right). Leave empty if not needed.</p>
+                        </div>
+                    </div>
+
+                    <input type="hidden" name="secondary_leader_image_path" value="{{ old('secondary_leader_image_path', $leadershipSection?->secondary_leader_image_path) }}">
+
+                    <div class="leadership-founder-card">
+                        <div class="leadership-founder-photo-col">
+                            <div class="leadership-founder-photo-frame" data-leadership-secondary-photo-frame>
+                                @if ($leadershipSection?->secondaryLeaderImageUrl())
+                                    <img src="{{ $leadershipSection->secondaryLeaderImageUrl() }}" alt="Executive photo preview" loading="lazy" decoding="async">
+                                @else
+                                    <div class="leadership-photo-placeholder" aria-hidden="true">
+                                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                            <circle cx="12" cy="7" r="4"></circle>
+                                        </svg>
+                                    </div>
+                                @endif
+                            </div>
+
+                            <div class="leadership-photo-upload-actions">
+                                <label class="leadership-photo-picker-btn" for="secondary-leader-image">
+                                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                        <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                                        <circle cx="12" cy="13" r="4"></circle>
+                                    </svg>
+                                    <span data-leadership-secondary-btn-label>{{ $leadershipSection?->secondaryLeaderImageUrl() ? 'Change Photo' : 'Upload Photo' }}</span>
+                                </label>
+                                <input class="leadership-photo-file-input" id="secondary-leader-image" type="file" name="secondary_leader_image" accept="image/*" data-webp-input data-leadership-secondary-file>
+
+                                <span class="field-hint">WebP auto-converted &bull; Max 6 MB</span>
+                                <span class="upload-status" data-upload-status>
+                                    <span class="upload-spinner" aria-hidden="true"></span>
+                                    <span data-upload-status-text>Select an image to convert to WebP.</span>
+                                </span>
+
+                                @if ($leadershipSection?->secondaryLeaderImageUrl())
+                                    <label style="display: inline-flex; align-items: center; gap: 6px; margin-top: 6px; cursor: pointer; font-size: 0.8rem; color: #b91c1c;">
+                                        <input type="checkbox" name="remove_secondary_leader_image" value="1">
+                                        <span>Remove photo</span>
+                                    </label>
+                                @endif
+                            </div>
+
+                            @error('secondary_leader_image')
+                                <span class="field-error">{{ $message }}</span>
+                            @enderror
+                        </div>
+
+                        <div class="leadership-founder-fields-col">
+                            <div class="leadership-founder-row">
+                                <div class="field-group">
+                                    <label class="field-label" for="secondary-leader-name">Leader name</label>
+                                    <input class="field-input" id="secondary-leader-name" type="text" name="secondary_leader_name" value="{{ old('secondary_leader_name', $leadershipSection?->secondary_leader_name) }}" placeholder="e.g. Co-Founder / Managing Director name">
+                                    @error('secondary_leader_name')
+                                        <span class="field-error">{{ $message }}</span>
+                                    @enderror
+                                </div>
+
+                                <div class="field-group">
+                                    <label class="field-label" for="secondary-leader-position">Leader position</label>
+                                    <input class="field-input" id="secondary-leader-position" type="text" name="secondary_leader_position" value="{{ old('secondary_leader_position', $leadershipSection?->secondary_leader_position) }}" placeholder="e.g. Co-Founder & Vice Chairman">
+                                    @error('secondary_leader_position')
+                                        <span class="field-error">{{ $message }}</span>
+                                    @enderror
+                                </div>
+                            </div>
+
+                            <div class="field-group">
+                                <label class="field-label" for="secondary-leader-description">Leader description</label>
+                                <textarea class="field-textarea field-textarea--compact" id="secondary-leader-description" name="secondary_leader_description" maxlength="200" placeholder="Short description shown below the position">{{ old('secondary_leader_description', $leadershipSection?->secondary_leader_description) }}</textarea>
+                                <span class="field-hint">Maximum 200 characters (<span data-secondary-char-count>{{ strlen(old('secondary_leader_description', $leadershipSection?->secondary_leader_description ?? '')) }}</span>/200). Appears below the position on the public website.</span>
+                                @error('secondary_leader_description')
+                                    <span class="field-error">{{ $message }}</span>
+                                @enderror
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="projects-group">
+                    <div class="projects-group-head" style="flex-wrap: wrap; gap: 14px; justify-content: space-between; align-items: center;">
+                        <div>
+                            <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
                                 <h3 class="projects-group-title">Board Member Cards</h3>
                                 <span class="gallery-album-sidebar-count" data-leadership-member-count-badge>{{ count($boardMembers) }} total</span>
+                                <span class="editor-status {{ ($leadershipSection?->shouldDisplayBoardMembers() ?? true) ? '' : 'is-hidden' }}" data-board-members-status-badge style="margin-left: 4px;">
+                                    {{ ($leadershipSection?->shouldDisplayBoardMembers() ?? true) ? 'Visible on website' : 'Hidden on website' }}
+                                </span>
                             </div>
                             <p class="projects-group-meta">These cards appear in the animated slider under the founder feature block on the public website. Click any row to expand or edit.</p>
                         </div>
 
-                        <div class="leadership-group-actions">
+                        <div class="leadership-group-actions" style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+                            <label class="toggle-switch" title="Toggle Board Members slider visibility on website" style="display: inline-flex; align-items: center; cursor: pointer;">
+                                <input type="checkbox" name="board_members_visible" id="board-members-visibility-toggle" value="1" data-instant-toggle="{{ route('admin.content.leadership.toggle-board-members') }}" @checked(old('board_members_visible', $leadershipSection?->board_members_visible ?? true))>
+                                <span class="toggle-track" aria-hidden="true">
+                                    <span class="toggle-thumb"></span>
+                                </span>
+                            </label>
+
                             <button class="leadership-btn-text" type="button" data-leadership-expand-all>Expand All</button>
                             <button class="leadership-btn-text" type="button" data-leadership-collapse-all>Collapse All</button>
                             <button class="project-editor-add" type="button" data-leadership-member-add>+ Add Board Member</button>
@@ -3949,7 +4027,7 @@
                     <p class="admin-subtitle">Manage the shareholder directory with instant search and infinite scroll. Section title and website visibility save below; each shareholder card saves independently.</p>
                 </div>
 
-                <span class="editor-status {{ $valuedShareholderSection?->shouldDisplayOnWebsite() ? '' : 'is-hidden' }}">
+                <span class="editor-status {{ $valuedShareholderSection?->shouldDisplayOnWebsite() ? '' : 'is-hidden' }}" data-shareholder-status-badge>
                     {{ $valuedShareholderSection?->shouldDisplayOnWebsite() ? 'Visible on website' : 'Hidden on website' }}
                 </span>
             </div>
@@ -3958,19 +4036,25 @@
                 @csrf
                 @method('patch')
 
-                <label class="toggle-bar">
-                    <span class="toggle-switch">
-                        <input type="checkbox" name="shareholder_section_visible" value="1" @checked(old('shareholder_section_visible', $valuedShareholderSection?->exists ? $valuedShareholderSection->is_visible : true))>
-                        <span class="toggle-track" aria-hidden="true">
-                            <span class="toggle-thumb"></span>
+                <div class="toggle-bar" style="display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap;">
+                    <label style="display: flex; align-items: center; gap: 14px; cursor: pointer; flex: 1; min-width: 260px;">
+                        <span class="toggle-switch">
+                            <input type="checkbox" name="shareholder_section_visible" id="shareholder-visibility-toggle" value="1" data-instant-toggle="{{ route('admin.content.valued-shareholders.update') }}" @checked(old('shareholder_section_visible', $valuedShareholderSection?->exists ? $valuedShareholderSection->is_visible : true))>
+                            <span class="toggle-track" aria-hidden="true">
+                                <span class="toggle-thumb"></span>
+                            </span>
                         </span>
-                    </span>
 
-                    <span class="toggle-copy">
-                        <span class="toggle-title">Show valued shareholders section on website</span>
-                        <span class="toggle-meta">Turn this off if you want to save the cards without showing them publicly.</span>
-                    </span>
-                </label>
+                        <span class="toggle-copy">
+                            <span class="toggle-title">Show valued shareholders section on website</span>
+                            <span class="toggle-meta">1-click toggle: Click here to instantly hide or show the shareholders section on the website.</span>
+                        </span>
+                    </label>
+
+                    <button type="button" class="submit-button" id="shareholder-quick-toggle-btn" data-url="{{ route('admin.content.valued-shareholders.update') }}" style="width: auto; padding: 9px 18px; font-size: 0.88rem; background: {{ ($valuedShareholderSection?->exists ? $valuedShareholderSection->is_visible : true) ? '#b33939' : '#0c505d' }};">
+                        <span id="shareholder-quick-toggle-label">{{ ($valuedShareholderSection?->exists ? $valuedShareholderSection->is_visible : true) ? 'Hide Section' : 'Show Section' }}</span>
+                    </button>
+                </div>
 
                 <div class="field-group">
                     <label class="field-label" for="shareholder-section-title">Section title</label>
@@ -4368,7 +4452,7 @@
 @endsection
 
 @push('scripts')
-    <script>
+    <script nonce="{{ Vite::cspNonce() }}">
         document.addEventListener('DOMContentLoaded', () => {
             const buttons = Array.from(document.querySelectorAll('[data-module-toggle]'));
             const panels = Array.from(document.querySelectorAll('[data-module-panel]'));
@@ -5566,6 +5650,105 @@
                 reindexShareholderCards();
             };
 
+            // 1-Click Visibility Toggles for Leadership & Directors and Shareholders
+            const bindInstantToggle = ({ toggleInput, quickBtn, quickLabel, statusBadge, url, getPayload }) => {
+                if (!toggleInput && !quickBtn) return;
+
+                const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content')
+                    || document.querySelector('input[name="_token"]')?.value || '';
+
+                let isProcessing = false;
+
+                const updateUI = (isVisible, statusText) => {
+                    if (toggleInput) toggleInput.checked = isVisible;
+                    if (statusBadge) {
+                        statusBadge.textContent = statusText;
+                        statusBadge.classList.toggle('is-hidden', !isVisible);
+                    }
+                    if (quickBtn) {
+                        quickBtn.style.background = isVisible ? '#b33939' : '#0c505d';
+                    }
+                    if (quickLabel) {
+                        quickLabel.textContent = isVisible ? 'Hide Section' : 'Show Section';
+                    }
+                };
+
+                const performToggle = async (targetVisible) => {
+                    if (isProcessing) return;
+                    isProcessing = true;
+
+                    if (quickBtn) quickBtn.disabled = true;
+                    if (toggleInput) toggleInput.disabled = true;
+
+                    try {
+                        const payload = getPayload(targetVisible);
+                        const res = await fetch(url, {
+                            method: 'PATCH',
+                            headers: {
+                                'X-CSRF-TOKEN': csrfToken,
+                                'Accept': 'application/json',
+                                'Content-Type': 'application/json',
+                                'X-Requested-With': 'XMLHttpRequest',
+                            },
+                            body: JSON.stringify(payload),
+                        });
+
+                        const data = await res.json();
+                        if (!res.ok) {
+                            throw new Error(data.message || 'Failed to update visibility.');
+                        }
+
+                        updateUI(data.is_visible, data.status_text);
+                        if (window.showAdminToast) {
+                            window.showAdminToast(data.message);
+                        }
+                    } catch (err) {
+                        if (window.showAdminToast) {
+                            window.showAdminToast(err.message || 'Error updating visibility.', 'error');
+                        } else {
+                            alert(err.message || 'Error updating visibility.');
+                        }
+                        if (toggleInput) toggleInput.checked = !targetVisible;
+                    } finally {
+                        isProcessing = false;
+                        if (quickBtn) quickBtn.disabled = false;
+                        if (toggleInput) toggleInput.disabled = false;
+                    }
+                };
+
+                if (toggleInput) {
+                    toggleInput.addEventListener('change', () => {
+                        performToggle(toggleInput.checked);
+                    });
+                }
+
+                if (quickBtn) {
+                    quickBtn.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        const currentChecked = toggleInput ? toggleInput.checked : true;
+                        performToggle(!currentChecked);
+                    });
+                }
+            };
+
+            bindInstantToggle({
+                toggleInput: document.getElementById('board-members-visibility-toggle'),
+                quickBtn: document.getElementById('board-members-quick-toggle-btn'),
+                quickLabel: document.getElementById('board-members-quick-toggle-label'),
+                statusBadge: document.querySelector('[data-board-members-status-badge]'),
+                url: "{{ route('admin.content.leadership.toggle-board-members') }}",
+                getPayload: (targetVisible) => ({ board_members_visible: targetVisible }),
+            });
+
+            bindInstantToggle({
+                toggleInput: document.getElementById('shareholder-visibility-toggle'),
+                quickBtn: document.getElementById('shareholder-quick-toggle-btn'),
+                quickLabel: document.getElementById('shareholder-quick-toggle-label'),
+                statusBadge: document.querySelector('[data-shareholder-status-badge]'),
+                url: "{{ route('admin.content.valued-shareholders.update') }}",
+                getPayload: (targetVisible) => ({ shareholder_section_visible: targetVisible ? 1 : 0 }),
+            });
+
             const escapeGalleryHtml = (str) => {
                 const div = document.createElement('div');
                 div.textContent = str;
@@ -6094,6 +6277,15 @@
                     }
                     return;
                 }
+
+                const secondaryDescriptionInput = event.target.closest('#secondary-leader-description');
+                if (secondaryDescriptionInput) {
+                    const counter = document.querySelector('[data-secondary-char-count]');
+                    if (counter) {
+                        counter.textContent = String(secondaryDescriptionInput.value.length);
+                    }
+                    return;
+                }
             });
 
             document.addEventListener('change', (event) => {
@@ -6192,6 +6384,38 @@
                                 }
                             }
                             const label = document.querySelector('[data-leadership-founder-btn-label]');
+                            if (label) {
+                                label.textContent = 'Change Photo';
+                            }
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                    return;
+                }
+
+                const secondaryFileInput = event.target.closest('[data-leadership-secondary-file]');
+                if (secondaryFileInput && secondaryFileInput.files && secondaryFileInput.files[0]) {
+                    const file = secondaryFileInput.files[0];
+                    if (file.type.startsWith('image/')) {
+                        const reader = new FileReader();
+                        reader.onload = (e) => {
+                            const frame = document.querySelector('[data-leadership-secondary-photo-frame]');
+                            if (frame) {
+                                let img = frame.querySelector('img');
+                                const placeholder = frame.querySelector('.leadership-photo-placeholder');
+                                if (!img) {
+                                    img = document.createElement('img');
+                                    img.alt = 'Executive photo preview';
+                                    img.loading = 'lazy';
+                                    img.decoding = 'async';
+                                    frame.insertBefore(img, frame.firstChild);
+                                }
+                                img.src = e.target.result;
+                                if (placeholder) {
+                                    placeholder.style.display = 'none';
+                                }
+                            }
+                            const label = document.querySelector('[data-leadership-secondary-btn-label]');
                             if (label) {
                                 label.textContent = 'Change Photo';
                             }

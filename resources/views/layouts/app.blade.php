@@ -17,7 +17,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Orbitron:wght@400..900&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>
+    <style nonce="{{ Vite::cspNonce() }}">
         :root {
             color-scheme: light;
             --page-bg: #dbe7ee;
@@ -118,8 +118,9 @@
     </div>
 
     @yield('content')
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.12.2/lottie.min.js" defer></script>
-    <script>
+    @vite(['resources/js/app.js'])
+    <script src="{{ asset('vendor/lottie/lottie.min.js') }}" defer nonce="{{ Vite::cspNonce() }}"></script>
+    <script nonce="{{ Vite::cspNonce() }}">
         (() => {
             const startedAt = Date.now();
 
@@ -160,7 +161,7 @@
             window.setTimeout(hideLoader, 700);
         })();
     </script>
-    <script>
+    <script nonce="{{ Vite::cspNonce() }}">
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register("{{ asset('sw.js') }}");

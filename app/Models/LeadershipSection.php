@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Support\ManagedUpload;
 use Illuminate\Database\Eloquent\Model;
 
 class LeadershipSection extends Model
@@ -17,13 +18,19 @@ class LeadershipSection extends Model
         'founder_position',
         'founder_description',
         'founder_image_path',
+        'secondary_leader_name',
+        'secondary_leader_position',
+        'secondary_leader_description',
+        'secondary_leader_image_path',
         'board_members',
         'is_visible',
+        'board_members_visible',
     ];
 
     protected $casts = [
         'board_members' => 'array',
         'is_visible' => 'boolean',
+        'board_members_visible' => 'boolean',
     ];
 
     public function hasRenderableContent(): bool
@@ -33,6 +40,7 @@ class LeadershipSection extends Model
             || filled($this->founder_position)
             || filled($this->founder_description)
             || filled($this->founder_image_path)
+            || $this->hasSecondaryLeader()
             || ! empty($this->boardMembers());
     }
 
@@ -41,10 +49,30 @@ class LeadershipSection extends Model
         return $this->is_visible && $this->hasRenderableContent();
     }
 
+    public function shouldDisplayBoardMembers(): bool
+    {
+        return (bool) ($this->board_members_visible ?? true) && ! empty($this->boardMembers());
+    }
+
     public function founderImageUrl(): ?string
     {
         return filled($this->founder_image_path)
-            ? asset(ltrim((string) $this->founder_image_path, '/'))
+            ? ManagedUpload::url($this->founder_image_path)
+            : null;
+    }
+
+    public function hasSecondaryLeader(): bool
+    {
+        return filled($this->secondary_leader_name)
+            || filled($this->secondary_leader_position)
+            || filled($this->secondary_leader_description)
+            || filled($this->secondary_leader_image_path);
+    }
+
+    public function secondaryLeaderImageUrl(): ?string
+    {
+        return filled($this->secondary_leader_image_path)
+            ? ManagedUpload::url($this->secondary_leader_image_path)
             : null;
     }
 
@@ -65,7 +93,7 @@ class LeadershipSection extends Model
                     'name' => $name,
                     'position' => $position,
                     'image_path' => $imagePath,
-                    'image_url' => filled($imagePath) ? asset(ltrim($imagePath, '/')) : null,
+                    'image_url' => ManagedUpload::url($imagePath),
                 ];
             })
             ->filter()

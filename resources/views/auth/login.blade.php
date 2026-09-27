@@ -837,7 +837,7 @@
 @push('scripts')
     @include('partials.mobile-nav-script')
 
-    <script>
+    <script nonce="{{ Vite::cspNonce() }}">
         document.addEventListener('DOMContentLoaded', () => {
             const toggle = document.querySelector('[data-password-toggle]');
             const input = document.getElementById('password');

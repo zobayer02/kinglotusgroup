@@ -544,7 +544,7 @@
 @push('scripts')
     @include('partials.mobile-nav-script')
 
-    <script>
+    <script nonce="{{ Vite::cspNonce() }}">
         document.addEventListener('DOMContentLoaded', () => {
             const faqList = document.getElementById('faqList');
             const itemsUrl = faqList?.dataset.itemsUrl || '{{ route('faq.items') }}';

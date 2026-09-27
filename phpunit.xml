@@ -24,11 +24,11 @@
         <env name="BROADCAST_CONNECTION" value="null" force="true"/>
         <env name="CACHE_STORE" value="array" force="true"/>
         <env name="DB_CONNECTION" value="sqlite" force="true"/>
-        <env name="DB_DATABASE" value="database/testing_default.sqlite" force="true"/>
+        <env name="DB_DATABASE" value=":memory:" force="true"/>
         <env name="DB_AUTH_DRIVER" value="sqlite" force="true"/>
-        <env name="DB_AUTH_DATABASE" value="database/testing_auth.sqlite" force="true"/>
+        <env name="DB_AUTH_DATABASE" value=":memory:" force="true"/>
         <env name="DB_CONTENT_DRIVER" value="sqlite" force="true"/>
-        <env name="DB_CONTENT_DATABASE" value="database/testing_content.sqlite" force="true"/>
+        <env name="DB_CONTENT_DATABASE" value=":memory:" force="true"/>
         <env name="DB_URL" value="" force="true"/>
         <env name="MAIL_MAILER" value="array" force="true"/>
         <env name="QUEUE_CONNECTION" value="sync" force="true"/>

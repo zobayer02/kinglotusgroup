@@ -8,6 +8,11 @@
     $founderPosition = trim((string) ($leadershipSection?->founder_position ?? ''));
     $founderDescription = trim((string) ($leadershipSection?->founder_description ?? ''));
     $founderImageUrl = $leadershipSection?->founderImageUrl();
+    $secondaryLeaderName = trim((string) ($leadershipSection?->secondary_leader_name ?? ''));
+    $secondaryLeaderPosition = trim((string) ($leadershipSection?->secondary_leader_position ?? ''));
+    $secondaryLeaderDescription = trim((string) ($leadershipSection?->secondary_leader_description ?? ''));
+    $secondaryLeaderImageUrl = $leadershipSection?->secondaryLeaderImageUrl();
+    $hasSecondaryLeader = $secondaryLeaderName !== '' || $secondaryLeaderPosition !== '' || $secondaryLeaderDescription !== '' || $secondaryLeaderImageUrl !== null;
     $boardMembers = $leadershipSection?->boardMembers() ?? [];
 @endphp
 
@@ -58,10 +63,27 @@
 
                 .leadership-founder {
                     display: grid;
-                    grid-template-columns: minmax(220px, 0.52fr) minmax(0, 1.05fr);
-                    gap: 28px;
+                    grid-template-columns: minmax(220px, 280px) minmax(0, 480px);
+                    gap: 36px;
                     align-items: center;
+                    justify-content: center;
+                    width: 100%;
+                    max-width: 820px;
+                    margin: 0 auto;
                     padding: 8px 0 0;
+                }
+
+                .leadership-founder--flipped {
+                    grid-template-columns: minmax(0, 480px) minmax(220px, 280px);
+                }
+
+                .leadership-founder--flipped .leadership-founder-frame {
+                    justify-self: center;
+                    transform: translateX(42px);
+                }
+
+                .leadership-founder--flipped .leadership-founder-copy {
+                    transform: translateX(-42px);
                 }
 
                 .leadership-founder-copy {
@@ -102,7 +124,7 @@
                 .leadership-founder-frame {
                     position: relative;
                     width: min(100%, 280px);
-                    justify-self: start;
+                    justify-self: center;
                     padding: 14px 14px 16px;
                     border-radius: 32px;
                     border: 1px solid rgba(12, 80, 93, 0.34);
@@ -276,6 +298,14 @@
                     animation: leadershipAppearLeft 1.08s cubic-bezier(0.16, 1, 0.3, 1) 120ms both;
                 }
 
+                .leadership-section.is-visible .leadership-founder--flipped .leadership-founder-copy {
+                    animation: leadershipAppearLeft 1.08s cubic-bezier(0.16, 1, 0.3, 1) 180ms both;
+                }
+
+                .leadership-section.is-visible .leadership-founder--flipped .leadership-founder-frame {
+                    animation: leadershipAppearRight 1.08s cubic-bezier(0.16, 1, 0.3, 1) 120ms both;
+                }
+
                 .leadership-showcase {
                     position: relative;
                     width: min(100%, 1240px);
@@ -440,8 +470,11 @@
                 }
 
                 @media (max-width: 1080px) {
-                    .leadership-founder {
+                    .leadership-founder,
+                    .leadership-founder--flipped {
                         grid-template-columns: 1fr;
+                        max-width: 480px;
+                        gap: 20px;
                     }
 
                     .leadership-founder-copy {
@@ -451,6 +484,11 @@
                     .leadership-founder-frame {
                         width: min(100%, 240px);
                         margin: 0 auto;
+                        justify-self: center;
+                    }
+
+                    .leadership-founder--flipped .leadership-founder-frame {
+                        order: -1;
                         justify-self: center;
                     }
 
@@ -624,7 +662,31 @@
                 </div>
             @endif
 
-            @if ($boardMembers)
+            @if ($hasSecondaryLeader)
+                <div class="leadership-founder leadership-founder--flipped">
+                    <div class="leadership-founder-copy">
+                        @if ($secondaryLeaderName !== '')
+                            <h3 class="leadership-founder-name">{{ $secondaryLeaderName }}</h3>
+                        @endif
+                        @if ($secondaryLeaderPosition !== '')
+                            <p class="leadership-founder-position">{{ $secondaryLeaderPosition }}</p>
+                        @endif
+                        @if ($secondaryLeaderDescription !== '')
+                            <p class="leadership-founder-description">{{ $secondaryLeaderDescription }}</p>
+                        @endif
+                    </div>
+
+                    <div class="leadership-founder-frame">
+                        @if ($secondaryLeaderImageUrl)
+                            <img src="{{ $secondaryLeaderImageUrl }}" alt="{{ $secondaryLeaderName !== '' ? $secondaryLeaderName : 'Executive' }}" loading="lazy" decoding="async" draggable="false">
+                        @else
+                            <div class="leadership-founder-placeholder">No Image</div>
+                        @endif
+                    </div>
+                </div>
+            @endif
+
+            @if ($boardMembers && ($leadershipSection?->shouldDisplayBoardMembers() ?? true))
                 <div class="leadership-showcase" data-leadership-showcase>
                     <div class="leadership-track" data-leadership-track>
                         @foreach ($boardMembers as $member)
@@ -637,7 +699,7 @@
                                 <div class="leadership-card">
                                     <div class="leadership-card-visual">
                                         @if (!empty($member['image_url']))
-                                            <img src="{{ $member['image_url'] }}" alt="{{ $mName ?: 'Board member' }}" loading="lazy" decoding="async" draggable="false" onerror="this.style.display='none'; if(this.nextElementSibling) this.nextElementSibling.style.display='flex';">
+                                            <img src="{{ $member['image_url'] }}" alt="{{ $mName ?: 'Board member' }}" loading="lazy" decoding="async" draggable="false" data-fallback-placeholder>
                                             <div class="leadership-card-placeholder" aria-label="Board member avatar" style="display: none;">
                                                 <div class="leadership-avatar-icon" aria-hidden="true">
                                                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
@@ -684,7 +746,7 @@
 
     @once
         @push('scripts')
-            <script>
+            <script nonce="{{ Vite::cspNonce() }}">
                 document.addEventListener('DOMContentLoaded', () => {
                     document.querySelectorAll('[data-leadership-showcase]').forEach((showcase) => {
                         const track = showcase.querySelector('[data-leadership-track]');

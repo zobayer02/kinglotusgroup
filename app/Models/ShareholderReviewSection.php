@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Support\ManagedUpload;
 use Illuminate\Database\Eloquent\Model;
 
 class ShareholderReviewSection extends Model
@@ -78,9 +79,7 @@ class ShareholderReviewSection extends Model
                 }
 
                 $thumbnailPath = trim((string) ($data['thumbnail_path'] ?? ''));
-                $thumbnailUrl = filled($thumbnailPath)
-                    ? asset(ltrim($thumbnailPath, '/'))
-                    : null;
+                $thumbnailUrl = ManagedUpload::url($thumbnailPath);
 
                 return [
                     'name' => trim((string) ($data['name'] ?? '')),
@@ -104,7 +103,7 @@ class ShareholderReviewSection extends Model
             'name' => trim((string) ($review['name'] ?? '')),
             'video_url' => trim((string) ($review['video_url'] ?? '')),
             'thumbnail_path' => $thumbnailPath,
-            'thumbnail_url' => filled($thumbnailPath) ? asset(ltrim($thumbnailPath, '/')) : null,
+            'thumbnail_url' => ManagedUpload::url($thumbnailPath),
         ];
     }
 

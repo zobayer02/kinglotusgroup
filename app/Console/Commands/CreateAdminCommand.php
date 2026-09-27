@@ -49,11 +49,7 @@ class CreateAdminCommand extends Command
         }
 
         $passwordValidator = Validator::make(['password' => $password], [
-            'password' => [
-                'required',
-                'string',
-                Password::min(8)->letters()->mixedCase()->numbers()->symbols(),
-            ],
+            'password' => \App\Support\SecurityPolicy::passwordRules(false),
         ]);
 
         if ($passwordValidator->fails()) {

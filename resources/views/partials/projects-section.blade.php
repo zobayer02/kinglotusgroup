@@ -775,7 +775,7 @@
 
 @once
     @push('scripts')
-        <script>
+        <script nonce="{{ Vite::cspNonce() }}">
             document.addEventListener('DOMContentLoaded', () => {
                 document.querySelectorAll('[data-project-showcase]').forEach((showcase) => {
                     const slides = Array.from(showcase.querySelectorAll('[data-project-showcase-slide]'));

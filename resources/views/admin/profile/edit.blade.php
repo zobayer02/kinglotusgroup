@@ -707,6 +707,145 @@
         }
 
         /* ==========================================================================
+           TWO-FACTOR AUTHENTICATION (MFA) STYLES
+           ========================================================================== */
+        .mfa-tools-card {
+            margin-top: 24px;
+            padding: 20px;
+            background: #f8fafc;
+            border-radius: 16px;
+            border: 1px solid rgba(203, 213, 225, 0.8);
+            display: grid;
+            gap: 14px;
+        }
+
+        .mfa-tools-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .mfa-tools-title-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #1e293b;
+        }
+
+        .mfa-badge-active {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 3px 10px;
+            border-radius: 999px;
+            background: rgba(16, 185, 129, 0.12);
+            color: #059669;
+            font-size: 0.74rem;
+            font-weight: 700;
+        }
+
+        .mfa-badge-inactive {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 3px 10px;
+            border-radius: 999px;
+            background: rgba(245, 158, 11, 0.12);
+            color: #d97706;
+            font-size: 0.74rem;
+            font-weight: 700;
+        }
+
+        .mfa-tools-note {
+            margin: 0;
+            font-size: 0.82rem;
+            color: #64748b;
+            line-height: 1.5;
+        }
+
+        .mfa-secret-box {
+            padding: 12px 14px;
+            background: #ffffff;
+            border: 1px solid #cbd5e1;
+            border-radius: 10px;
+            font-family: monospace;
+            font-size: 0.95rem;
+            letter-spacing: 0.08em;
+            color: #0f172a;
+        }
+
+        .recovery-codes-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+            padding: 12px;
+            background: #ffffff;
+            border: 1px solid #cbd5e1;
+            border-radius: 10px;
+            font-family: monospace;
+            font-size: 0.86rem;
+            letter-spacing: 0.05em;
+            color: #1e293b;
+        }
+
+        .recovery-code-item {
+            padding: 6px 10px;
+            background: #f1f5f9;
+            border-radius: 6px;
+            text-align: center;
+        }
+
+        .mfa-action-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            min-height: 38px;
+            padding: 0 16px;
+            border-radius: 10px;
+            font-size: 0.82rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.18s ease;
+        }
+
+        .mfa-action-btn--primary {
+            background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+            color: #ffffff;
+            border: none;
+        }
+
+        .mfa-action-btn--primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+        }
+
+        .mfa-action-btn--danger {
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            background: #ffffff;
+            color: #dc2626;
+        }
+
+        .mfa-action-btn--danger:hover {
+            background: #fef2f2;
+            border-color: #ef4444;
+        }
+
+        .mfa-action-btn--secondary {
+            border: 1px solid #cbd5e1;
+            background: #ffffff;
+            color: #475569;
+        }
+
+        .mfa-action-btn--secondary:hover {
+            background: #f8fafc;
+            border-color: #94a3b8;
+        }
+
+        /* ==========================================================================
            RESPONSIVE ADJUSTMENTS
            ========================================================================== */
         @media (max-width: 960px) {
@@ -792,7 +931,7 @@
             <div class="profile-alert-content">
                 <p class="profile-alert-text">{{ session('success') ?: session('status') }}</p>
             </div>
-            <button type="button" class="profile-alert-close" onclick="this.closest('.profile-alert-banner').remove()" aria-label="Close alert">
+            <button type="button" class="profile-alert-close" aria-label="Close alert">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
             </button>
         </div>
@@ -864,6 +1003,10 @@
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
                         </span>
                         <input class="field-input field-input--with-icon" id="profile_current_password" type="password" name="current_password" placeholder="Confirm current password to change email" autocomplete="current-password">
+                        <button class="password-toggle" type="button" aria-label="Show password" data-password-toggle data-target="profile_current_password" data-state="hidden">
+                            <svg class="icon-eye-open" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M2 12C4.5 7.8 8 5.7 12 5.7C16 5.7 19.5 7.8 22 12C19.5 16.2 16 18.3 12 18.3C8 18.3 4.5 16.2 2 12Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"></path><circle cx="12" cy="12" r="3.2" stroke="currentColor" stroke-width="1.8"></circle></svg>
+                            <svg class="icon-eye-closed" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3 3L21 21" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path><path d="M10.58 10.58C10.21 10.95 10 11.46 10 12C10 13.1 10.9 14 12 14C12.54 14 13.05 13.79 13.42 13.42" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path><path d="M6.72 6.72C4.76 8.02 3.15 9.82 2 12C4.5 16.2 8 18.3 12 18.3C13.75 18.3 15.41 17.9 16.92 17.14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path><path d="M9.12 5.97C10.04 5.79 11 5.7 12 5.7C16 5.7 19.5 7.8 22 12C21.27 13.22 20.47 14.29 19.58 15.23" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                        </button>
                     </div>
                     @error('current_password')
                         <span class="field-error">{{ $message }}</span>
@@ -1023,12 +1166,125 @@
                     </button>
                 </form>
             </div>
+
+            <!-- Two-Factor Authentication (MFA) Card -->
+            <div class="mfa-tools-card">
+                <div class="mfa-tools-head">
+                    <div class="mfa-tools-title-group">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                        <span>Two-Factor Authentication (MFA)</span>
+                    </div>
+                    @if ($admin->hasTwoFactorEnabled())
+                        <span class="mfa-badge-active">
+                            <span class="session-dot" style="background: #10b981;"></span>
+                            <span>Enabled & Active</span>
+                        </span>
+                    @else
+                        <span class="mfa-badge-inactive">
+                            <span class="session-dot" style="background: #f59e0b;"></span>
+                            <span>Disabled</span>
+                        </span>
+                    @endif
+                </div>
+
+                <p class="mfa-tools-note">
+                    Two-factor authentication adds an extra layer of security to your administrator account using time-based one-time passwords (TOTP) from an authenticator app (Google Authenticator, Microsoft Authenticator, 1Password, etc.).
+                </p>
+
+                @if ($admin->hasTwoFactorEnabled())
+                    <p class="mfa-tools-note" style="color: #059669; font-weight: 600;">
+                        ✓ MFA is active (confirmed {{ $admin->two_factor_confirmed_at?->diffForHumans() }}).
+                    </p>
+
+                    @if (session('new_recovery_codes'))
+                        <div style="background: #fffbeb; border: 1px solid #fde68a; border-radius: 12px; padding: 16px; margin: 8px 0;">
+                            <strong style="color: #92400e; display: block; margin-bottom: 8px; font-size: 0.88rem;">⚠️ New Emergency Recovery Codes</strong>
+                            <p style="color: #78350f; font-size: 0.82rem; margin-bottom: 12px;">Store these 8 single-use codes safely. If you lose access to your authenticator app, these are the only way to recover access. They will NOT be shown again.</p>
+                            <div class="recovery-codes-grid">
+                                @foreach (session('new_recovery_codes') as $code)
+                                    <div class="recovery-code-item">{{ $code }}</div>
+                                @endforeach
+                            </div>
+                        </div>
+                    @endif
+
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 8px;">
+                        <!-- Regenerate Recovery Codes Form -->
+                        <form action="{{ route('admin.profile.two-factor.recovery-codes') }}" method="post" style="display: inline-flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+                            @csrf
+                            <input type="password" name="current_password" placeholder="Confirm password" required style="height: 38px; padding: 0 12px; border-radius: 8px; border: 1px solid #cbd5e1; font-size: 0.82rem;">
+                            <button class="mfa-action-btn mfa-action-btn--secondary" type="submit">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 2v6h-6"></path><path d="M3 12a9 9 0 0 1 15-6.7L21 8"></path><path d="M3 22v-6h6"></path><path d="M21 12a9 9 0 0 1-15 6.7L3 16"></path></svg>
+                                <span>Regenerate Recovery Codes</span>
+                            </button>
+                        </form>
+
+                        <!-- Disable MFA Form -->
+                        <form action="{{ route('admin.profile.two-factor.disable') }}" method="post" style="display: inline-flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+                            @csrf
+                            <input type="password" name="current_password" placeholder="Confirm password" required style="height: 38px; padding: 0 12px; border-radius: 8px; border: 1px solid #cbd5e1; font-size: 0.82rem;">
+                            <button class="mfa-action-btn mfa-action-btn--danger" type="submit">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                                <span>Disable 2FA</span>
+                            </button>
+                        </form>
+                    </div>
+                @else
+                    @if (session('mfa_enrolling'))
+                        <div style="background: #ffffff; border: 1px solid #cbd5e1; border-radius: 14px; padding: 20px; display: grid; gap: 16px;">
+                            <h4 style="margin: 0; font-size: 0.95rem; color: #1e293b;">Complete Two-Factor Setup</h4>
+
+                            <div>
+                                <span style="display: block; font-size: 0.82rem; font-weight: 600; color: #334155; margin-bottom: 6px;">1. Secret Key (enter manually in your authenticator app):</span>
+                                <div class="mfa-secret-box">
+                                    <span id="mfa-secret-text">{{ session('mfa_secret') }}</span>
+                                </div>
+                                <div style="margin-top: 6px;">
+                                    <a href="{{ session('mfa_otpauth_url') }}" style="font-size: 0.8rem; color: #2563eb; text-decoration: underline;" target="_blank">Open in Authenticator App</a>
+                                </div>
+                            </div>
+
+                            @if (session('mfa_recovery_codes'))
+                                <div>
+                                    <span style="display: block; font-size: 0.82rem; font-weight: 600; color: #334155; margin-bottom: 6px;">2. Emergency Recovery Codes (Save these now):</span>
+                                    <div class="recovery-codes-grid">
+                                        @foreach (session('mfa_recovery_codes') as $code)
+                                            <div class="recovery-code-item">{{ $code }}</div>
+                                        @endforeach
+                                    </div>
+                                </div>
+                            @endif
+
+                            <div>
+                                <span style="display: block; font-size: 0.82rem; font-weight: 600; color: #334155; margin-bottom: 6px;">3. Enter 6-digit verification code from your authenticator:</span>
+                                <form action="{{ route('admin.profile.two-factor.confirm') }}" method="post" style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                                    @csrf
+                                    <input type="text" name="code" maxlength="6" pattern="[0-9]*" inputmode="numeric" placeholder="123456" required style="height: 42px; width: 140px; padding: 0 12px; border-radius: 10px; border: 1px solid #cbd5e1; font-size: 1.1rem; text-align: center; letter-spacing: 0.15em; font-family: monospace;">
+                                    <button class="mfa-action-btn mfa-action-btn--primary" type="submit">
+                                        <span>Confirm & Activate 2FA</span>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    @else
+                        <!-- Initiate MFA Setup Form -->
+                        <form action="{{ route('admin.profile.two-factor.enable') }}" method="post" style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                            @csrf
+                            <input type="password" name="current_password" placeholder="Confirm password to setup 2FA" required style="height: 40px; padding: 0 14px; border-radius: 10px; border: 1px solid #cbd5e1; font-size: 0.84rem;">
+                            <button class="mfa-action-btn mfa-action-btn--primary" type="submit">
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                                <span>Set Up Two-Factor Authentication</span>
+                            </button>
+                        </form>
+                    @endif
+                @endif
+            </div>
         </article>
     </section>
 @endsection
 
 @push('scripts')
-    <script>
+    <script nonce="{{ Vite::cspNonce() }}">
         document.addEventListener('DOMContentLoaded', () => {
             // Password Visibility Toggle
             document.querySelectorAll('[data-password-toggle]').forEach((toggle) => {

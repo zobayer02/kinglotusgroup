@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Support\ManagedUpload;
 use Illuminate\Database\Eloquent\Model;
 
 class ProspectusSection extends Model
@@ -35,7 +36,7 @@ class ProspectusSection extends Model
                     'title' => trim((string) ($item['title'] ?? ('Page ' . ($index + 1)))),
                     'subtitle' => trim((string) ($item['subtitle'] ?? '')),
                     'image_path' => $imagePath,
-                    'image_url' => filled($imagePath) ? asset($imagePath) : null,
+                    'image_url' => ManagedUpload::url($imagePath),
                 ];
             })
             ->all();

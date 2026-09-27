@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Support\ManagedUpload;
 use Illuminate\Database\Eloquent\Model;
 
 class ProjectSection extends Model
@@ -92,7 +93,7 @@ class ProjectSection extends Model
                     'rating' => trim((string) ($data['rating'] ?? '4.7/5')),
                     'link_url' => trim((string) ($data['link_url'] ?? '')),
                     'image_path' => trim((string) ($data['image_path'] ?? '')),
-                    'image_url' => filled($data['image_path'] ?? null) ? asset(ltrim((string) $data['image_path'], '/')) : null,
+                    'image_url' => ManagedUpload::url($data['image_path'] ?? null),
                     '_position' => $index,
                 ];
             })

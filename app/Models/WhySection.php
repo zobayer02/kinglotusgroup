@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Support\ManagedUpload;
 use Illuminate\Database\Eloquent\Model;
 
 class WhySection extends Model
@@ -38,7 +39,7 @@ class WhySection extends Model
 
     public function thumbnailUrl(): ?string
     {
-        return filled($this->thumbnail_path) ? asset(ltrim($this->thumbnail_path, '/')) : null;
+        return ManagedUpload::url($this->thumbnail_path);
     }
 
     public function videoEmbedUrl(): ?string

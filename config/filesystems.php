@@ -1,5 +1,8 @@
 <?php
 
+$uploadsDriver = env('UPLOADS_DRIVER', 'local');
+$uploadsLocalRoot = env('UPLOADS_LOCAL_ROOT') ?: public_path();
+
 return [
 
     /*
@@ -14,6 +17,10 @@ return [
     */
 
     'default' => env('FILESYSTEM_DISK', 'local'),
+
+    'uploads_disk' => 'uploads',
+
+    'uploads_max_total_bytes' => (int) env('UPLOADS_MAX_TOTAL_BYTES', 1073741824),
 
     /*
     |--------------------------------------------------------------------------
@@ -47,6 +54,15 @@ return [
             'report' => false,
         ],
 
+        'legacy_uploads' => [
+            'driver' => 'local',
+            'root' => public_path(),
+            'url' => rtrim(env('APP_URL', 'http://localhost'), '/'),
+            'visibility' => 'public',
+            'throw' => true,
+            'report' => true,
+        ],
+
         's3' => [
             'driver' => 's3',
             'key' => env('AWS_ACCESS_KEY_ID'),
@@ -58,6 +74,23 @@ return [
             'use_path_style_endpoint' => env('AWS_USE_PATH_STYLE_ENDPOINT', false),
             'throw' => false,
             'report' => false,
+        ],
+
+        'uploads' => [
+            'driver' => $uploadsDriver,
+            'root' => $uploadsDriver === 'local'
+                ? $uploadsLocalRoot
+                : env('UPLOADS_PREFIX', ''),
+            'url' => rtrim(env('UPLOADS_URL', env('APP_URL', 'http://localhost')), '/'),
+            'key' => env('UPLOADS_ACCESS_KEY_ID'),
+            'secret' => env('UPLOADS_SECRET_ACCESS_KEY'),
+            'region' => env('UPLOADS_DEFAULT_REGION', 'auto'),
+            'bucket' => env('UPLOADS_BUCKET'),
+            'endpoint' => env('UPLOADS_ENDPOINT'),
+            'use_path_style_endpoint' => env('UPLOADS_USE_PATH_STYLE_ENDPOINT', false),
+            'visibility' => env('UPLOADS_VISIBILITY', $uploadsDriver === 'local' ? 'public' : 'private'),
+            'throw' => true,
+            'report' => true,
         ],
 
     ],

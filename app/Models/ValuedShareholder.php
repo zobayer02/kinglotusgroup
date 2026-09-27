@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Support\ManagedUpload;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
@@ -24,21 +25,7 @@ class ValuedShareholder extends Model
 
     public function imageUrl(): ?string
     {
-        if (! filled($this->image_path)) {
-            return null;
-        }
-
-        $clean = ltrim((string) $this->image_path, '/');
-
-        if (preg_match('~^https?://~i', $clean)) {
-            return $clean;
-        }
-
-        if (! file_exists(public_path($clean))) {
-            return null;
-        }
-
-        return asset($clean);
+        return ManagedUpload::url($this->image_path);
     }
 
     public function scopeSearch(Builder $query, ?string $term): Builder
@@ -70,4 +57,3 @@ class ValuedShareholder extends Model
         ];
     }
 }
-

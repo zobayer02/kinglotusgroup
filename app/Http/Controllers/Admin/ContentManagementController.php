@@ -19,7 +19,7 @@ use App\Support\PublicWebpUploader;
 use App\Support\RichTextSanitizer;
 use App\Support\SiteCache;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -83,6 +83,7 @@ class ContentManagementController extends Controller
 
         $notice->hero_background_path = $heroBackgroundPath;
         $notice->save();
+        $uploader->commit();
         SiteCache::forgetPublicPages();
 
         return back()->with('success', 'Notice updated successfully.');
@@ -139,6 +140,7 @@ class ContentManagementController extends Controller
         }
 
         $aboutSection->save();
+        $uploader->commit();
         SiteCache::forgetPublicPages();
 
         return back()->with('success', 'About section updated successfully.');
@@ -312,6 +314,7 @@ class ContentManagementController extends Controller
         }
 
         $whySection->save();
+        $uploader->commit();
         SiteCache::forgetPublicPages();
 
         return back()->with('success', 'Why section updated successfully.');
@@ -339,6 +342,11 @@ class ContentManagementController extends Controller
         ]);
 
         $projectSection = ProjectSection::query()->firstOrNew();
+        $previousImages = [
+            $projectSection->top_cards,
+            $projectSection->bottom_cards,
+            $projectSection->cards,
+        ];
         $topCards = $this->storeProjectCards(
             $request,
             $uploader,
@@ -358,7 +366,9 @@ class ContentManagementController extends Controller
         $projectSection->bottom_title = $validated['projects_bottom_title'];
         $projectSection->top_cards = $topCards;
         $projectSection->bottom_cards = $bottomCards;
+        $uploader->queueRemovedPaths($previousImages, [$topCards, $bottomCards]);
         $projectSection->save();
+        $uploader->commit();
         SiteCache::forgetPublicPages();
 
         return back()->with('success', 'Our Projects section updated successfully.');
@@ -379,6 +389,7 @@ class ContentManagementController extends Controller
         ]);
 
         $prospectusSection = ProspectusSection::query()->firstOrNew();
+        $previousImages = $prospectusSection->brochures;
 
         $brochures = collect($validated['brochures'] ?? [])
             ->map(function ($brochure, $index) use ($request, $uploader): ?array {
@@ -423,7 +434,9 @@ class ContentManagementController extends Controller
             : null;
         $prospectusSection->is_visible = $request->boolean('is_visible');
         $prospectusSection->brochures = $brochures;
+        $uploader->queueRemovedPaths($previousImages, $brochures);
         $prospectusSection->save();
+        $uploader->commit();
 
         SiteCache::forgetPublicPages();
 
@@ -453,6 +466,9 @@ class ContentManagementController extends Controller
             'album_image_uploads.*' => ['nullable', 'array'],
             'album_image_uploads.*.*' => ['nullable', 'image', 'max:6144'],
         ]);
+
+        $gallerySection = GallerySection::query()->firstOrNew();
+        $previousImages = [$gallerySection->featured_images, $gallerySection->albums];
 
         $featuredImages = collect(range(0, GallerySection::FEATURED_IMAGE_SLOTS - 1))
             ->map(function (int $index) use ($request, $uploader, $validated): ?array {
@@ -547,7 +563,6 @@ class ContentManagementController extends Controller
             ->values()
             ->all();
 
-        $gallerySection = GallerySection::query()->firstOrNew();
         $gallerySection->section_title = filled($validated['gallery_section_title'] ?? null)
             ? trim((string) $validated['gallery_section_title'])
             : null;
@@ -565,7 +580,9 @@ class ContentManagementController extends Controller
             : null;
         $gallerySection->featured_images = $featuredImages;
         $gallerySection->albums = $albums;
+        $uploader->queueRemovedPaths($previousImages, [$featuredImages, $albums]);
         $gallerySection->save();
+        $uploader->commit();
         SiteCache::forgetPublicPages();
 
         return back()->with('success', 'Gallery section and albums updated successfully.');
@@ -584,6 +601,9 @@ class ContentManagementController extends Controller
             'shareholder_review_thumbnails' => ['nullable', 'array'],
             'shareholder_review_thumbnails.*' => ['nullable', 'image', 'max:6144'],
         ]);
+
+        $reviewSection = ShareholderReviewSection::query()->firstOrNew();
+        $previousImages = $reviewSection->reviews;
 
         $reviews = collect($validated['shareholder_reviews'] ?? [])
             ->map(function ($review, $index) use ($request, $uploader): ?array {
@@ -612,7 +632,7 @@ class ContentManagementController extends Controller
                             $thumbnailPath,
                         );
                     } elseif ($removeThumbnail && filled($thumbnailPath)) {
-                        File::delete(public_path($thumbnailPath));
+                        $uploader->queueDelete($thumbnailPath, 'uploads/reviews');
                         $thumbnailPath = '';
                     }
                 } catch (RuntimeException $exception) {
@@ -631,7 +651,6 @@ class ContentManagementController extends Controller
             ->values()
             ->all();
 
-        $reviewSection = ShareholderReviewSection::query()->firstOrNew();
         $reviewSection->section_title = filled($validated['review_section_title'] ?? null)
             ? trim((string) $validated['review_section_title'])
             : null;
@@ -639,7 +658,9 @@ class ContentManagementController extends Controller
             ? trim((string) $validated['review_section_subtitle'])
             : null;
         $reviewSection->reviews = $reviews;
+        $uploader->queueRemovedPaths($previousImages, $reviews);
         $reviewSection->save();
+        $uploader->commit();
         SiteCache::forgetPublicPages();
 
         return back()->with('success', 'Shareholder reviews updated successfully.');
@@ -654,6 +675,12 @@ class ContentManagementController extends Controller
             'founder_description' => ['nullable', 'string', 'max:200'],
             'founder_image_path' => ['nullable', 'string', 'max:2048'],
             'founder_image' => ['nullable', 'image', 'max:6144'],
+            'secondary_leader_name' => ['nullable', 'string', 'max:180'],
+            'secondary_leader_position' => ['nullable', 'string', 'max:180'],
+            'secondary_leader_description' => ['nullable', 'string', 'max:200'],
+            'secondary_leader_image_path' => ['nullable', 'string', 'max:2048'],
+            'secondary_leader_image' => ['nullable', 'image', 'max:6144'],
+            'remove_secondary_leader_image' => ['nullable', 'boolean'],
             'board_members' => ['nullable', 'array'],
             'board_members.*.name' => ['nullable', 'string', 'max:180'],
             'board_members.*.position' => ['nullable', 'string', 'max:180'],
@@ -663,6 +690,9 @@ class ContentManagementController extends Controller
         ]);
 
         $leadershipSection = LeadershipSection::query()->firstOrNew();
+        $previousFounderImage = $leadershipSection->founder_image_path;
+        $previousSecondaryLeaderImage = $leadershipSection->secondary_leader_image_path;
+        $previousBoardMemberImages = $leadershipSection->board_members;
         $founderImagePath = $this->sanitizeManagedUploadPath(
             $validated['founder_image_path'] ?? $leadershipSection->founder_image_path,
             'uploads/leadership/founder',
@@ -679,6 +709,29 @@ class ContentManagementController extends Controller
         } catch (RuntimeException $exception) {
             throw ValidationException::withMessages([
                 'founder_image' => 'Founder image upload failed. Please try another image.',
+            ]);
+        }
+
+        $secondaryLeaderImagePath = $this->sanitizeManagedUploadPath(
+            $validated['secondary_leader_image_path'] ?? $leadershipSection->secondary_leader_image_path,
+            'uploads/leadership/founder',
+        ) ?? $this->sanitizeManagedUploadPath($leadershipSection->secondary_leader_image_path, 'uploads/leadership/founder');
+
+        if ($request->boolean('remove_secondary_leader_image')) {
+            $secondaryLeaderImagePath = null;
+        }
+
+        try {
+            if ($request->hasFile('secondary_leader_image')) {
+                $secondaryLeaderImagePath = $uploader->store(
+                    $request->file('secondary_leader_image'),
+                    'uploads/leadership/founder',
+                    $secondaryLeaderImagePath,
+                );
+            }
+        } catch (RuntimeException $exception) {
+            throw ValidationException::withMessages([
+                'secondary_leader_image' => 'Executive image upload failed. Please try another image.',
             ]);
         }
 
@@ -730,15 +783,96 @@ class ContentManagementController extends Controller
             ? trim((string) $validated['founder_description'])
             : null;
         $leadershipSection->founder_image_path = $founderImagePath;
+        $leadershipSection->secondary_leader_name = filled($validated['secondary_leader_name'] ?? null)
+            ? trim((string) $validated['secondary_leader_name'])
+            : null;
+        $leadershipSection->secondary_leader_position = filled($validated['secondary_leader_position'] ?? null)
+            ? trim((string) $validated['secondary_leader_position'])
+            : null;
+        $leadershipSection->secondary_leader_description = filled($validated['secondary_leader_description'] ?? null)
+            ? trim((string) $validated['secondary_leader_description'])
+            : null;
+        $leadershipSection->secondary_leader_image_path = $secondaryLeaderImagePath;
         $leadershipSection->board_members = $boardMembers;
         $leadershipSection->is_visible = $request->boolean('is_visible');
+        if ($request->has('board_members_visible')) {
+            $leadershipSection->board_members_visible = $request->boolean('board_members_visible');
+        }
+        $uploader->queueRemovedPaths($previousFounderImage, $founderImagePath);
+        $uploader->queueRemovedPaths($previousSecondaryLeaderImage, $secondaryLeaderImagePath);
+        $uploader->queueRemovedPaths($previousBoardMemberImages, $boardMembers);
         $leadershipSection->save();
+        $uploader->commit();
         SiteCache::forgetPublicPages();
 
         return back()->with('success', 'Leadership section updated successfully.');
     }
 
-    public function updateValuedShareholders(Request $request): RedirectResponse
+    public function toggleLeadershipVisibility(Request $request): JsonResponse|RedirectResponse
+    {
+        $leadershipSection = LeadershipSection::query()->firstOrNew();
+
+        if ($request->has('is_visible')) {
+            $leadershipSection->is_visible = $request->boolean('is_visible');
+        } else {
+            $leadershipSection->is_visible = ! $leadershipSection->is_visible;
+        }
+
+        $leadershipSection->save();
+        SiteCache::forgetPublicPages();
+
+        $shouldDisplay = $leadershipSection->shouldDisplayOnWebsite();
+        $statusText = $shouldDisplay ? 'Visible on website' : 'Hidden on website';
+        $message = $leadershipSection->is_visible
+            ? 'Leadership & Directors section is now visible on the website.'
+            : 'Leadership & Directors section is now hidden from the website.';
+
+        if ($request->expectsJson() || $request->wantsJson() || $request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'is_visible' => (bool) $leadershipSection->is_visible,
+                'should_display' => $shouldDisplay,
+                'status_text' => $statusText,
+                'message' => $message,
+            ]);
+        }
+
+        return back()->with('success', $message);
+    }
+
+    public function toggleBoardMembersVisibility(Request $request): JsonResponse|RedirectResponse
+    {
+        $leadershipSection = LeadershipSection::query()->firstOrNew();
+
+        if ($request->has('board_members_visible')) {
+            $leadershipSection->board_members_visible = $request->boolean('board_members_visible');
+        } else {
+            $leadershipSection->board_members_visible = ! ($leadershipSection->board_members_visible ?? true);
+        }
+
+        $leadershipSection->save();
+        SiteCache::forgetPublicPages();
+
+        $shouldDisplay = $leadershipSection->shouldDisplayBoardMembers();
+        $statusText = $shouldDisplay ? 'Visible on website' : 'Hidden on website';
+        $message = $leadershipSection->board_members_visible
+            ? 'Board member cards are now visible on the website.'
+            : 'Board member cards are now hidden from the website.';
+
+        if ($request->expectsJson() || $request->wantsJson() || $request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'is_visible' => (bool) $leadershipSection->board_members_visible,
+                'should_display' => $shouldDisplay,
+                'status_text' => $statusText,
+                'message' => $message,
+            ]);
+        }
+
+        return back()->with('success', $message);
+    }
+
+    public function updateValuedShareholders(Request $request): JsonResponse|RedirectResponse
     {
         $validated = $request->validate([
             'shareholder_section_title' => ['nullable', 'string', 'max:180'],
@@ -746,12 +880,30 @@ class ContentManagementController extends Controller
         ]);
 
         $section = ValuedShareholderSection::query()->firstOrNew();
-        $section->section_title = filled($validated['shareholder_section_title'] ?? null)
-            ? trim((string) $validated['shareholder_section_title'])
-            : null;
+        if ($request->has('shareholder_section_title')) {
+            $section->section_title = filled($validated['shareholder_section_title'] ?? null)
+                ? trim((string) $validated['shareholder_section_title'])
+                : null;
+        }
         $section->is_visible = $request->boolean('shareholder_section_visible');
         $section->save();
         SiteCache::forgetPublicPages();
+
+        $shouldDisplay = $section->shouldDisplayOnWebsite();
+        $statusText = $shouldDisplay ? 'Visible on website' : 'Hidden on website';
+        $message = $section->is_visible
+            ? 'Valued shareholders section is now visible on the website.'
+            : 'Valued shareholders section is now hidden from the website.';
+
+        if ($request->expectsJson() || $request->wantsJson() || $request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'is_visible' => (bool) $section->is_visible,
+                'should_display' => $shouldDisplay,
+                'status_text' => $statusText,
+                'message' => $message,
+            ]);
+        }
 
         return back()->with('success', 'Valued shareholders section settings updated successfully.');
     }
@@ -808,6 +960,8 @@ class ContentManagementController extends Controller
             'sort_order' => 0,
         ]);
 
+        $uploader->commit();
+
         SiteCache::forgetPublicPages();
 
         return response()->json([
@@ -831,7 +985,7 @@ class ContentManagementController extends Controller
 
         if ($request->boolean('remove_image')) {
             if (filled($imagePath)) {
-                $uploader->delete($imagePath);
+                $uploader->queueDelete($imagePath, 'uploads/valued-shareholders');
             }
             $imagePath = null;
         }
@@ -856,6 +1010,8 @@ class ContentManagementController extends Controller
             'image_path' => $imagePath,
         ]);
 
+        $uploader->commit();
+
         SiteCache::forgetPublicPages();
 
         return response()->json([
@@ -868,10 +1024,11 @@ class ContentManagementController extends Controller
     public function destroyShareholder(ValuedShareholder $shareholder, PublicWebpUploader $uploader): JsonResponse
     {
         if (filled($shareholder->image_path)) {
-            $uploader->delete($shareholder->image_path);
+            $uploader->queueDelete($shareholder->image_path, 'uploads/valued-shareholders');
         }
 
-        $shareholder->delete();
+        DB::transaction(static fn () => $shareholder->delete());
+        $uploader->commit();
         SiteCache::forgetPublicPages();
 
         return response()->json([

@@ -422,7 +422,7 @@
 
 @push('scripts')
     @include('partials.mobile-nav-script')
-    <script>
+    <script nonce="{{ Vite::cspNonce() }}">
         document.addEventListener('DOMContentLoaded', () => {
             const cardGrid = document.querySelector('.review-card-grid');
             const cards = Array.from(document.querySelectorAll('[data-review-video]'));

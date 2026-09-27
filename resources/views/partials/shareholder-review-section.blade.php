@@ -628,7 +628,7 @@
 
     @once
         @push('scripts')
-            <script>
+            <script nonce="{{ Vite::cspNonce() }}">
                 document.addEventListener('DOMContentLoaded', () => {
                     const modal = document.getElementById('shareholder-review-video-modal');
                     const frame = document.getElementById('shareholder-review-video-frame');

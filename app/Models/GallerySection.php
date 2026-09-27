@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Support\ManagedUpload;
 use Illuminate\Database\Eloquent\Model;
 
 class GallerySection extends Model
@@ -111,7 +112,7 @@ class GallerySection extends Model
                 return [
                     'order' => $order,
                     'image_path' => $imagePath,
-                    'image_url' => filled($imagePath) ? asset(ltrim($imagePath, '/')) : null,
+                    'image_url' => ManagedUpload::url($imagePath),
                     '_position' => $index,
                 ];
             })
@@ -143,7 +144,7 @@ class GallerySection extends Model
 
                         return [
                             'image_path' => $imagePath,
-                            'image_url' => asset(ltrim($imagePath, '/')),
+                            'image_url' => ManagedUpload::url($imagePath),
                         ];
                     })
                     ->filter()

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Support\ManagedUpload;
 use Illuminate\Database\Eloquent\Model;
 
 class AboutSection extends Model
@@ -49,7 +50,7 @@ class AboutSection extends Model
 
     protected function thumbnailUrl(?string $path): ?string
     {
-        return filled($path) ? asset(ltrim($path, '/')) : null;
+        return ManagedUpload::url($path);
     }
 
     protected function buildEmbedUrl(?string $url): ?string

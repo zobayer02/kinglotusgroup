@@ -306,7 +306,7 @@
                         <div class="login-panel">
                             <div class="login-panel-inner">
                                 <h2 class="login-title">Reset Password</h2>
-                                <p class="login-subtitle">Enter your registered email address to receive password reset instructions.</p>
+                                <p class="login-subtitle">Enter your registered email address to receive a 6-digit verification code.</p>
 
                                 @if (session('status'))
                                     <div class="login-status">{{ session('status') }}</div>
@@ -326,7 +326,7 @@
                                         <input class="field-input" id="email" type="email" name="email" value="{{ old('email') }}" placeholder="Enter your email" required autofocus>
                                     </div>
 
-                                    <button class="primary-button" type="submit">Send Reset Link</button>
+                                    <button class="primary-button" type="submit">Send Verification Code</button>
 
                                     <div class="login-back-wrap">
                                         <a href="{{ route('login') }}" class="login-back-link">&larr; Back to Sign In</a>

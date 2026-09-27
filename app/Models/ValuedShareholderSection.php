@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Support\ManagedUpload;
 use Illuminate\Database\Eloquent\Model;
 
 class ValuedShareholderSection extends Model
@@ -65,7 +66,7 @@ class ValuedShareholderSection extends Model
                     'name' => $name,
                     'position' => $position,
                     'image_path' => $imagePath,
-                    'image_url' => filled($imagePath) ? asset(ltrim($imagePath, '/')) : null,
+                    'image_url' => ManagedUpload::url($imagePath),
                 ];
             })
             ->filter()

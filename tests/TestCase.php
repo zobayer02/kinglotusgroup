@@ -3,70 +3,49 @@
 namespace Tests;
 
 use App\Models\Admin;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
-use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\File;
 use RuntimeException;
 
 abstract class TestCase extends BaseTestCase
 {
-    private static bool $migrated = false;
+    use RefreshDatabase {
+        refreshTestDatabase as baseRefreshTestDatabase;
+    }
+
+    /**
+     * Every application connection participates in the per-test transaction.
+     *
+     * @var list<string>
+     */
+    protected $connectionsToTransact = ['sqlite', 'auth', 'content'];
+
+    public function createApplication()
+    {
+        $testingEnvironment = [
+            'APP_ENV' => 'testing',
+            'DB_CONNECTION' => 'sqlite',
+            'DB_DATABASE' => ':memory:',
+            'DB_AUTH_DRIVER' => 'sqlite',
+            'DB_AUTH_DATABASE' => ':memory:',
+            'DB_CONTENT_DRIVER' => 'sqlite',
+            'DB_CONTENT_DATABASE' => ':memory:',
+        ];
+
+        foreach ($testingEnvironment as $key => $value) {
+            putenv("{$key}={$value}");
+            $_ENV[$key] = $value;
+            $_SERVER[$key] = $value;
+        }
+
+        return parent::createApplication();
+    }
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->ensureTestingDatabasesAreIsolated();
-        $this->setUpTestingDatabases();
-    }
-
-    protected function ensureTestingDatabasesAreIsolated(): void
-    {
-        $connections = [
-            'default' => config('database.default'),
-            'auth' => 'auth',
-            'content' => 'content',
-        ];
-
-        foreach ($connections as $alias => $connName) {
-            $driver = config("database.connections.{$connName}.driver");
-            $database = config("database.connections.{$connName}.database");
-
-            // Strictly guard against executing tests against non-test MySQL databases
-            if ($driver === 'mysql') {
-                $dbString = strtolower((string) $database);
-                if (! str_ends_with($dbString, '_test') && ! str_ends_with($dbString, '_testing')) {
-                    throw new RuntimeException(
-                        "UNSAFE TEST CONFIGURATION: Connection [{$connName}] points to non-test MySQL database [{$database}]. Aborting to prevent data loss."
-                    );
-                }
-            }
-        }
-    }
-
-    protected function setUpTestingDatabases(): void
-    {
-        if (self::$migrated) {
-            return;
-        }
-
-        foreach (['default', 'auth', 'content'] as $conn) {
-            $driver = config("database.connections.{$conn}.driver");
-            $dbPath = config("database.connections.{$conn}.database");
-
-            if ($driver === 'sqlite' && $dbPath && $dbPath !== ':memory:') {
-                $resolved = str_starts_with($dbPath, '/') || preg_match('/^[A-Za-z]:/', $dbPath)
-                    ? $dbPath
-                    : base_path($dbPath);
-
-                File::ensureDirectoryExists(dirname($resolved));
-                File::put($resolved, '');
-            }
-        }
-
-        Artisan::call('migrate:fresh', ['--force' => true]);
-
-        Admin::query()->firstOrCreate(
+        Admin::query()->updateOrCreate(
             ['email' => 'superadmin@kinglotusgroup.com'],
             [
                 'name' => 'Super Admin',
@@ -76,7 +55,25 @@ abstract class TestCase extends BaseTestCase
                 'session_version' => 1,
             ]
         );
+    }
 
-        self::$migrated = true;
+    protected function refreshTestDatabase(): void
+    {
+        $this->ensureTestingDatabasesAreIsolated();
+        $this->baseRefreshTestDatabase();
+    }
+
+    protected function ensureTestingDatabasesAreIsolated(): void
+    {
+        foreach ($this->connectionsToTransact as $connName) {
+            $driver = config("database.connections.{$connName}.driver");
+            $database = config("database.connections.{$connName}.database");
+
+            if ($driver !== 'sqlite' || $database !== ':memory:') {
+                throw new RuntimeException(
+                    "UNSAFE TEST CONFIGURATION: Connection [{$connName}] must use an in-memory SQLite database."
+                );
+            }
+        }
     }
 }

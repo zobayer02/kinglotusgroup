@@ -564,7 +564,7 @@
 
     @once
         @push('scripts')
-            <script>
+            <script nonce="{{ Vite::cspNonce() }}">
                 document.addEventListener('DOMContentLoaded', function () {
                     const section = document.querySelector('.prospectus-section');
                     if (!section) return;

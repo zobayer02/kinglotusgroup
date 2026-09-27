@@ -149,7 +149,7 @@
     </section>
 
     @push('scripts')
-        <script>
+        <script nonce="{{ Vite::cspNonce() }}">
             document.addEventListener('DOMContentLoaded', () => {
                 document.querySelectorAll('[data-notice-banner-shell]').forEach((shell) => {
                     const marquee = shell.querySelector('.notice-banner-marquee');

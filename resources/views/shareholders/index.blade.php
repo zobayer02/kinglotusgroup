@@ -642,7 +642,7 @@
                                         loading="lazy"
                                         decoding="async"
                                         draggable="false"
-                                        onerror="this.style.display='none'; if(this.nextElementSibling) this.nextElementSibling.style.display='flex';"
+                                        data-fallback-placeholder
                                     >
                                     <div class="shareholder-card-placeholder" aria-label="Shareholder avatar" style="display: none;">
                                         <div class="shareholder-avatar-icon" aria-hidden="true">
@@ -725,7 +725,7 @@
 
 @push('scripts')
     @include('partials.mobile-nav-script')
-    <script>
+    <script nonce="{{ Vite::cspNonce() }}">
         document.addEventListener('DOMContentLoaded', () => {
             const searchInput = document.getElementById('shareholder-search-input');
             const clearBtn = document.getElementById('shareholder-search-clear');
@@ -780,7 +780,7 @@
                 const safeName = escapeHtml(item.name || '');
                 const safePosition = escapeHtml(item.position || '');
                 const imageTag = item.image_url
-                    ? `<img src="${escapeHtml(item.image_url)}" alt="${safeName || 'Shareholder'}" loading="lazy" decoding="async" draggable="false" onerror="this.style.display='none'; if(this.nextElementSibling) this.nextElementSibling.style.display='flex';">
+                    ? `<img src="${escapeHtml(item.image_url)}" alt="${safeName || 'Shareholder'}" loading="lazy" decoding="async" draggable="false" data-fallback-placeholder>
                        <div class="shareholder-card-placeholder" aria-label="Shareholder avatar" style="display: none;">
                            <div class="shareholder-avatar-icon" aria-hidden="true">
                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
