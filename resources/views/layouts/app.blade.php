@@ -4,10 +4,32 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     @php($faviconVersion = file_exists(public_path('favicon.png')) ? filemtime(public_path('favicon.png')) : time())
+    @php($ogImageVersion = file_exists(public_path('images/og-share.jpg')) ? filemtime(public_path('images/og-share.jpg')) : time())
     <title>@yield('title', 'King Lotus International')</title>
+    <meta name="description" content="@yield('meta_description', 'King Lotus International - Luxury in Royal.')">
+
+    <!-- Open Graph / Facebook / WhatsApp -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ url()->current() }}">
+    <meta property="og:site_name" content="King Lotus International">
+    <meta property="og:title" content="@yield('title', 'King Lotus International')">
+    <meta property="og:description" content="@yield('meta_description', 'King Lotus International - Luxury in Royal.')">
+    <meta property="og:image" content="{{ asset('images/og-share.jpg') }}?v={{ $ogImageVersion }}">
+    <meta property="og:image:secure_url" content="{{ asset('images/og-share.jpg') }}?v={{ $ogImageVersion }}">
+    <meta property="og:image:type" content="image/jpeg">
+    <meta property="og:image:width" content="1021">
+    <meta property="og:image:height" content="1024">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="{{ url()->current() }}">
+    <meta name="twitter:title" content="@yield('title', 'King Lotus International')">
+    <meta name="twitter:description" content="@yield('meta_description', 'King Lotus International - Luxury in Royal.')">
+    <meta name="twitter:image" content="{{ asset('images/og-share.jpg') }}?v={{ $ogImageVersion }}">
+
     <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}?v={{ $faviconVersion }}">
     <link rel="shortcut icon" href="{{ asset('favicon.png') }}?v={{ $faviconVersion }}">
-    <link rel="apple-touch-icon" href="{{ asset('favicon.png') }}?v={{ $faviconVersion }}">
+    <link rel="apple-touch-icon" href="{{ asset('images/og-share.jpg') }}?v={{ $ogImageVersion }}">
     <link rel="manifest" href="{{ asset('manifest.webmanifest') }}?v={{ $faviconVersion }}">
     <meta name="theme-color" content="#0c505d">
     <meta name="mobile-web-app-capable" content="yes">
