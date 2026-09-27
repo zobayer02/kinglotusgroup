@@ -35,8 +35,14 @@ final class ManagedUpload
     {
         $normalized = self::normalize($path);
 
-        return $normalized === null
-            ? null
-            : Storage::disk(self::diskName())->url($normalized);
+        if ($normalized === null) {
+            return null;
+        }
+
+        if (config('filesystems.disks.'.self::diskName().'.driver') !== 'local' || env('UPLOADS_URL')) {
+            return Storage::disk(self::diskName())->url($normalized);
+        }
+
+        return asset($normalized);
     }
 }
