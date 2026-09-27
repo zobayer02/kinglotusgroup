@@ -1,4 +1,4 @@
--- King Lotus Group: Content Data Sync for Aiven MySQL
+-- King Lotus Group: Content Data Sync
 SET FOREIGN_KEY_CHECKS = 0;
 
 -- Truncate and insert: site_notices

@@ -17,7 +17,7 @@ The repository still contains historical Vercel deployment files, but Vercel/ser
 |---|---|
 | Web runtime | cPanel Apache with PHP 8.2 or newer |
 | Subdomain document root | Absolute path to `<application>/public` |
-| Database | cPanel/managed MySQL with separate auth and content databases and least-privilege credentials |
+| Database | cPanel/managed MySQL single consolidated database and least-privilege credentials |
 | Media storage | Persistent `public/uploads` on the cPanel filesystem through the managed `uploads` disk |
 | Upload root | `UPLOADS_LOCAL_ROOT` set to the absolute Laravel public-directory path |
 | Upload URL | `UPLOADS_URL` set to the HTTPS subdomain origin |

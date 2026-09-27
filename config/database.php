@@ -17,7 +17,7 @@ return [
     |
     */
 
-    'default' => env('DB_CONNECTION', 'auth'),
+    'default' => env('DB_CONNECTION', 'mysql'),
 
     /*
     |--------------------------------------------------------------------------
@@ -70,7 +70,7 @@ return [
         'auth' => env('DB_AUTH_DRIVER') === 'sqlite' ? [
             'driver' => 'sqlite',
             'url' => env('DB_URL'),
-            'database' => env('DB_AUTH_DATABASE', database_path('testing_auth.sqlite')),
+            'database' => env('DB_AUTH_DATABASE', env('DB_DATABASE', database_path('testing_auth.sqlite'))),
             'prefix' => '',
             'foreign_key_constraints' => env('DB_FOREIGN_KEYS', true),
         ] : [
@@ -99,7 +99,7 @@ return [
         'content' => env('DB_CONTENT_DRIVER') === 'sqlite' ? [
             'driver' => 'sqlite',
             'url' => env('DB_URL'),
-            'database' => env('DB_CONTENT_DATABASE', database_path('testing_content.sqlite')),
+            'database' => env('DB_CONTENT_DATABASE', env('DB_DATABASE', database_path('testing_content.sqlite'))),
             'prefix' => '',
             'foreign_key_constraints' => env('DB_FOREIGN_KEYS', true),
         ] : [
@@ -107,7 +107,7 @@ return [
             'url' => env('DB_URL'),
             'host' => env('DB_HOST', '127.0.0.1'),
             'port' => env('DB_PORT', '3306'),
-            'database' => env('DB_CONTENT_DATABASE', 'laravel'),
+            'database' => env('DB_CONTENT_DATABASE', env('DB_DATABASE', 'laravel')),
             'username' => env('DB_USERNAME', 'root'),
             'password' => env('DB_PASSWORD', ''),
             'unix_socket' => env('DB_SOCKET', ''),
